@@ -9,4 +9,5 @@ int main(int argc, char *argv[])
     QLabel lbl("Hello world!");
     lbl.show();
     return a.exec();
+    //олололо
 }
