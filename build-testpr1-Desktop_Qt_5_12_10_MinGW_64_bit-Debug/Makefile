@@ -210,6 +210,7 @@ Makefile: ../testpr1/testpr1.pro ../../Install/Qt/5.12.10/mingw73_64/mkspecs/win
 		../../Install/Qt/5.12.10/mingw73_64/mkspecs/features/qt_config.prf \
 		../../Install/Qt/5.12.10/mingw73_64/mkspecs/win32-g++/qmake.conf \
 		../../Install/Qt/5.12.10/mingw73_64/mkspecs/features/spec_post.prf \
+		.qmake.stash \
 		../../Install/Qt/5.12.10/mingw73_64/mkspecs/features/exclusive_builds.prf \
 		../../Install/Qt/5.12.10/mingw73_64/mkspecs/features/toolchain.prf \
 		../../Install/Qt/5.12.10/mingw73_64/mkspecs/features/default_pre.prf \
@@ -235,6 +236,7 @@ Makefile: ../testpr1/testpr1.pro ../../Install/Qt/5.12.10/mingw73_64/mkspecs/win
 		../testpr1/testpr1.pro \
 		../../Install/Qt/5.12.10/mingw73_64/lib/Qt5Widgets.prl \
 		../../Install/Qt/5.12.10/mingw73_64/lib/Qt5Gui.prl \
+		../../Install/Qt/5.12.10/mingw73_64/lib/Qt5Sql.prl \
 		../../Install/Qt/5.12.10/mingw73_64/lib/Qt5Core.prl \
 		../../Install/Qt/5.12.10/mingw73_64/lib/qtmain.prl
 	$(QMAKE) -o Makefile ..\testpr1\testpr1.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
@@ -385,6 +387,7 @@ Makefile: ../testpr1/testpr1.pro ../../Install/Qt/5.12.10/mingw73_64/mkspecs/win
 ../../Install/Qt/5.12.10/mingw73_64/mkspecs/features/qt_config.prf:
 ../../Install/Qt/5.12.10/mingw73_64/mkspecs/win32-g++/qmake.conf:
 ../../Install/Qt/5.12.10/mingw73_64/mkspecs/features/spec_post.prf:
+.qmake.stash:
 ../../Install/Qt/5.12.10/mingw73_64/mkspecs/features/exclusive_builds.prf:
 ../../Install/Qt/5.12.10/mingw73_64/mkspecs/features/toolchain.prf:
 ../../Install/Qt/5.12.10/mingw73_64/mkspecs/features/default_pre.prf:
@@ -410,6 +413,7 @@ Makefile: ../testpr1/testpr1.pro ../../Install/Qt/5.12.10/mingw73_64/mkspecs/win
 ../testpr1/testpr1.pro:
 ../../Install/Qt/5.12.10/mingw73_64/lib/Qt5Widgets.prl:
 ../../Install/Qt/5.12.10/mingw73_64/lib/Qt5Gui.prl:
+../../Install/Qt/5.12.10/mingw73_64/lib/Qt5Sql.prl:
 ../../Install/Qt/5.12.10/mingw73_64/lib/Qt5Core.prl:
 ../../Install/Qt/5.12.10/mingw73_64/lib/qtmain.prl:
 qmake: FORCE

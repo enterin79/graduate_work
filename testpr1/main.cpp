@@ -6,8 +6,11 @@
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    QLabel lbl("Hello world!");
-    lbl.show();
-    return a.exec();
-    //олололо
+    try {
+        MainWindow w;
+        w.show();
+        return a.exec();
+    }  catch (...) {
+        return 1;
+    }
 }
