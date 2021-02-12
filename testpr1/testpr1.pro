@@ -14,17 +14,20 @@ SOURCES += \
     dbworking.cpp \
     edit.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    selection.cpp
 
 HEADERS += \
     comboboxfordb.h \
     dbworking.h \
     edit.h \
-    mainwindow.h
+    mainwindow.h \
+    selection.h
 
 FORMS += \
     edit.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    selection.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

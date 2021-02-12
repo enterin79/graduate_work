@@ -2,6 +2,8 @@
 #include "ui_edit.h"
 #include <QDebug>
 
+/*Конструктор класса по умолчанию
+*/
 Edit::Edit(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::Edit)
@@ -10,18 +12,26 @@ Edit::Edit(QWidget *parent) :
 
 }
 
+/*Деструктор класса
+*/
 Edit::~Edit()
 {
     delete ui;
 }
 
+
+/*Метод для соединения данных таблицы с элементами формы редактирования
+ *
+ * Формальные параметры:
+ * model - таблица, с которой происходит соединение;
+ * table - название таблицы.
+*/
 bool Edit::setModelTable(QSqlRelationalTableModel *model, QString table)
 {
-    //tablemapper=new QDataWidgetMapper(this);
     try {
         tablemapper=new QDataWidgetMapper(this);
         tablemapper->setModel(model);
-        if(table=="equipment"){
+        if(table=="equipment"){ //Соединение элементов формы редактирования с данными таблицы в зависимости от набора полей этой таблицы
             tablemapper->addMapping(ui->leNameEq, model->fieldIndex("nameequip"));
             tablemapper->addMapping(ui->leNote, model->fieldIndex("note"), "plainText");
             tablemapper->addMapping(ui->deFirstExpDate, model->fieldIndex("firstexpldate"));
@@ -29,21 +39,11 @@ bool Edit::setModelTable(QSqlRelationalTableModel *model, QString table)
             ui->gbEquip->show();
         }
         else if(table=="test"){
-            //QSqlTableModel *temp=new QSqlTableModel();
-            //temp=model->relationModel(model->fieldIndex("nameequip"));
-            //ui->cbEquipId->setModel(temp);
-            /*for(int i=1; i<=temp->rowCount();i++){
-                QString text=temp->record(i-1).value(temp->fieldIndex("nameequip")).toString();
-                qDebug()<<"now text"<<text;
-                ui->cbEquipId->addItem(text, temp->record(i-1).value(0).toInt());
-            }*/
-            //ui->cbEquipId->setModelColumn(1);
             ui->cbEquipId->setForeignKey("id", "nameequip", model->relationModel(model->fieldIndex("nameequip")));
             tablemapper->addMapping(ui->leNameTest, model->fieldIndex("nametest"));
             tablemapper->addMapping(ui->deDateTest, model->fieldIndex("datetest"));
             tablemapper->addMapping(ui->leDescript, model->fieldIndex("description"), "plainText");
             tablemapper->addMapping(ui->cbEquipId, model->fieldIndex("nameequip"));
-            //tablemapper->addMapping(ui->unshowing, model->fieldIndex("nameequip"));
             ui->gbTest->show();
             ui->gbEquip->hide();
         }
@@ -53,28 +53,19 @@ bool Edit::setModelTable(QSqlRelationalTableModel *model, QString table)
     }
 }
 
-
+/*Событие сохранения текущих изменений и закрытия формы редактирования
+*/
 void Edit::on_Apply_clicked()
 {
-    //ui->unshowing->setText(ui->cbEquipId->currentData().toString());
     //qDebug()<<ui->cbEquipId->currentData().toString();
-    tablemapper->submit();
-    emit saveYes(true);
-    qDebug()<<"here yes";
+    tablemapper->submit();  //Сохранение изменений в локальном экземпляре таблицы
+    emit saveYes(true); //Отправка сигнала о внесении изменений основной форме
     close();
 }
 
+/*Событие закрытия формы редактирования
+*/
 void Edit::on_Delete_clicked()
 {
     close();
-}
-
-void Edit::on_cbEquipId_currentIndexChanged(const QString &arg1)
-{
-
-}
-
-void Edit::on_unshowing_textChanged(const QString &arg1)
-{
-    //ui->cbEquipId->setCurrentText(arg1);
 }
