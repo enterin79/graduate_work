@@ -71,14 +71,6 @@ bool dbWorking::chooseTable(QString idTable, QString nameTable, QList<QString> f
         generalmodel->setJoinMode(QSqlRelationalTableModel::LeftJoin);
         generalmodel->select(); //загрузка данных таблицы
 
-        if(generalmodel->rowCount()!=0){    //Проверка наличия загруженных данных
-            errnum.push_back(Enumerr::OKREAD);  //Установка отметки о корректной загрузке данных из таблицы
-        }
-        else{
-            errnum.push_back(Enumerr::READERROR);   //Установка отметки о не корректной загрузке данных из таблицы
-            throw std::runtime_error("reading failed");
-        }
-
         generalmodel->setEditStrategy(QSqlTableModel::OnManualSubmit);  //Настройка отображения таблицы
         generalmodel->sort(generalmodel->fieldIndex(idTable), Qt::AscendingOrder);
         fieldsynonims=fields;
