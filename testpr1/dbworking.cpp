@@ -6,8 +6,11 @@ dbWorking::dbWorking()
 }
 /*Деструктор класса
  */
-dbWorking::~dbWorking(){
+dbWorking::~dbWorking(void){
     db.close();
+    for(int i=0; i<errnum.count(); i++){
+        qInfo(loggerInfo())<<"Log"<<errnum[i].time.toString()<<" code: "<<(int)errnum[i].numerr;
+    }
     //тут будет запись листа с enum в файл логов
     //в файле также будут записи текта ошибок
 }
@@ -26,21 +29,25 @@ bool dbWorking::connection(QString log, QString pass)
         db.setUserName(log);
         db.setPassword(pass);
         if(db.open()) {//Выполнение подключения к базе данных
-            errnum.push_back(Enumerr::OKCONNECTION);    //Установка отметки о корректном подключении к базе
+            setlog(QDateTime::currentDateTime(), Enumerr::OKCONNECTION);    //Установка отметки о корректном подключении к базе
+            qInfo(loggerInfo())<<"Connection OK";
             choosingmodel=new QSqlTableModel;   //Загрузка списка доступных таблиц из таблицы мета-данных
             choosingmodel->setQuery("select * from synonim");
             if(choosingmodel->rowCount()!=0){   //Проверка наличия записей об отображаемых таблицах
-                errnum.push_back(Enumerr::OKREAD);  //Установка отметки от корректной загрузке списка таблиц
+                setlog(QDateTime::currentDateTime(), Enumerr::OKREAD);  //Установка отметки от корректной загрузке списка таблиц
+                qInfo(loggerInfo())<<"Reading synonim OK";
             }
             else{
-                errnum.push_back(Enumerr::READERROR);   //Установка отметки от некорректной загрузке списка таблиц
+                setlog(QDateTime::currentDateTime(), Enumerr::READERROR);   //Установка отметки от некорректной загрузке списка таблиц
+                qCritical(loggerCritical())<<"Reading synonim error "<<choosingmodel->lastError().text();
                 throw std::runtime_error("reading failed");
             }
             return 1;
         }
         else{
-            qDebug()<<"Error"<<db.lastError().text();
-            errnum.push_back(Enumerr::CONNECTIONERROR); //Установка отметки о некорректном подключении к базе
+            //qDebug()<<"Error"<<db.lastError().text();
+            setlog(QDateTime::currentDateTime(), Enumerr::CONNECTIONERROR); //Установка отметки о некорректном подключении к базе
+            qCritical(loggerCritical())<<"Connecting error"<<db.lastError().text();
             throw std::runtime_error("connection failed");
         }
     }
@@ -71,25 +78,29 @@ bool dbWorking::chooseTable(QString idTable, QString nameTable, QList<QString> f
         generalmodel->setJoinMode(QSqlRelationalTableModel::LeftJoin);
         generalmodel->select(); //загрузка данных таблицы
 
-        if(generalmodel->rowCount()!=0){    //Проверка наличия загруженных данных
-            errnum.push_back(Enumerr::OKREAD);  //Установка отметки о корректной загрузке данных из таблицы
-        }
-        else{
-            errnum.push_back(Enumerr::READERROR);   //Установка отметки о не корректной загрузке данных из таблицы
-            throw std::runtime_error("reading failed");
-        }
-
         generalmodel->setEditStrategy(QSqlTableModel::OnManualSubmit);  //Настройка отображения таблицы
         generalmodel->sort(generalmodel->fieldIndex(idTable), Qt::AscendingOrder);
         fieldsynonims=fields;
         for(int i=1; i<=fieldsynonims.count(); i++){    //Загрузка данных о столбцах таблицы в элемент интерфейса для осуществления простейшей выборки
             generalmodel->setHeaderData(i, Qt::Horizontal, fieldsynonims[i-1]);
         }
+        setlog(QDateTime::currentDateTime(), Enumerr::OKREAD);
+        qInfo(loggerInfo())<<"Reading "<<currtable<<" OK";
         return 1;
     }
     catch(...){
         qDebug()<<"Error"<<db.lastError().text();
+        setlog(QDateTime::currentDateTime(), Enumerr::READERROR);
+        qCritical(loggerCritical())<<"Connecting error "<<db.lastError().text();
         return 0;
     }
+}
+
+void dbWorking::setlog(QDateTime dt, Enumerr err)
+{
+    Logerr currlog;
+    currlog.time=dt;
+    currlog.numerr=err;
+    errnum.push_back(currlog);
 }
 

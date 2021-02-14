@@ -5,6 +5,7 @@
 #include <QMessageBox>
 #include "dbworking.h"
 #include "edit.h"
+#include "logger.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

@@ -95,7 +95,7 @@ public:
         tvModel = new QTableView(layoutWidget);
         tvModel->setObjectName(QString::fromUtf8("tvModel"));
         tvModel->setSortingEnabled(true);
-        tvModel->horizontalHeader()->setStretchLastSection(true);
+        tvModel->horizontalHeader()->setStretchLastSection(false);
 
         formLayout_3->setWidget(1, QFormLayout::SpanningRole, tvModel);
 

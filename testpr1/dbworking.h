@@ -5,7 +5,21 @@
 #include <QtSql>
 #include <QSqlRelationalDelegate>
 #include <QItemSelectionModel>
+#include "logger.h"
 
+enum class Enumerr:int
+{   OKCONNECTION,
+    OKREAD,
+    OKSAVE,
+    CONNECTIONERROR,
+    READERROR,
+    SAVEERROR
+};
+
+struct Logerr{
+    QDateTime time;
+    Enumerr numerr;
+};
 /*
  * Класс dbWorking
  * Предназначен для работы с базой данных: хранения данных
@@ -26,10 +40,12 @@
 class dbWorking
 {
 public:
+
     dbWorking();
-    ~dbWorking();
+    ~dbWorking(void);
     bool connection(QString log, QString pass);
     bool chooseTable(QString idTable, QString nameTable, QList<QString> fields, QString relcol="", QString reltable="", QString relid="", QString reloutcol="", int reltype=0);
+    void setlog(QDateTime dt, Enumerr err);
 
     QSqlDatabase db;
     QSqlQueryModel *choosingmodel;
@@ -37,8 +53,7 @@ public:
     QString currtable;
     QList<QString> fieldsynonims;
 
-    enum class Enumerr{OKCONNECTION, OKREAD, CONNECTIONERROR, READERROR};
-    QList<Enumerr> errnum;
+    QList<Logerr> errnum;
 };
 
 #endif // DBWORKING_H

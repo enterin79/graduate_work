@@ -44,10 +44,10 @@ bool ComboBoxForDB::setForeignKey(QString id, QString name, QSqlTableModel *temp
 */
 /*Процедура для определения текущего значения, отображаемого элементом
  *
- * Формальные параметры:
+ * Формальный параметр:
  * value - устанавливаемое значение для элемента.
  *
- * Локальные переменные:
+ * Локальная переменная:
  * row - номер строки в наборе данных элемента.
 */
 void ComboBoxForDB::setData(QVariant value)

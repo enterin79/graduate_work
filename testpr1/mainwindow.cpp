@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     dbworking=new dbWorking();
 
-    if(dbworking->connection("postgres", "admin123")){  //Выполнение соединения с базой данных с текущими реквищитами пользователя
+    if(dbworking->connection("", "")){  //Выполнение соединения с базой данных с текущими реквищитами пользователя
         ui->statusbar->showMessage("Соединение установлено");
         dbworking->generalmodel=new QSqlRelationalTableModel(this,dbworking->db);   //Подготовка интерфейса
         ui->cbChooseTable->setModel(dbworking->choosingmodel);
@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
     }
     else{
         QMessageBox::critical(this, "Ошибка", "Ошибка соединения с базой данных!"); //Выход из приложения при отсуствии соединения
+        delete dbworking;
         throw std::runtime_error("connection failed");
         return;
     }
@@ -31,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
 */
 MainWindow::~MainWindow()
 {
+    delete dbworking;
     delete ui;
 }
 
@@ -42,10 +44,14 @@ MainWindow::~MainWindow()
 bool MainWindow::saveChanges(QString message)
 {
     if(dbworking->generalmodel->submitAll()){   //Проверка выполнения сохранения изменений
+        dbworking->setlog(QDateTime::currentDateTime(), Enumerr::OKSAVE);
+        qInfo(loggerInfo())<<"Saving "<<dbworking->currtable<<" OK";
         ui->statusbar->showMessage("Операция ("+message+") выполнена успешно "+QTime::currentTime().toString("HH:mm:ss"));
         return 1;
     }
     else{
+        dbworking->setlog(QDateTime::currentDateTime(), Enumerr::SAVEERROR);
+        qWarning(loggerWarning())<<"Saving "<<dbworking->currtable<<" error";
         QMessageBox::critical(this, "Ошибка", "Ошибка изменения данных! Текст ошибки: "+dbworking->generalmodel->lastError().text());
         ui->statusbar->showMessage("Ошибка выполнения операции ("+message+") "+QTime::currentTime().toString("HH:mm:ss"));
         return 0;
@@ -57,6 +63,7 @@ bool MainWindow::saveChanges(QString message)
 void MainWindow::criticalerror(QString message)
 {
     QMessageBox::critical(this, "Ошибка", message+" Выход из приложения.");
+    qCritical(loggerCritical())<<"Critical error "<<dbworking->generalmodel->lastError().text();
     qApp->quit();
 }
 
@@ -65,7 +72,7 @@ void MainWindow::criticalerror(QString message)
  * Формальный параметр:
  * index - индекс записи о выбранной таблице в элементе выбора.
  *
- * Локальная переменная:
+ * Локальные переменные:
  * currfields - массив синонимов полей для выбранной таблицы;
  * fields - набор данных о реальных полях таблицы.
 */
@@ -73,7 +80,7 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
 {
     QList<QString> currfields;
     QSqlRecord fields;
-    int loadok=1;
+    int loadok=0;
     dbworking->currtable=dbworking->choosingmodel->record(index).value("nametable").toString();
     if(dbworking->currtable=="equipment"){  //Определение выбранной таблицы
         currfields.push_back("Название оборудования");  //Запись синонимов названий полей
@@ -90,6 +97,7 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
         ui->tvModel->setItemDelegate(new QSqlRelationalDelegate(ui->tvModel));
     }
     if(!loadok) {   //Проверка корректности загрузки данных
+        dbworking->setlog(QDateTime::currentDateTime(), Enumerr::READERROR);
         criticalerror("Ошибка загрузки таблицы!");
         return;
     }
@@ -175,7 +183,7 @@ void MainWindow::on_Delete_clicked()
 
 /*Событие для создания выборки в сооствиии с указанными условиями
  *
- * Локлаьная переменная:
+ * Локлальная переменная:
  * selectionquery - текст выборки.
 */
 void MainWindow::on_Search_clicked()
