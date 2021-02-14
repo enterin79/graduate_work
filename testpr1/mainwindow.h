@@ -59,8 +59,6 @@ private slots:
 
     void on_Delete_clicked();
 
-    //void on_select_clicked();
-
     void on_Search_clicked();
 
     void on_RevertTable_clicked();

@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     dbworking=new dbWorking();
 
-    if(dbworking->connection("", "")){  //Выполнение соединения с базой данных с текущими реквищитами пользователя
+    if(dbworking->connection("postgres", "")){  //Выполнение соединения с базой данных с текущими реквизитами пользователя
         ui->statusbar->showMessage("Соединение установлено");
         dbworking->generalmodel=new QSqlRelationalTableModel(this,dbworking->db);   //Подготовка интерфейса
         ui->cbChooseTable->setModel(dbworking->choosingmodel);

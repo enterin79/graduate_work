@@ -2,9 +2,10 @@
 #define LOGGER_H
 #include <QLoggingCategory>
 
-Q_DECLARE_LOGGING_CATEGORY(loggerInfo)
-Q_DECLARE_LOGGING_CATEGORY(loggerWarning)
-Q_DECLARE_LOGGING_CATEGORY(loggerCritical)
+/*Объявление категорий логирования для разных типов сообщений*/
+Q_DECLARE_LOGGING_CATEGORY(loggerInfo)  //Информационное сообщение
+Q_DECLARE_LOGGING_CATEGORY(loggerWarning)   //Предупреждение
+Q_DECLARE_LOGGING_CATEGORY(loggerCritical)  //Сообщение о критической ошибке
 class logger
 {
 public:

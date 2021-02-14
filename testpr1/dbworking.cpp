@@ -9,11 +9,9 @@ dbWorking::dbWorking()
  */
 dbWorking::~dbWorking(void){
     db.close();
-    for(int i=0; i<errnum.count(); i++){
+    for(int i=0; i<errnum.count(); i++){    //Вывод внутреннего массива логирования
         qInfo(loggerInfo())<<"Log"<<errnum[i].time.toString()<<" code: "<<(int)errnum[i].numerr;
     }
-    //тут будет запись листа с enum в файл логов
-    //в файле также будут записи текта ошибок
 }
 /*Функция создания подключения к базе данных на основании предоставленных реквизитов пользовтеля и загрузки списка доступных таблиц
  *
@@ -96,7 +94,15 @@ bool dbWorking::chooseTable(QString idTable, QString nameTable, QList<QString> f
         return 0;
     }
 }
-
+/*Процедура для добавления записи во внутренний журнал логов
+ *
+ * Формальные параметры:
+ * dt - дата и время возникновения события;
+ * err - код ошибки.
+ *
+ * Локальная переменная:
+ * currlog - экземпляр структуры для добавления новой записи в массив логов.
+*/
 void dbWorking::setlog(QDateTime dt, Enumerr err)
 {
     Logerr currlog;
