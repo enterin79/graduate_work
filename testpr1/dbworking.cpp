@@ -1,4 +1,5 @@
 #include "dbworking.h"
+//добавить комментарии
 /*Конструктор класса по умолчанию
  */
 dbWorking::dbWorking()
