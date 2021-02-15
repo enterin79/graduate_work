@@ -6,6 +6,7 @@
 #include "dbworking.h"
 #include "edit.h"
 #include "logger.h"
+#include "Enumexec.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -40,9 +41,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     bool saveChanges(QString message);
+    void tryconnect();
     void criticalerror(QString message);
 
-private slots:
+public slots:
     //void on_tvModel_clicked(const QModelIndex &index);
 
     void on_cbChooseTable_currentIndexChanged(int index);
@@ -64,9 +66,12 @@ private slots:
     void on_RevertTable_clicked();
 
 
+private slots:
+    void on_Reconnect_clicked();
+
 private:
     Ui::MainWindow *ui;
-    dbWorking *dbworking;
+    dbWorking *dbworking=nullptr;
     Edit *edit;
 };
 #endif // MAINWINDOW_H

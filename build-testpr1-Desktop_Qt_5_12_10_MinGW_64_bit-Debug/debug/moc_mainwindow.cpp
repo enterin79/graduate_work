@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[14];
-    char stringdata0[225];
+    QByteArrayData data[15];
+    char stringdata0[246];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -44,7 +44,8 @@ QT_MOC_LITERAL(9, 153, 8), // "takesave"
 QT_MOC_LITERAL(10, 162, 3), // "yes"
 QT_MOC_LITERAL(11, 166, 17), // "on_Delete_clicked"
 QT_MOC_LITERAL(12, 184, 17), // "on_Search_clicked"
-QT_MOC_LITERAL(13, 202, 22) // "on_RevertTable_clicked"
+QT_MOC_LITERAL(13, 202, 22), // "on_RevertTable_clicked"
+QT_MOC_LITERAL(14, 225, 20) // "on_Reconnect_clicked"
 
     },
     "MainWindow\0on_cbChooseTable_currentIndexChanged\0"
@@ -53,7 +54,7 @@ QT_MOC_LITERAL(13, 202, 22) // "on_RevertTable_clicked"
     "on_tvModel_doubleClicked\0QModelIndex\0"
     "on_Add_clicked\0takesave\0yes\0"
     "on_Delete_clicked\0on_Search_clicked\0"
-    "on_RevertTable_clicked"
+    "on_RevertTable_clicked\0on_Reconnect_clicked"
 };
 #undef QT_MOC_LITERAL
 
@@ -63,7 +64,7 @@ static const uint qt_meta_data_MainWindow[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-       9,   14, // methods
+      10,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -71,15 +72,16 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,   59,    2, 0x08 /* Private */,
-       4,    0,   62,    2, 0x08 /* Private */,
-       5,    0,   63,    2, 0x08 /* Private */,
-       6,    1,   64,    2, 0x08 /* Private */,
-       8,    0,   67,    2, 0x08 /* Private */,
-       9,    1,   68,    2, 0x08 /* Private */,
-      11,    0,   71,    2, 0x08 /* Private */,
-      12,    0,   72,    2, 0x08 /* Private */,
-      13,    0,   73,    2, 0x08 /* Private */,
+       1,    1,   64,    2, 0x0a /* Public */,
+       4,    0,   67,    2, 0x0a /* Public */,
+       5,    0,   68,    2, 0x0a /* Public */,
+       6,    1,   69,    2, 0x0a /* Public */,
+       8,    0,   72,    2, 0x0a /* Public */,
+       9,    1,   73,    2, 0x0a /* Public */,
+      11,    0,   76,    2, 0x0a /* Public */,
+      12,    0,   77,    2, 0x0a /* Public */,
+      13,    0,   78,    2, 0x0a /* Public */,
+      14,    0,   79,    2, 0x08 /* Private */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int,    3,
@@ -88,6 +90,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void, 0x80000000 | 7,    3,
     QMetaType::Void,
     QMetaType::Void, QMetaType::Bool,   10,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
@@ -110,6 +113,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 6: _t->on_Delete_clicked(); break;
         case 7: _t->on_Search_clicked(); break;
         case 8: _t->on_RevertTable_clicked(); break;
+        case 9: _t->on_Reconnect_clicked(); break;
         default: ;
         }
     }
@@ -144,13 +148,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 9)
+        if (_id < 10)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 9;
+        _id -= 10;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 9)
+        if (_id < 10)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 9;
+        _id -= 10;
     }
     return _id;
 }

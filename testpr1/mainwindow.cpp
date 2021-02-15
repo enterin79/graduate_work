@@ -10,29 +10,15 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    dbworking=new dbWorking();
-
-    if(dbworking->connection("postgres", "")){  //Выполнение соединения с базой данных с текущими реквизитами пользователя
-        ui->statusbar->showMessage("Соединение установлено");
-        dbworking->generalmodel=new QSqlRelationalTableModel(this,dbworking->db);   //Подготовка интерфейса
-        ui->cbChooseTable->setModel(dbworking->choosingmodel);
-        ui->cbChooseTable->setModelColumn(2);
-        ui->cbChooseTable->setCurrentIndex(0);
-    }
-    else{
-        QMessageBox::critical(this, "Ошибка", "Ошибка соединения с базой данных!"); //Выход из приложения при отсуствии соединения
-        delete dbworking;
-        throw std::runtime_error("connection failed");
-        return;
-    }
-
+    tryconnect();
 }
 
 /*Деструктор класса
 */
 MainWindow::~MainWindow()
 {
-    delete dbworking;
+    if(dbworking!=nullptr)
+        delete dbworking;
     delete ui;
 }
 
@@ -44,13 +30,13 @@ MainWindow::~MainWindow()
 bool MainWindow::saveChanges(QString message)
 {
     if(dbworking->generalmodel->submitAll()){   //Проверка выполнения сохранения изменений
-        dbworking->setlog(QDateTime::currentDateTime(), Enumerr::OKSAVE);
+        //dbworking->setlog(QDateTime::currentDateTime(), Enumerr::OKSAVE);
         qInfo(loggerInfo())<<"Saving "<<dbworking->currtable<<" OK";
         ui->statusbar->showMessage("Операция ("+message+") выполнена успешно "+QTime::currentTime().toString("HH:mm:ss"));
         return 1;
     }
     else{
-        dbworking->setlog(QDateTime::currentDateTime(), Enumerr::SAVEERROR);
+        //dbworking->setlog(QDateTime::currentDateTime(), Enumerr::SAVEERROR);
         qWarning(loggerWarning())<<"Saving "<<dbworking->currtable<<" error";
         QMessageBox::critical(this, "Ошибка", "Ошибка изменения данных! Текст ошибки: "+dbworking->generalmodel->lastError().text());
         ui->statusbar->showMessage("Ошибка выполнения операции ("+message+") "+QTime::currentTime().toString("HH:mm:ss"));
@@ -58,13 +44,36 @@ bool MainWindow::saveChanges(QString message)
     }
 }
 
+void MainWindow::tryconnect()
+{
+    int answer;
+    dbworking=new dbWorking();
+    if(dbworking->connection()==Enumerr::CONNECTIONOK){  //Выполнение соединения с базой данных с текущими реквизитами пользователя
+        ui->statusbar->showMessage("Соединение установлено");
+        dbworking->generalmodel=new QSqlRelationalTableModel(this,dbworking->db);   //Подготовка интерфейса
+        ui->cbChooseTable->setModel(dbworking->choosingmodel);
+        ui->cbChooseTable->setModelColumn(2);
+        ui->cbChooseTable->setCurrentIndex(0);
+        return;
+    }
+    else {
+        answer=QMessageBox::question(this,"Ошибка подключения", "Ошибка подключения к базе данных. Нажмите ОК, чтобы переподключиться.");
+        if(answer==QMessageBox::Button::Yes){
+            if(dbworking!=nullptr)
+                delete dbworking;
+            tryconnect();
+        }
+        else throw("connecting error");
+    }
+}
+
 /*Процедура для выполнения выхода из программы при возникновении критической ошибки
 */
 void MainWindow::criticalerror(QString message)
 {
-    QMessageBox::critical(this, "Ошибка", message+" Выход из приложения.");
+    QMessageBox::critical(this, "Ошибка", message+" Переподключение к базе данных.");
     qCritical(loggerCritical())<<"Critical error "<<dbworking->generalmodel->lastError().text();
-    qApp->quit();
+    tryconnect();
 }
 
 /*Событие для загрузки новой таблицы после ее выбора
@@ -78,26 +87,36 @@ void MainWindow::criticalerror(QString message)
 */
 void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
 {
-    QList<QString> currfields;
     QSqlRecord fields;
-    int loadok=0;
+    QString primkey, table, forgnkey, forgntable, forgnprimkey, forgntext;
+    int relstatus=0;
+    //Enumerr loadok=Enumerr::CONNECTIONERROR;
     dbworking->currtable=dbworking->choosingmodel->record(index).value("nametable").toString();
+    dbworking->fieldsynonims.clear();
     if(dbworking->currtable=="equipment"){  //Определение выбранной таблицы
-        currfields.push_back("Название оборудования");  //Запись синонимов названий полей
-        currfields.push_back("Дата запуска");
-        currfields.push_back("Описание");
-        loadok=dbworking->chooseTable("id", "equipment", currfields);  //Выполнение загрузки таблицы
+        dbworking->fieldsynonims.push_back("Название оборудования");  //Запись синонимов названий полей
+        dbworking->fieldsynonims.push_back("Дата запуска");
+        dbworking->fieldsynonims.push_back("Описание");
+        primkey="id";
+        table="equipment";
+        //loadok=dbworking->chooseTable(&primkey, &table);
     }
     else if(dbworking->currtable=="test"){
-        currfields.push_back("Название теста");
-        currfields.push_back("Дата тестирования");
-        currfields.push_back("Описание");
-        currfields.push_back("Тестируемое оборудование");
-        loadok=dbworking->chooseTable("id", "test", currfields, "ideqip", "equipment", "id", "nameequip", 1);
+        dbworking->fieldsynonims.push_back("Название теста");
+        dbworking->fieldsynonims.push_back("Дата тестирования");
+        dbworking->fieldsynonims.push_back("Описание");
+        dbworking->fieldsynonims.push_back("Тестируемое оборудование");
+        primkey="id";
+        table="test";
+        forgnkey="ideqip";
+        forgntable="equipment";
+        forgnprimkey="id";
+        forgntext="nameequip";
+        relstatus=1;
         ui->tvModel->setItemDelegate(new QSqlRelationalDelegate(ui->tvModel));
     }
-    if(!loadok) {   //Проверка корректности загрузки данных
-        dbworking->setlog(QDateTime::currentDateTime(), Enumerr::READERROR);
+    if(dbworking->chooseTable(&primkey, &table, &forgnkey, &forgntable, &forgnprimkey, &forgntext, relstatus)==Enumerr::READINGERROR) {   //Проверка корректности загрузки данных
+        //dbworking->setlog(QDateTime::currentDateTime(), Enumerr::READERROR);
         criticalerror("Ошибка загрузки таблицы!");
         return;
     }
@@ -204,4 +223,10 @@ void MainWindow::on_Search_clicked()
 void MainWindow::on_RevertTable_clicked()
 {
     on_cbChooseTable_currentIndexChanged(ui->cbChooseTable->currentIndex());
+}
+
+void MainWindow::on_Reconnect_clicked()
+{
+    tryconnect();
+    QMessageBox::information(this, "Уведомление", "Переподключение выполнено.");
 }

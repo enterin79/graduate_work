@@ -1,0 +1,10 @@
+#ifndef ENUMEXEC_H
+#define ENUMEXEC_H
+enum class Enumerr:int{
+    CONNECTIONOK,
+    CONNECTIONERROR,
+    READINGOK,
+    READINGERROR,
+    METALOADERROR
+};
+#endif // ENUMEXEC_H

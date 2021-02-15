@@ -82,12 +82,12 @@ void logHandler(QtMsgType type, const QMessageLogContext &context, const QString
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+    loggerFile.reset(new QFile(QDir::currentPath()+"\\logFile.txt"));   //Связывание указателя и файла логирования
+    loggerFile.data()->open(QFile::Append|QFile::Text); //Открытие файла логированния для записи
+    QTextStream out(loggerFile.data());
+    out<<"\\\\\\\\\\\\\\\\\\\\\\\\\\\n";    //Вывод метки начала сессии в файл логирования
+    qInstallMessageHandler(logHandler); //Определение собственного обработчика сообщений для их записи в файл
     try {
-        loggerFile.reset(new QFile(QDir::currentPath()+"\\logFile.txt"));   //Связывание указателя и файла логирования
-        loggerFile.data()->open(QFile::Append|QFile::Text); //Открытие файла логированния для записи
-        QTextStream out(loggerFile.data());
-        out<<"\\\\\\\\\\\\\\\\\\\\\\\\\\\n";    //Вывод метки начала сессии в файл логирования
-        qInstallMessageHandler(logHandler); //Определение собственного обработчика сообщений для их записи в файл
         MainWindow w;
         w.show();
         return a.exec();

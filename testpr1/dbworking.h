@@ -6,22 +6,23 @@
 #include <QSqlRelationalDelegate>
 #include <QItemSelectionModel>
 #include "logger.h"
+#include "Enumexec.h"
 
 /*Класс перечисления
 Необходим для внутреннего логирования операций с базой данных*/
-enum class Enumerr:int
+/*enum class Enumerr:int
 {   OKCONNECTION,
     OKREAD,
     OKSAVE,
     CONNECTIONERROR,
     READERROR,
     SAVEERROR
-};
+};*/
 /*Структрура, позволяющая указывать время операции и ее код для журнала логированния*/
-struct Logerr{
+/*struct Logerr{
     QDateTime time;
     Enumerr numerr;
-};
+};*/
 /*
  * Класс dbWorking
  * Предназначен для работы с базой данных: хранения данных
@@ -47,17 +48,17 @@ public:
 
     dbWorking();
     ~dbWorking(void);
-    bool connection(QString log, QString pass);
-    bool chooseTable(QString idTable, QString nameTable, QList<QString> fields, QString relcol="", QString reltable="", QString relid="", QString reloutcol="", int reltype=0);
-    void setlog(QDateTime dt, Enumerr err);
+    Enumerr connection();
+    Enumerr chooseTable(QString *idTable, QString *nameTable, QString *relcol=nullptr, QString *reltable=nullptr, QString *relid=nullptr, QString *reloutcol=nullptr, int reltype=0);
+    //void setlog(QDateTime dt, Enumerr err);
 
     QSqlDatabase db;
-    QSqlQueryModel *choosingmodel;
-    QSqlRelationalTableModel *generalmodel;
+    QSqlQueryModel *choosingmodel=nullptr;
+    QSqlRelationalTableModel *generalmodel=nullptr;
     QString currtable;
     QList<QString> fieldsynonims;
 
-    QList<Logerr> errnum;
+    //QList<Logerr> errnum;
 };
 
 #endif // DBWORKING_H

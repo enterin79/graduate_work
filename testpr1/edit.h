@@ -36,13 +36,9 @@ public:
     ~Edit();
     bool setModelTable(QSqlRelationalTableModel *model, QString table);
     QDataWidgetMapper *tablemapper;
-private slots:
+public slots:
     void on_Apply_clicked();
     void on_Delete_clicked();
-
-    //void on_cbEquipId_currentIndexChanged(const QString &arg1);
-
-    //void on_unshowing_textChanged(const QString &arg1);
 
 private:
     Ui::Edit *ui;
