@@ -12,14 +12,15 @@ void filelog::setLog(int idLog, QSqlDatabase *db)
 {
     //ui->textEdit->setText(QString("%1").arg(idLog));
     this->idLog=idLog;
-    filetable=new QSqlTableModel(this, *db);
+    filetable=new FileTableModel(this, *db);
     filetable->setTable("filesforlog");
     filetable->select();
     filetable->setFilter("logid="+QString("%1").arg(idLog));
     filetable->setEditStrategy(QSqlTableModel::OnManualSubmit);
     ui->tvFiles->setModel(filetable);
-    ui->tvFiles->hideColumn(0);
-    ui->tvFiles->hideColumn(1);
+    ui->tvFiles->hideColumn(filetable->fieldIndex("idfile"));
+    ui->tvFiles->hideColumn(filetable->fieldIndex("logid"));
+    //ui->tvFiles->resizeRowToContents(filetable->fieldIndex("filelog"));
 }
 
 filelog::~filelog()
@@ -39,16 +40,16 @@ void filelog::on_selectFile_clicked()
     if(file!=""){
         QByteArray byarr=file.toUtf8();
         QSqlRecord record=filetable->record();
-        record.setValue("idfile", filetable->rowCount());
+        record.remove(0);
         record.setValue("logid", idLog);
         record.setValue("filelog", byarr);
         if(filetable->insertRecord(-1, record)){
             if(!filetable->submitAll()){
-                 QMessageBox::information(this, "none", filetable->lastError().text());
+                 QMessageBox::critical(this, "Ошибка", filetable->lastError().text());
             }
         }
         else{
-            QMessageBox::information(this, "none", filetable->lastError().text());
+            QMessageBox::critical(this, "Ошибка", "Ошибка выбора файла.");
         }
     }
 }
@@ -57,5 +58,30 @@ void filelog::on_selectFile_clicked()
 void filelog::on_openFile_clicked()
 {
     QString file=ui->tvFiles->currentIndex().data().toString();
-    QDesktopServices::openUrl(file);
+    if(!QDesktopServices::openUrl(file)){
+        QMessageBox::critical(this, "Ошибка", "Файл не существует или недоступен для просмотра.");
+    }
+}
+
+void filelog::on_deleteFile_clicked()
+{
+    int row=ui->tvFiles->currentIndex().row();
+    if(row>=0){ //Проверка номера удаляемой строки
+        if(!filetable->removeRow(row)){   //Проверка корректности удаления строки
+            QMessageBox::critical(this, "Ошибка", "Ошибка удаления записи!");
+        }
+        else{
+            int answer=QMessageBox::question(this,"Подтверждение удаления", "Вы действительно хотите удалить запись? Действие невозможно отменить.");
+            if(answer==QMessageBox::Button::Yes) filetable->submitAll();
+        }
+    }
+    else{
+        QMessageBox::critical(this, "Ошибка", "Удаляемая строка не выбрана.");
+    }
+}
+
+void filelog::on_copy_clicked()
+{
+    QString file=ui->tvFiles->currentIndex().data().toString();
+    QApplication::clipboard()->setText(file);
 }

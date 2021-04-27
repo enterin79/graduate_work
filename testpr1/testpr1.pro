@@ -15,6 +15,7 @@ SOURCES += \
     dbworking.cpp \
     edit.cpp \
     filelog.cpp \
+    filetablemodel.cpp \
     logger.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -27,6 +28,7 @@ HEADERS += \
     dbworking.h \
     edit.h \
     filelog.h \
+    filetablemodel.h \
     logger.h \
     mainwindow.h \
     upgradedmodel.h

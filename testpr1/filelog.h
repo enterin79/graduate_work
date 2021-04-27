@@ -3,12 +3,13 @@
 
 #include <QWidget>
 #include <QFileDialog>
-#include <QSqlTableModel>
+#include "filetablemodel.h"
 #include <QSqlDatabase>
 #include <QSqlRecord>
 #include <QMessageBox>
 #include <QtSql>
 #include <QDesktopServices>
+#include <QClipboard>
 
 namespace Ui {
 class filelog;
@@ -22,7 +23,7 @@ public:
     explicit filelog(QWidget *parent = nullptr);
     void setLog(int idLog, QSqlDatabase *db);
     ~filelog();
-    QSqlTableModel *filetable;
+    FileTableModel *filetable;
     int idLog;
 
 private slots:
@@ -33,6 +34,10 @@ private slots:
 
 
     void on_openFile_clicked();
+
+    void on_deleteFile_clicked();
+
+    void on_copy_clicked();
 
 private:
     Ui::filelog *ui;
