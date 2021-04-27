@@ -193,9 +193,11 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
         primkey="id";
     }
     else if(dbworking->currtable=="breaking"){
+        dbworking->fieldsynonims.push_back("Код");
         dbworking->fieldsynonims.push_back("Название");
         dbworking->fieldsynonims.push_back("Описание");
         primkey="code";
+        hideFKcol=false;
     }
     else if(dbworking->currtable=="solution"){
         dbworking->fieldsynonims.push_back("Название");
