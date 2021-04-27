@@ -6,9 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>263</width>
-    <height>281</height>
+    <width>283</width>
+    <height>316</height>
    </rect>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>264</width>
+    <height>293</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1000</width>
+    <height>1000</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>Редактирование</string>
@@ -18,127 +30,95 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>241</width>
-     <height>231</height>
+     <width>261</width>
+     <height>261</height>
     </rect>
    </property>
    <property name="title">
     <string>Оборудование</string>
    </property>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>221</width>
-      <height>191</height>
-     </rect>
-    </property>
-    <layout class="QFormLayout" name="formLayout_2">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label">
-       <property name="text">
-        <string>Название</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="leNameEq"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Дата запуска</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QDateEdit" name="deFirstExpDate"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>Описание</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QTextEdit" name="leNote"/>
-     </item>
-    </layout>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout_2">
+    <item row="0" column="0">
+     <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Название</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="leNameEq"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Описание</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QTextEdit" name="leDescriptEq"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Входит в</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="ComboBoxForDB" name="cbStructEq"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
-  <widget class="QGroupBox" name="gbTest">
+  <widget class="QGroupBox" name="gbCond">
    <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>241</width>
-     <height>231</height>
+     <width>261</width>
+     <height>261</height>
     </rect>
    </property>
    <property name="title">
-    <string>Тест</string>
+    <string>Состояние</string>
    </property>
-   <widget class="QWidget" name="layoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>221</width>
-      <height>191</height>
-     </rect>
-    </property>
-    <layout class="QFormLayout" name="formLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_4">
-       <property name="text">
-        <string>Название</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="leNameTest"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="label_5">
-       <property name="text">
-        <string>Дата проведения</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QDateEdit" name="deDateTest"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_6">
-       <property name="text">
-        <string>Описание</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QTextEdit" name="leDescript"/>
-     </item>
-     <item row="3" column="1">
-      <widget class="ComboBoxForDB" name="cbEquipId"/>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>Оборудование</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0">
+     <layout class="QFormLayout" name="formLayout">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Название</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="leNameCond"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QSpinBox" name="sbLoadCond"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Нагрузка(%)</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>250</y>
-     <width>168</width>
+     <y>280</y>
+     <width>254</width>
      <height>24</height>
     </rect>
    </property>
@@ -156,6 +136,288 @@
        <string>Отменить</string>
       </property>
      </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="btLogFile">
+      <property name="text">
+       <string>Файлы</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGroupBox" name="gbSolution">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>261</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Решение</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_4">
+    <item row="0" column="0">
+     <layout class="QFormLayout" name="formLayout_3">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_6">
+        <property name="text">
+         <string>Название</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="leNameSolut"/>
+      </item>
+      <item row="1" column="1">
+       <widget class="QTextEdit" name="leDescriptSolut"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_7">
+        <property name="text">
+         <string>Описание</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGroupBox" name="gbBreak">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>261</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Ошибка</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
+     <layout class="QFormLayout" name="formLayout_4">
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_8">
+        <property name="text">
+         <string>Название</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="leNameBreak"/>
+      </item>
+      <item row="2" column="1">
+       <widget class="QTextEdit" name="leDescriptBreak"/>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Описание</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="leCodeBreak"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Код</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGroupBox" name="gbLog">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>261</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Состояние оборудования</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_6">
+    <item row="0" column="0">
+     <layout class="QGridLayout" name="gridLayout_5">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Дата и время &lt;br/&gt;снятия показаний&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDateTimeEdit" name="dtCurrTime">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="displayFormat">
+         <string>dd.MM.yyyy HH:mm:ss</string>
+        </property>
+        <property name="calendarPopup">
+         <bool>true</bool>
+        </property>
+        <property name="timeSpec">
+         <enum>Qt::LocalTime</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_15">
+        <property name="text">
+         <string>Оборудование</string>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="1">
+       <widget class="QLabel" name="label_11">
+        <property name="text">
+         <string>Описание</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="1" colspan="2">
+       <widget class="ComboBoxForDB" name="cbSolut"/>
+      </item>
+      <item row="8" column="0" colspan="3">
+       <widget class="QRadioButton" name="rbUnnormalLog">
+        <property name="text">
+         <string>Отклонение от нормы</string>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="0">
+       <widget class="QLabel" name="label_19">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Дата и время&lt;br/&gt;решения&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="CurrDTPaste">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Вставить
+текущее</string>
+        </property>
+       </widget>
+      </item>
+      <item row="10" column="0" colspan="3">
+       <widget class="QTextEdit" name="leDescriptLog"/>
+      </item>
+      <item row="6" column="1">
+       <widget class="QDateTimeEdit" name="dtSolutExec">
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="dateTime">
+         <datetime>
+          <hour>0</hour>
+          <minute>0</minute>
+          <second>0</second>
+          <year>1752</year>
+          <month>9</month>
+          <day>14</day>
+         </datetime>
+        </property>
+        <property name="displayFormat">
+         <string>dd.MM.yyyy HH:mm</string>
+        </property>
+        <property name="calendarPopup">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="6" column="2">
+       <widget class="QPushButton" name="SolDTPaste">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Вставить
+текущее</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="ComboBoxForDB" name="cbEquip"/>
+      </item>
+      <item row="4" column="1" colspan="2">
+       <widget class="ComboBoxForDB" name="cbBreak"/>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_17">
+        <property name="text">
+         <string>Ошибка</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_16">
+        <property name="text">
+         <string>Состояние</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="0">
+       <widget class="QLabel" name="label_18">
+        <property name="text">
+         <string>Решение</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="ComboBoxForDB" name="cbCond"/>
+      </item>
+      <item row="7" column="1">
+       <widget class="QLineEdit" name="ledtSolutExec">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>NULL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="2">
+       <widget class="QPushButton" name="SolDTDelete">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Удалить
+время</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>

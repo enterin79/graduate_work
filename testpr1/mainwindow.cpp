@@ -10,6 +10,17 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    timerScroll=new QTimer();
+    timerScroll->setInterval(1000);
+    connect(timerScroll, SIGNAL(timeout()), this, SLOT(setscroll()));
+
+    ui->LogSlider->setMinimum(0);
+    ui->LogSlider->setMaximum(600);
+    ui->LogSlider->setTickInterval(1);
+    ui->LogSlider->setTickPosition(QSlider::TickPosition::TicksRight);
+
+
+
     tryconnect();
 }
 
@@ -29,38 +40,33 @@ MainWindow::~MainWindow()
 */
 bool MainWindow::saveChanges(QString message)
 {
-    if(dbworking->generalmodel->submitAll()){   //Проверка выполнения сохранения изменений
-        //dbworking->setlog(QDateTime::currentDateTime(), Enumerr::OKSAVE);
-        qInfo(loggerInfo())<<"Saving "<<dbworking->currtable<<" OK";
+    if(dbworking->savechanges()==Enumerr::SAVINGOK){   //Проверка выполнения сохранения изменений
         ui->statusbar->showMessage("Операция ("+message+") выполнена успешно "+QTime::currentTime().toString("HH:mm:ss"));
         return 1;
     }
     else{
-        //dbworking->setlog(QDateTime::currentDateTime(), Enumerr::SAVEERROR);
-        qWarning(loggerWarning())<<"Saving "<<dbworking->currtable<<" error";
-        QMessageBox::critical(this, "Ошибка", "Ошибка изменения данных! Текст ошибки: "+dbworking->generalmodel->lastError().text());
         ui->statusbar->showMessage("Ошибка выполнения операции ("+message+") "+QTime::currentTime().toString("HH:mm:ss"));
+        QMessageBox::critical(this, "Ошибка", "Ошибка изменения данных! Текст ошибки: "+dbworking->generalmodel->lastError().text());
         return 0;
     }
 }
 
 void MainWindow::tryconnect()
 {
-    int answer;
+    int answer=QMessageBox::question(this,"Подключение", "Подключение к базе данных. Нажмите Yes, чтобы подключиться.");;
+    if(dbworking!=nullptr)
+        delete dbworking;
     dbworking=new dbWorking();
-    if(dbworking->connection()==Enumerr::CONNECTIONOK){  //Выполнение соединения с базой данных с текущими реквизитами пользователя
+    if(dbworking->connection()==Enumerr::CONNECTIONOK&&answer==QMessageBox::Button::Yes){  //Выполнение соединения с базой данных с текущими реквизитами пользователя
         ui->statusbar->showMessage("Соединение установлено");
-        dbworking->generalmodel=new QSqlRelationalTableModel(this,dbworking->db);   //Подготовка интерфейса
+        dbworking->generalmodel=new UpgradedModel(this,dbworking->db);   //Подготовка интерфейса
         ui->cbChooseTable->setModel(dbworking->choosingmodel);
         ui->cbChooseTable->setModelColumn(2);
-        ui->cbChooseTable->setCurrentIndex(0);
         return;
     }
     else {
-        answer=QMessageBox::question(this,"Ошибка подключения", "Ошибка подключения к базе данных. Нажмите ОК, чтобы переподключиться.");
         if(answer==QMessageBox::Button::Yes){
-            if(dbworking!=nullptr)
-                delete dbworking;
+            QMessageBox::critical(this, "Ошибка подключения", "Произошла ошибка подключения!");
             tryconnect();
         }
         else throw("connecting error");
@@ -71,9 +77,15 @@ void MainWindow::tryconnect()
 */
 void MainWindow::criticalerror(QString message)
 {
+    //qCritical(loggerCritical())<<"Critical error "<<dbworking->generalmodel->lastError().text();
     QMessageBox::critical(this, "Ошибка", message+" Переподключение к базе данных.");
-    qCritical(loggerCritical())<<"Critical error "<<dbworking->generalmodel->lastError().text();
     tryconnect();
+}
+
+void MainWindow::setscroll()
+{
+    //QMessageBox::information(this,"lol", "lol");
+    ui->LogSlider->setValue(ui->LogSlider->value()+1);
 }
 
 /*Событие для загрузки новой таблицы после ее выбора
@@ -88,17 +100,19 @@ void MainWindow::criticalerror(QString message)
 void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
 {
     QSqlRecord fields;
-    QString primkey, table, forgnkey, forgntable, forgnprimkey, forgntext;
+    QString primkey;
+    QList<QString> forgnkey, forgntable, forgnprimkey, forgntext;
     int relstatus=0;
+    bool hideFKcol=true;
     //Enumerr loadok=Enumerr::CONNECTIONERROR;
     dbworking->currtable=dbworking->choosingmodel->record(index).value("nametable").toString();
     dbworking->fieldsynonims.clear();
-    if(dbworking->currtable=="equipment"){  //Определение выбранной таблицы
+    on_Retry_clicked();
+    /*if(dbworking->currtable=="equipment"){  //Определение выбранной таблицы
         dbworking->fieldsynonims.push_back("Название оборудования");  //Запись синонимов названий полей
         dbworking->fieldsynonims.push_back("Дата запуска");
         dbworking->fieldsynonims.push_back("Описание");
         primkey="id";
-        table="equipment";
         //loadok=dbworking->chooseTable(&primkey, &table);
     }
     else if(dbworking->currtable=="test"){
@@ -107,28 +121,144 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
         dbworking->fieldsynonims.push_back("Описание");
         dbworking->fieldsynonims.push_back("Тестируемое оборудование");
         primkey="id";
-        table="test";
         forgnkey="ideqip";
         forgntable="equipment";
         forgnprimkey="id";
         forgntext="nameequip";
         relstatus=1;
         ui->tvModel->setItemDelegate(new QSqlRelationalDelegate(ui->tvModel));
+    }*/
+
+
+    if(dbworking->currtable=="conditionlog"){
+        dbworking->fieldsynonims.push_back("Дата и время");
+        dbworking->fieldsynonims.push_back("Оборудование");
+        dbworking->fieldsynonims.push_back("Состояние");
+        dbworking->fieldsynonims.push_back("Ошибка");
+        dbworking->fieldsynonims.push_back("Решение");
+        dbworking->fieldsynonims.push_back("Время решения");
+        dbworking->fieldsynonims.push_back("Отклонение от нормы");
+        dbworking->fieldsynonims.push_back("Примечание");
+
+        /*dbworking->realfieldnames.push_back("CurrDateTime");
+        dbworking->realfieldnames.push_back("Equipment");
+        dbworking->realfieldnames.push_back("Condition");
+        dbworking->realfieldnames.push_back("Breaking");
+        dbworking->realfieldnames.push_back("Solution");
+        dbworking->realfieldnames.push_back("SolutionDateTime");*/
+
+        primkey="CurrDateTime";
+
+        forgnkey.push_back("EquipmentId");
+        forgntable.push_back("Equipment");
+        forgnprimkey.push_back("idEquip");
+        forgntext.push_back("NameEquip");
+
+        forgnkey.push_back("conditionid");
+        forgntable.push_back("Condition");
+        forgnprimkey.push_back("idcond");
+        forgntext.push_back("type");
+
+        forgnkey.push_back("breakingid");
+        forgntable.push_back("Breaking");
+        forgnprimkey.push_back("Code");
+        forgntext.push_back("namebreak");
+
+        forgnkey.push_back("solutionid");
+        forgntable.push_back("Solution");
+        forgnprimkey.push_back("idsol");
+        forgntext.push_back("namesol");
+
+        relstatus=4;
+        //relstatus=3;
+        //hideFKcol=false;
+        ui->tvModel->setItemDelegate(new QSqlRelationalDelegate(ui->tvModel));
+
     }
-    if(dbworking->chooseTable(&primkey, &table, &forgnkey, &forgntable, &forgnprimkey, &forgntext, relstatus)==Enumerr::READINGERROR) {   //Проверка корректности загрузки данных
+    else if(dbworking->currtable=="equipment"){
+        dbworking->fieldsynonims.push_back("Название");
+        dbworking->fieldsynonims.push_back("Описание");
+        dbworking->fieldsynonims.push_back("Входит в");
+        primkey="idequip";
+        forgnkey.push_back("equipstruct");
+        forgntable.push_back("equipment");
+        forgnprimkey.push_back("idequip");
+        forgntext.push_back("nameequip");
+        relstatus=1;
+        ui->tvModel->setItemDelegate(new QSqlRelationalDelegate(ui->tvModel));
+    }
+    else if(dbworking->currtable=="condition"){
+        dbworking->fieldsynonims.push_back("Состояние");
+        dbworking->fieldsynonims.push_back("Загрузка(%)");
+        primkey="id";
+    }
+    else if(dbworking->currtable=="breaking"){
+        dbworking->fieldsynonims.push_back("Название");
+        dbworking->fieldsynonims.push_back("Описание");
+        primkey="code";
+    }
+    else if(dbworking->currtable=="solution"){
+        dbworking->fieldsynonims.push_back("Название");
+        dbworking->fieldsynonims.push_back("Описание");
+        primkey="id";
+    }
+    else{
+        criticalerror("Ошибка загрузки таблицы!");
+        return;
+    }
+    if(dbworking->chooseTable(&primkey, forgnkey, forgntable, forgnprimkey, forgntext, relstatus, hideFKcol)==Enumerr::READINGERROR) {   //Проверка корректности загрузки данных
         //dbworking->setlog(QDateTime::currentDateTime(), Enumerr::READERROR);
         criticalerror("Ошибка загрузки таблицы!");
         return;
     }
+
     ui->tvModel->setModel(dbworking->generalmodel); //Отображение загруженной таблицы
-    ui->tvModel->hideColumn(0);
+
+    if(hideFKcol){
+        ui->tvModel->hideColumn(0);
+    }
     ui->tvModel->resizeColumnsToContents();
 
     fields=dbworking->generalmodel->record();
     ui->cbSelectColumn->clear();
-    for(int i=1; i<fields.count();i++){ //Заполнение элемента определения столбца для операции выборки текущими названиями полей
-        ui->cbSelectColumn->addItem(dbworking->fieldsynonims[i-1],fields.fieldName(i));
+    for(int i=hideFKcol; i<fields.count();i++){ //Заполнение элемента определения столбца для операции выборки текущими названиями полей
+        ui->cbSelectColumn->addItem(dbworking->fieldsynonims[i-hideFKcol], fields.fieldName(i));//dbworking->fieldsynonims[i-hideFKcol] fields.fieldName(i)
+        ui->cbSelectColumn->setCurrentIndex(0);
     }
+
+    if(dbworking->currtable=="conditionlog"){
+        /*QSqlTableModel *temptable=new QSqlTableModel(this, dbworking->db);
+        temptable->setTable("equipment");
+        temptable->select();
+        QString id, name;
+        id="idequip";
+        name="nameequip";
+        /ComboBoxDelegate *cbtable=new ComboBoxDelegate();
+        cbtable->model=temptable;
+        cbtable->data=id;
+        cbtable->text=name;
+        ui->tvModel->setItemDelegateForColumn(1, cbtable);/
+        //ui->cbEquipment->clear();
+        ui->cbEquipment->setForeignKey(&id, &name, temptable);
+        mapper=new QDataWidgetMapper(this);
+        mapper->setModel(dbworking->generalmodel);
+        mapper->addMapping(ui->cbEquipment, dbworking->generalmodel->fieldIndex("equipmentid"));
+        mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
+        connect(ui->tvModel->selectionModel(), &QItemSelectionModel::currentChanged,
+                this, &MainWindow::on_tvModel_clicked);
+        ui->gbEquipShow->show();*/
+        ui->gbEquipShow->hide();
+        //ui->gbTimeScroll->show();
+        //ui->cbEquipment->setCurrentIndex(-1);
+        ui->dtScroll->setDateTime(QDateTime::currentDateTime());
+        ui->LogSlider->setValue(0);
+        scrollingValue=0;
+    }
+    else{
+       ui->gbEquipShow->hide();
+       ui->gbTimeScroll->hide();
+    }
+
     //qDebug()<<dbworking->currtable;
 }
 
@@ -156,11 +286,17 @@ void MainWindow::on_tvModel_doubleClicked(const QModelIndex &index)
     edit=new Edit();    //Создание нового экземпляра формы редактирования
     edit->setParent(this, Qt::Window);
     connect(edit, SIGNAL(saveYes(bool)), this, SLOT(takesave(bool)));   //Соединение сигнала с формы редактирования и основной формы для сохранения изменений
-    if(index.column()!=dbworking->generalmodel->fieldIndex("nameequip")||(dbworking->currtable!="test")){   //Проверка столбца, на котором произошло событие. Это необходимо, чтобы не возникало проблемы про смене значения внешнего ключа в записи без вызова формы редактирования
-        edit->setModelTable(dbworking->generalmodel, dbworking->currtable); //Передача в форму реактирования данных о текущей таблице
+    //if(index.column()!=dbworking->generalmodel->fieldIndex("nameequip")||(dbworking->currtable!="test")){   //Проверка столбца, на котором произошло событие. Это необходимо, чтобы не возникало проблемы про смене значения внешнего ключа в записи без вызова формы редактирования
+        edit->setModelTable(dbworking->generalmodel, dbworking->currtable, dbworking->generalmodel->index(index.row(), dbworking->generalmodel->fieldIndex("idLog")).data().toInt() ,&dbworking->db); //Передача в форму реактирования данных о текущей таблице
         edit->tablemapper->setCurrentModelIndex(index); //Передача в форму редактирования данных о текущей записи для взаимодействии элементов в разных окнах
+        edit->setModal(true);
         edit->show();   //Отображение формы редактирования
-    }
+    //}
+
+
+    /*if(dbworking->currtable=="conditionlog"&&(index.column()==dbworking->generalmodel->fieldIndex("currdatetime")||index.column()==dbworking->generalmodel->fieldIndex("solutiondatetime"))){
+         dbworking->generalmodel->setData(index, QDateTime::currentDateTime().toString("dd.MM.yyyy HH:mm:ss"));
+    }*/
 }
 
 /*Событие для добавления строки в текущую таблицу
@@ -207,8 +343,38 @@ void MainWindow::on_Delete_clicked()
 */
 void MainWindow::on_Search_clicked()
 {
-    QString selectionquery=ui->cbSelectColumn->currentData().toString()+"='"+ui->teDecript->toPlainText()+"'";
-    //qDebug()<<selectionquery;
+    QString selectionquery;
+
+    QSqlQuery *tempquery=new QSqlQuery();
+    tempquery->prepare("select idequip from equipment where nameequip='"+ui->teDecript->toPlainText()+"'");
+    //tempquery->bindValue(":nameequipment", ui->teDecript->toPlainText());
+    tempquery->exec();
+    tempquery->first();
+
+    if(dbworking->currtable=="equipment"){
+        selectionquery="equipment.";
+        if(ui->cbSelectColumn->currentText()!="Входит в"){
+            selectionquery=selectionquery+'"'+ui->cbSelectColumn->currentData().toString()+'"'+"='"+ui->teDecript->toPlainText()+"'";//dbworking->currtable+"."+
+        }
+        else{
+
+            selectionquery=selectionquery+"equipstruct="+tempquery->value(0).toString();
+
+        }
+    }
+    else if(dbworking->currtable=="conditionlog"){
+        if(ui->cbSelectColumn->currentText()=="Оборудование"&&tempquery->isValid()){
+            selectionquery="equipmentid="+tempquery->value(0).toString();
+        }
+        else{
+            selectionquery='"'+ui->cbSelectColumn->currentData().toString()+'"'+"='"+ui->teDecript->toPlainText()+"'";//dbworking->currtable+"."+
+        }
+    }
+    else{
+        selectionquery='"'+ui->cbSelectColumn->currentData().toString()+'"'+"='"+ui->teDecript->toPlainText()+"'";//dbworking->currtable+"."+
+    }
+
+    qDebug()<<selectionquery;
     //qDebug()<<"here";
     dbworking->generalmodel->setFilter(selectionquery.toUtf8());    //Выполнение выборки
     if(dbworking->generalmodel->rowCount()==0){ //Проверка наличия записей в выборке
@@ -225,7 +391,72 @@ void MainWindow::on_RevertTable_clicked()
     on_cbChooseTable_currentIndexChanged(ui->cbChooseTable->currentIndex());
 }
 
-void MainWindow::on_Reconnect_clicked()
+/*void MainWindow::on_Reconnect_clicked()
+{
+    tryconnect();
+    QMessageBox::information(this, "Уведомление", "Переподключение выполнено.");
+}*/
+
+void MainWindow::on_tvModel_clicked(const QModelIndex &index)
+{
+    //mapper->setCurrentIndex(index.row());
+}
+
+void MainWindow::on_LogEqSave_clicked()
+{
+    //mapper->submit();
+    saveChanges("обновление");
+}
+
+void MainWindow::on_StartStopScroll_clicked()
+{
+    if(!timerScroll->isActive()){
+        timerScroll->start();
+    }
+    else{
+        timerScroll->stop();
+    }
+}
+
+void MainWindow::on_LogSlider_valueChanged(int value)
+{
+    /*QDateTime dtcurr=ui->dtScroll->dateTime();
+    dtcurr=dtcurr.addSecs(1);*/
+    //QMessageBox::information(this,"lol", dtcurr.toString("dd.MMM.YYYY hh:mm:ss"));
+    if(value>scrollingValue){
+        //ui->dtScroll->setDateTime(selectedDT->addSecs(3));
+        *selectedDT=ui->dtScroll->dateTime().addSecs(value);
+    }
+    else if(value<scrollingValue){
+        //ui->dtScroll->setDateTime(selectedDT->addSecs(-3));
+        *selectedDT=ui->dtScroll->dateTime().addSecs(-value);
+    }
+    scrollingValue=value;
+    QString str="currdatetime<='"+selectedDT->toString("yyyy-MM-ddThh:mm:ss.zzz")+"' and currdatetime>='"+ui->dtScroll->dateTime().toString("yyyy-MM-ddThh:mm:ss.zzz")+"'";
+    //qDebug()<<str;
+    dbworking->generalmodel->setFilter(str);
+    ui->timelabel->setText(selectedDT->toString("dd.MM.yyyy hh:mm:ss"));
+
+}
+
+void MainWindow::on_dtScroll_dateTimeChanged(const QDateTime &dateTime)
+{
+    selectedDT=new QDateTime(dateTime);
+    on_Retry_clicked();
+    ui->timelabel->setText(selectedDT->toString("dd.MM.yyyy hh:mm:ss"));
+
+}
+
+void MainWindow::on_Retry_clicked()
+{
+    //ui->dtScroll->setDateTime(selectedDT->addSecs(-(ui->LogSlider->value())+1));
+    ui->LogSlider->setValue(0);
+    if(timerScroll->isActive()){
+        timerScroll->stop();
+    }
+}
+
+void MainWindow::on_RetryConnection_triggered()
 {
     tryconnect();
     QMessageBox::information(this, "Уведомление", "Переподключение выполнено.");

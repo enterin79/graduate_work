@@ -3,10 +3,12 @@
 
 #include <QMainWindow>
 #include <QMessageBox>
+#include <QDataWidgetMapper>
 #include "dbworking.h"
 #include "edit.h"
 #include "logger.h"
 #include "Enumexec.h"
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -45,6 +47,7 @@ public:
     void criticalerror(QString message);
 
 public slots:
+    void setscroll();
     //void on_tvModel_clicked(const QModelIndex &index);
 
     void on_cbChooseTable_currentIndexChanged(int index);
@@ -65,13 +68,31 @@ public slots:
 
     void on_RevertTable_clicked();
 
+    //void on_Reconnect_clicked();
 
-private slots:
-    void on_Reconnect_clicked();
+    void on_tvModel_clicked(const QModelIndex &index);
+
+    //void on_cbEquipment_currentIndexChanged(int index);
+
+    void on_LogEqSave_clicked();
+
+    void on_StartStopScroll_clicked();
+
+    void on_LogSlider_valueChanged(int value);
+
+    void on_dtScroll_dateTimeChanged(const QDateTime &dateTime);
+
+    void on_Retry_clicked();
+
+    void on_RetryConnection_triggered();
 
 private:
     Ui::MainWindow *ui;
     dbWorking *dbworking=nullptr;
     Edit *edit;
+    QDataWidgetMapper *mapper;
+    QTimer *timerScroll;
+    QDateTime *selectedDT;
+    int scrollingValue;
 };
 #endif // MAINWINDOW_H

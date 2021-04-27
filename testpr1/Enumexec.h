@@ -5,6 +5,8 @@ enum class Enumerr:int{
     CONNECTIONERROR,
     READINGOK,
     READINGERROR,
-    METALOADERROR
+    METALOADERROR,
+    SAVINGERROR,
+    SAVINGOK
 };
 #endif // ENUMEXEC_H

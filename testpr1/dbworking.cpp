@@ -1,5 +1,4 @@
 #include "dbworking.h"
-//добавить комментарии для логирования
 /*Конструктор класса по умолчанию
  */
 dbWorking::dbWorking()
@@ -8,101 +7,88 @@ dbWorking::dbWorking()
 /*Деструктор класса
  */
 dbWorking::~dbWorking(){
-    if(db.isOpen()){
+    if(db.isOpen()){    //Закрытие соединения
         db.close();
     }
-    if(choosingmodel!=nullptr){
-        qDebug()<<"here";
+    if(choosingmodel!=nullptr){ //Очистка памяти, определенной под таблицу мета-данных
         delete choosingmodel;
     }
-    if(generalmodel!=nullptr){
-        qDebug()<<"here";
+    if(generalmodel!=nullptr){  //Очистка памяти, определенной под основную таблицу
         delete generalmodel;
     }
-    /*for(int i=0; i<errnum.count(); i++){    //Вывод внутреннего массива логирования
-        qInfo(loggerInfo())<<"Log"<<errnum[i].time.toString()<<" code: "<<(int)errnum[i].numerr;
-    }*/
 }
 /*Функция создания подключения к базе данных на основании предоставленных реквизитов пользовтеля и загрузки списка доступных таблиц
- *
- * Формальные параметры:
- * log - логин пользователя;
- * pass - пароль пользователя.
 */
 Enumerr dbWorking::connection()
 {
      db = QSqlDatabase::addDatabase("QPSQL");
      db.setHostName("127.0.0.1");
-     db.setDatabaseName("dbequiptesting");
+     db.setDatabaseName("equipmentstatus");
      db.setUserName("postgres");
      db.setPassword("admin123");
-     if(db.open()) {//Выполнение подключения к базе данных
+     if(db.open()) {//Выполнение подключения к базе данных с текущими реквизитами
          qInfo(loggerInfo())<<"Connection OK";
          choosingmodel=new QSqlTableModel;   //Загрузка списка доступных таблиц из таблицы мета-данных
          choosingmodel->setQuery("select * from synonim");
          if(choosingmodel->rowCount()!=0){   //Проверка наличия записей об отображаемых таблицах
              qInfo(loggerInfo())<<"Reading synonim OK";
-             return Enumerr::CONNECTIONOK;  //Установка отметки от корректном подключении загрузке списка таблиц
+             return Enumerr::CONNECTIONOK;  //Возврат кода успешного подключения и загрузки списка таблиц
          }
          else{
              qCritical(loggerCritical())<<"Reading synonim error "<<choosingmodel->lastError().text();
-             return  Enumerr::METALOADERROR;   //Установка отметки от некорректной загрузке списка таблиц
+             return  Enumerr::METALOADERROR;   //Возврат кода ошибки загрузки списка таблиц
          }
      }
      else{
-         qCritical(loggerCritical())<<"Connecting error"<<db.lastError().text();
-         return Enumerr::CONNECTIONERROR;//Установка отметки о некорректном подключении к базе
+         qCritical(loggerCritical())<<"Connection error"<<db.lastError().text();
+         return Enumerr::CONNECTIONERROR;//Возврат кода ошибки подключения к базе
      }
 }
 /*Функция для загрузки данных выбранной таблицы в приложение
  *
  * Формальные параметры:
  * idTable - название атрибута первичного ключа загружаемой таблицы;
- * nameTable - название загружаемой таблицы;
- * fields - синонимы полей, которые будут отображены в заголовках таблицы;
  * relcol - название атрибута внешнего ключа загружаемой таблицы;
  * reltable - название таблицы, от которой зависит загружаемая таблица;
  * relid - название поля, от которого зависит внешний ключ;
  * reloutcol - название поля, которое будет отображаться вместо поля внешнего ключа в загружаемой таблицы;
- * reltype - тип зависмости (есть/нет).
+ * relcount - количество зависимых полей;
+ * hideFKcol - наличие скрываемого ключевого поля;
+ * i - счетчик для перебора названий столбцов таблицы и их синонимов.
 */
-Enumerr dbWorking::chooseTable(QString *idTable, QString *nameTable, QString *relcol, QString *reltable, QString *relid, QString *reloutcol, int reltype)
+Enumerr dbWorking::chooseTable(QString *idTable, QList<QString> &relcol, QList<QString> &reltable, QList<QString> &relid, QList<QString> &reloutcol, int relcount, bool hideFKcol)
 {
-    generalmodel->setTable(*nameTable);  //Выбор загружаемой таблицы
-    if(reltype){    //Определение соединения, если таблица зависимая
-        generalmodel->setRelation(generalmodel->fieldIndex(*relcol),
-                           QSqlRelation(*reltable, *relid, *reloutcol));
+    generalmodel->setTable(currtable);  //Выбор загружаемой таблицы
+    for(int i=0; i<relcount; i++){    //Определение соединения, если таблица зависимая
+        generalmodel->setRelation(generalmodel->fieldIndex(relcol.at(i)),
+                           QSqlRelation(reltable.at(i), relid.at(i), reloutcol.at(i)));
     }
     generalmodel->setJoinMode(QSqlRelationalTableModel::LeftJoin);
-    if(generalmodel->select()){ //загрузка данных таблицы
+    if(generalmodel->select()){ //Загрузка данных таблицы
         generalmodel->setEditStrategy(QSqlTableModel::OnManualSubmit);  //Настройка отображения таблицы
         generalmodel->sort(generalmodel->fieldIndex(*idTable), Qt::AscendingOrder);
-        //fieldsynonims=fields;
-        for(int i=1; i<=fieldsynonims.count(); i++){    //Загрузка данных о столбцах таблицы в элемент интерфейса для осуществления простейшей выборки
-            generalmodel->setHeaderData(i, Qt::Horizontal, fieldsynonims[i-1]);
+        for(int i=0; i<fieldsynonims.count(); i++){    //Загрузка данных о столбцах таблицы в элемент интерфейса для осуществления простейшей выборки
+            generalmodel->setHeaderData(i+hideFKcol, Qt::Horizontal, fieldsynonims[i]);
         };
         qInfo(loggerInfo())<<"Reading "<<currtable<<" OK";
-        return Enumerr::READINGOK;
+        return Enumerr::READINGOK;  //Возврат кода успешной загрузки таблицы
     }
     else{
-        qCritical(loggerCritical())<<"Connecting error "<<db.lastError().text();
-        return Enumerr::READINGERROR;
+        qCritical(loggerCritical())<<"Reading "<<currtable<<" error "<<generalmodel->lastError().text();
+        return Enumerr::READINGERROR;   //Возврат кода ошибки загрузки таблицы
     }
 }
-/*Процедура для добавления записи во внутренний журнал логов
- *
- * Формальные параметры:
- * dt - дата и время возникновения события;
- * err - код ошибки.
- *
- * Локальная переменная:
- * currlog - экземпляр структуры для добавления новой записи в массив логов.
+/*Процедура для сохранения внесенных в таблицу изменений
 */
-/*void dbWorking::setlog(QDateTime dt, Enumerr err)
+Enumerr dbWorking::savechanges()
 {
-    Logerr currlog;
-    currlog.time=dt;
-    currlog.numerr=err;
-    errnum.push_back(currlog);
-}*/
+    if(generalmodel->submitAll()){  //Сохранение изменений таблицы
+        qInfo(loggerInfo())<<"Saving "<<currtable<<" OK";
+        return Enumerr::SAVINGOK;   //Возврат кода успешного сохранения измений
+    }
+    else{
+        qWarning(loggerWarning())<<"Saving "<<currtable<<" error "<<generalmodel->lastError().text();
+        return Enumerr::SAVINGERROR;    //Возврат кода ошибки сохранения
+    }
+}
 

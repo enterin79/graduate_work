@@ -5,6 +5,7 @@
 #include <QObject>
 #include <QtSql/QSqlTableModel>
 #include <QtSql/QSqlRecord>
+#include <QItemDelegate>
 #include <QtDebug>
 
 /*Класс ComboBoxForDB
@@ -25,7 +26,7 @@ class ComboBoxForDB : public QComboBox
     Q_PROPERTY(QVariant Data READ currentData WRITE setData NOTIFY DataChanged USER true)
 public:
     ComboBoxForDB(QWidget *parent=nullptr);
-    bool setForeignKey(QString id, QString name, QSqlTableModel *temp);
+    bool setForeignKey(const QString *id, const QString *name, QSqlTableModel *temp, QString typeofkey="INT");
 signals:
     void dataChanged();
 private:

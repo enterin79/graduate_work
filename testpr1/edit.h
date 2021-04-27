@@ -2,10 +2,13 @@
 #define EDIT_H
 
 #include <QWidget>
+#include <QDateTimeEdit>
+#include <QMessageBox>
 #include <QDataWidgetMapper>
 #include <QtSql/QSqlRelationalTableModel>
 #include <QtSql/QSqlTableModel>
 #include <QtSql/QSqlRecord>
+#include "filelog.h"
 
 namespace Ui {
 class Edit;
@@ -26,7 +29,7 @@ class Edit;
  * on_Delete_clicked - событие закрытия формы редактирования.
  *
 */
-class Edit : public QWidget
+class Edit : public QDialog//public QWidget,
 {
     Q_OBJECT
 signals:
@@ -34,11 +37,26 @@ signals:
 public:
     explicit Edit(QWidget *parent = nullptr);
     ~Edit();
-    bool setModelTable(QSqlRelationalTableModel *model, QString table);
+    bool setModelTable(QSqlRelationalTableModel *model, QString table, int idLog, QSqlDatabase *db=nullptr);
     QDataWidgetMapper *tablemapper;
+    void PasteCurrTimeInto(QDateTimeEdit *widget);
+    QSqlRelationalTableModel *model;
+    filelog *file;
+    int curruentLog;
+    QSqlDatabase *db;
 public slots:
     void on_Apply_clicked();
     void on_Delete_clicked();
+    void on_CurrDTPaste_clicked();
+    void on_SolDTPaste_clicked();
+    void on_dtSolutExec_dateTimeChanged(const QDateTime &dateTime);
+
+private slots:
+    void on_ledtSolutExec_textChanged(const QString &arg1);
+
+    void on_SolDTDelete_clicked();
+
+    void on_btLogFile_clicked();
 
 private:
     Ui::Edit *ui;

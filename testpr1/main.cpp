@@ -39,6 +39,7 @@ insert into Synonim(nametable, synonim) values
 #include <QtWidgets>
 #include <QScopedPointer>
 #include <QLoggingCategory>
+#include <QtGui>
 /*Основная программа
  *
  * Глобальная переменная:
@@ -82,7 +83,7 @@ void logHandler(QtMsgType type, const QMessageLogContext &context, const QString
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
-    loggerFile.reset(new QFile(QDir::currentPath()+"\\logFile.txt"));   //Связывание указателя и файла логирования
+    loggerFile.reset(new QFile(QDir::currentPath()+"\\logFile_"+QDateTime::currentDateTime().toString("dd-MM-yyyy")+".txt"));   //Связывание указателя и файла логирования
     loggerFile.data()->open(QFile::Append|QFile::Text); //Открытие файла логированния для записи
     QTextStream out(loggerFile.data());
     out<<"\\\\\\\\\\\\\\\\\\\\\\\\\\\n";    //Вывод метки начала сессии в файл логирования

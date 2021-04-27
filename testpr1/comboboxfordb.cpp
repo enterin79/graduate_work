@@ -19,15 +19,21 @@ ComboBoxForDB::ComboBoxForDB(QWidget *parent):QComboBox(parent)
  * temp - таблица, откуда будут получены данные.
  *
 */
-bool ComboBoxForDB::setForeignKey(QString id, QString name, QSqlTableModel *temp)
+bool ComboBoxForDB::setForeignKey(const QString *id, const QString *name, QSqlTableModel *temp, QString typeofkey)
 {
-    //QString text;
-    if(temp->rowCount()!=0){    //Проверка наличия записей в предоставленной таблице
-        for(int i=1; i<=temp->rowCount();i++){
-           //text=temp->record(i-1).value(temp->fieldIndex(name)).toString();
-           //qDebug()<<"now text"<<text;
-           addItem(temp->record(i-1).value(temp->fieldIndex(name)).toString(),  //Чтение соответствующих данных из таблицы
-                   temp->record(i-1).value(temp->fieldIndex(id)).toInt());
+    temp->sort(temp->fieldIndex(*id), Qt::AscendingOrder);
+    if(temp->rowCount()>0){    //Проверка наличия записей в предоставленной таблице
+        if(typeofkey=="INT"){   //Выбор типа значения
+            for(int i=0; i<temp->rowCount();i++){
+               addItem(temp->record(i).value(temp->fieldIndex(*name)).toString(),  //Чтение соответствующих данных из таблицы
+                       temp->record(i).value(temp->fieldIndex(*id)).toInt());
+            }
+        }
+        else if(typeofkey=="STR"){
+            for(int i=0; i<temp->rowCount();i++){
+               addItem(temp->record(i).value(temp->fieldIndex(*name)).toString(),  //Чтение соответствующих данных из таблицы
+                       temp->record(i).value(temp->fieldIndex(*id)).toString());
+            }
         }
         return 1;
     }
@@ -35,6 +41,7 @@ bool ComboBoxForDB::setForeignKey(QString id, QString name, QSqlTableModel *temp
         return 0;
     }
 }
+
 
 /*Пояснение:
  * При соединении столбца внешнего ключа в relation table и комбобокс,
@@ -52,13 +59,21 @@ bool ComboBoxForDB::setForeignKey(QString id, QString name, QSqlTableModel *temp
 */
 void ComboBoxForDB::setData(QVariant value)
 {
-    int row=findText(value.toString()); //Опредение номера строки в наборе данных, сходя из загружаемого текста
-    //qDebug()<<"here row is"<<row;
-    //qDebug()<<"here value is"<<value;
-    if(row<0||row==currentIndex()){ //Проверка значения необходимой строки
-        return; //Если необхрдимые данные не найдены либо уже отображены, выполяется выход
+    //qDebug()<<"here "<<value.toInt();
+    int row=findData(value.toInt()); //Опредение номера строки в наборе данных, сходя из загружаемого текста
+    if(row<0){  //Повтор поиска номера строки, исходя из загружаемых данных
+        row=findText(value.toString());
     }
-    else{
+    if(row>=0&&row!=currentIndex()){ //Проверка значения необходимой строки
         setCurrentIndex(row);   //Если по указанному тексту была найдена запись, она устанавливается в качестве отображаемой
     }
+    /*else if(row<0){ //Попытка установки пользовательского значения по умолчанию при отсутствии найденных записей
+        row=findData(-1);
+        if(row<0){  //Проверка наличия пользовательского значения по умолчанию
+            setCurrentIndex(-1); //Установка пустого значения при отсутствии значения по умолчанию
+        }
+        else {
+            setCurrentIndex(row);
+        }
+    }*/
 }
