@@ -84,4 +84,5 @@ void filelog::on_copy_clicked()
 {
     QString file=ui->tvFiles->currentIndex().data().toString();
     QApplication::clipboard()->setText(file);
+    QMessageBox::information(this, "Копирование", "Путь к файлу скопирован.");
 }

@@ -92,3 +92,31 @@ Enumerr dbWorking::savechanges()
     }
 }
 
+QVariant dbWorking::getId(QString *value, QString *nametable)
+{
+
+    QString idcol, valuecol;
+    if((*nametable).toLower()=="equipment"){
+        idcol="idEquip";
+        valuecol="NameEquip";
+    }
+    else if((*nametable).toLower()=="solution"){
+        idcol="idSol";
+        valuecol="NameSol";
+    }
+    else if((*nametable).toLower()=="condition"){
+        idcol="idCond";
+        valuecol="Type";
+    }
+    else if((*nametable).toLower()=="breaking"){
+        idcol="Code";
+        valuecol="NameBreak";
+    }
+    else return QVariant();
+    QSqlQuery *tempquery=new QSqlQuery();
+    tempquery->prepare("select "+idcol+" from "+*nametable+" where "+valuecol+"='"+*value+"'");
+    tempquery->exec();
+    tempquery->first();
+    return QVariant(tempquery->value(0));
+}
+

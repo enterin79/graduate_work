@@ -9,6 +9,10 @@
 #include "logger.h"
 #include "Enumexec.h"
 #include <QTimer>
+#include <QJsonObject>
+#include <QJsonParseError>
+#include <QFile>
+#include <QFileDialog>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -86,6 +90,8 @@ public slots:
 
     void on_RetryConnection_triggered();
 
+    void on_UnloadFrom_triggered();
+
 private:
     Ui::MainWindow *ui;
     dbWorking *dbworking=nullptr;
@@ -94,5 +100,8 @@ private:
     QTimer *timerScroll;
     QDateTime *selectedDT;
     int scrollingValue;
+    QJsonDocument doc;
+    QJsonParseError docError;
+    QString filePath;
 };
 #endif // MAINWINDOW_H

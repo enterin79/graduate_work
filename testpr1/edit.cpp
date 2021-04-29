@@ -32,13 +32,14 @@ Edit::~Edit()
 */
 bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int idLog, QSqlDatabase *db )
 {
-    QString id, name;
-    model=currmodel;
-    curruentLog=idLog;
-    this->db=db;
+
     //QMessageBox::aboutQt(this, "num log="+QString("%1").arg(curruentLog));
     try {
-        QSqlTableModel *temptable=new QSqlTableModel(this, *db);
+        QString id, name;
+        model=currmodel;
+        curruentLog=idLog;
+        this->db=db;
+
         tablemapper=new QDataWidgetMapper(this);
         tablemapper->setModel(model);
         if(table=="equipment"){ //Соединение элементов формы редактирования с данными таблицы в зависимости от набора полей этой таблицы
@@ -47,6 +48,7 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
             tablemapper->addMapping(ui->deFirstExpDate, model->fieldIndex("firstexpldate"));
             ui->gbTest->hide();
             ui->gbEquip->show();*/
+            QSqlTableModel *temptable=new QSqlTableModel(this, *db);
             temptable->setTable("equipment");
             temptable->select();
             id="idequip";

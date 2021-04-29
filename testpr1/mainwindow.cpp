@@ -276,6 +276,7 @@ void MainWindow::on_SaveButton_clicked()
 void MainWindow::on_RevertButton_clicked()
 {
     dbworking->generalmodel->revertAll();
+    dbworking->generalmodel->select();
 }
 
 /*Событие для вызова формы редактирования записи
@@ -330,7 +331,12 @@ void MainWindow::on_Delete_clicked()
         }
         else{
             int answer=QMessageBox::question(this,"Подтверждение удаления", "Вы действительно хотите удалить запись? Действие невозможно отменить.");
-            if(answer==QMessageBox::Button::Yes) saveChanges("удаление");
+            if(answer==QMessageBox::Button::Yes) {
+                saveChanges("удаление");
+            }
+            else{
+                dbworking->generalmodel->select();
+            }
         }
     }
     else{
@@ -349,7 +355,6 @@ void MainWindow::on_Search_clicked()
 
     QSqlQuery *tempquery=new QSqlQuery();
     tempquery->prepare("select idequip from equipment where nameequip='"+ui->teDecript->toPlainText()+"'");
-    //tempquery->bindValue(":nameequipment", ui->teDecript->toPlainText());
     tempquery->exec();
     tempquery->first();
 
@@ -462,4 +467,107 @@ void MainWindow::on_RetryConnection_triggered()
 {
     tryconnect();
     QMessageBox::information(this, "Уведомление", "Переподключение выполнено.");
+}
+
+void MainWindow::on_UnloadFrom_triggered()
+{
+    QFile file;
+    filePath=QFileDialog::getOpenFileName(this,
+                                          QString::fromUtf8("Открыть файл"),
+                                          QDir::currentPath(),
+                                          "*.json"
+                                          );
+    file.setFileName(filePath);
+    if(file.open(QIODevice::ReadOnly|QFile::Text)){
+        doc=QJsonDocument::fromJson(QByteArray(file.readAll()),&docError);
+    }
+    file.close();
+    QString table, value;
+    QJsonObject json=doc.object();
+    QJsonArray data=json["logs"].toArray();
+    QJsonArray row;
+    QSqlRecord record;
+    QString setting=json["setting"].toString();
+    int rowcount=data.count();
+    int colcount;
+    qDebug()<<rowcount;
+    for(int i=0; i<rowcount; i++){
+        row=data[i].toArray();
+        record=dbworking->generalmodel->record();
+        record.remove(0);
+        colcount=row.count();
+        if(setting=="foreign key"){
+            for(int j=0; j<colcount; j++){
+                qDebug()<<i<<" "<<j<<" "<<row[j].toString();
+                QVariant columnData;
+                if(j>0&&j<5){
+                    value=row[j].toString();
+                    switch (j) {
+                    case 1:{
+                        table="equipment";
+                        break;
+                    };
+                    case 2:{
+                        table="condition";
+                        break;
+                    };
+                    case 3:{
+                        table="breaking";
+                        break;
+                    };
+                    case 4:{
+                        table="solution";
+                        break;
+                    };
+                    }
+                    columnData=dbworking->getId(&value, &table);
+                }
+                else {
+                    columnData=QVariant(row[j]);
+                }
+                if(j!=0&&j!=5){
+                    record.setValue(j, columnData);
+                }
+                else{
+                    record.setValue(j, row[j].toString());
+                }
+
+            }
+        }
+        else if(setting=="primary key"){
+            for(int j=0; j<colcount; j++){
+                qDebug()<<i<<" "<<j<<" "<<row[j].toString();
+                record.setValue(j, QVariant(row[j]));
+            }
+        }
+
+        if(dbworking->generalmodel->insertRecord(-1, record)){
+            /*if(!dbworking->generalmodel->submitAll()){
+                 QMessageBox::critical(this, "Ошибка", dbworking->generalmodel->lastError().text());
+            }*/
+
+        }
+        else{
+            QMessageBox::critical(this, "Ошибка", "Ошибка выбора файла.");
+        }
+    }
+
+    /*QString table, value;
+    QSqlRecord record=dbworking->generalmodel->record();
+    record.remove(0);
+    record.setValue(0, QDateTime::currentDateTime());
+    table="equipment";
+    value="основное оборудование 1";
+    record.setValue(1, dbworking->getId(&value, &table));
+    table="condition";
+    value="ок";
+    record.setValue(2, dbworking->getId(&value, &table));
+    if(dbworking->generalmodel->insertRecord(-1, record)){
+        if(!dbworking->generalmodel->submitAll()){
+             QMessageBox::critical(this, "Ошибка", dbworking->generalmodel->lastError().text());
+        }
+    }
+    else{
+        QMessageBox::critical(this, "Ошибка", "Ошибка выбора файла.");
+    }*/
 }

@@ -21,8 +21,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_MainWindow_t {
-    QByteArrayData data[24];
-    char stringdata0[417];
+    QByteArrayData data[25];
+    char stringdata0[441];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -54,7 +54,8 @@ QT_MOC_LITERAL(19, 328, 5), // "value"
 QT_MOC_LITERAL(20, 334, 27), // "on_dtScroll_dateTimeChanged"
 QT_MOC_LITERAL(21, 362, 8), // "dateTime"
 QT_MOC_LITERAL(22, 371, 16), // "on_Retry_clicked"
-QT_MOC_LITERAL(23, 388, 28) // "on_RetryConnection_triggered"
+QT_MOC_LITERAL(23, 388, 28), // "on_RetryConnection_triggered"
+QT_MOC_LITERAL(24, 417, 23) // "on_UnloadFrom_triggered"
 
     },
     "MainWindow\0setscroll\0\0"
@@ -68,7 +69,8 @@ QT_MOC_LITERAL(23, 388, 28) // "on_RetryConnection_triggered"
     "on_LogEqSave_clicked\0on_StartStopScroll_clicked\0"
     "on_LogSlider_valueChanged\0value\0"
     "on_dtScroll_dateTimeChanged\0dateTime\0"
-    "on_Retry_clicked\0on_RetryConnection_triggered"
+    "on_Retry_clicked\0on_RetryConnection_triggered\0"
+    "on_UnloadFrom_triggered"
 };
 #undef QT_MOC_LITERAL
 
@@ -78,7 +80,7 @@ static const uint qt_meta_data_MainWindow[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      17,   14, // methods
+      18,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -86,23 +88,24 @@ static const uint qt_meta_data_MainWindow[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    0,   99,    2, 0x0a /* Public */,
-       3,    1,  100,    2, 0x0a /* Public */,
-       5,    0,  103,    2, 0x0a /* Public */,
-       6,    0,  104,    2, 0x0a /* Public */,
-       7,    1,  105,    2, 0x0a /* Public */,
-       9,    0,  108,    2, 0x0a /* Public */,
-      10,    1,  109,    2, 0x0a /* Public */,
-      12,    0,  112,    2, 0x0a /* Public */,
-      13,    0,  113,    2, 0x0a /* Public */,
-      14,    0,  114,    2, 0x0a /* Public */,
-      15,    1,  115,    2, 0x0a /* Public */,
-      16,    0,  118,    2, 0x0a /* Public */,
-      17,    0,  119,    2, 0x0a /* Public */,
-      18,    1,  120,    2, 0x0a /* Public */,
-      20,    1,  123,    2, 0x0a /* Public */,
-      22,    0,  126,    2, 0x0a /* Public */,
-      23,    0,  127,    2, 0x0a /* Public */,
+       1,    0,  104,    2, 0x0a /* Public */,
+       3,    1,  105,    2, 0x0a /* Public */,
+       5,    0,  108,    2, 0x0a /* Public */,
+       6,    0,  109,    2, 0x0a /* Public */,
+       7,    1,  110,    2, 0x0a /* Public */,
+       9,    0,  113,    2, 0x0a /* Public */,
+      10,    1,  114,    2, 0x0a /* Public */,
+      12,    0,  117,    2, 0x0a /* Public */,
+      13,    0,  118,    2, 0x0a /* Public */,
+      14,    0,  119,    2, 0x0a /* Public */,
+      15,    1,  120,    2, 0x0a /* Public */,
+      16,    0,  123,    2, 0x0a /* Public */,
+      17,    0,  124,    2, 0x0a /* Public */,
+      18,    1,  125,    2, 0x0a /* Public */,
+      20,    1,  128,    2, 0x0a /* Public */,
+      22,    0,  131,    2, 0x0a /* Public */,
+      23,    0,  132,    2, 0x0a /* Public */,
+      24,    0,  133,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void,
@@ -120,6 +123,7 @@ static const uint qt_meta_data_MainWindow[] = {
     QMetaType::Void,
     QMetaType::Void, QMetaType::Int,   19,
     QMetaType::Void, QMetaType::QDateTime,   21,
+    QMetaType::Void,
     QMetaType::Void,
     QMetaType::Void,
 
@@ -149,6 +153,7 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         case 14: _t->on_dtScroll_dateTimeChanged((*reinterpret_cast< const QDateTime(*)>(_a[1]))); break;
         case 15: _t->on_Retry_clicked(); break;
         case 16: _t->on_RetryConnection_triggered(); break;
+        case 17: _t->on_UnloadFrom_triggered(); break;
         default: ;
         }
     }
@@ -183,13 +188,13 @@ int MainWindow::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 17)
+        if (_id < 18)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 17;
+        _id -= 18;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 17)
+        if (_id < 18)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 17;
+        _id -= 18;
     }
     return _id;
 }

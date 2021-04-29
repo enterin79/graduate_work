@@ -38,6 +38,7 @@ public:
     Enumerr connection();
     Enumerr chooseTable(QString *idTable, QList<QString> &relcol, QList<QString> &reltable, QList<QString> &relid, QList<QString> &reloutcol, int relcount=0, bool hideFKcol=true);
     Enumerr savechanges();
+    QVariant getId(QString *value, QString *nametable);
 
     QSqlDatabase db;
     QSqlQueryModel *choosingmodel=nullptr;
