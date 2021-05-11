@@ -28,7 +28,7 @@ Enumerr dbWorking::connection()
      db.setHostName("127.0.0.1");
      db.setDatabaseName("testing");
      db.setUserName("postgres");
-     db.setPassword("");
+     db.setPassword("admin123");
      if(db.open()) {//Выполнение подключения к базе данных с текущими реквизитами
          qInfo(loggerInfo())<<"Connection OK";
          choosingmodel=new QSqlQueryModel;   //Загрузка списка доступных таблиц из таблицы мета-данных
@@ -117,7 +117,7 @@ Enumerr dbWorking::loadTemp(bool hideFKcol, QString where)
 {
     if(tempquery!=""){//Проверка наличия основного запроса для представления
         tempmodel->setQuery(tempquery+" "+where+" "+temporder);//Загрузка прелставления
-        if(generalmodel->rowCount()==tempmodel->rowCount()){//Проверка наличия загруженных данных
+        if(generalmodel->rowCount()==tempmodel->rowCount()||tempmodel->rowCount()>0){//Проверка наличия загруженных данных
              qInfo(loggerInfo())<<"Reading temp for "+currtable+" OK";
              setHeadersModel(tempmodel, hideFKcol);
              return Enumerr::READINGOK;
