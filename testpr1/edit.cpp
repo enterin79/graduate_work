@@ -16,6 +16,12 @@ Edit::Edit(QWidget *parent) :
 */
 Edit::~Edit()
 {
+    /*if(db!=nullptr)
+        delete db;
+    if(tablemapper!=nullptr)
+        delete tablemapper;
+    if(model!=nullptr)
+        delete model;*/
     delete ui;
 }
 
@@ -32,9 +38,6 @@ Edit::~Edit()
 */
 bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int idLog, QSqlDatabase *db )
 {
-
-    //QMessageBox::aboutQt(this, "num log="+QString("%1").arg(curruentLog));
-    try {
         QString id, name;
         model=currmodel;
         curruentLog=idLog;
@@ -42,126 +45,121 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
 
         tablemapper=new QDataWidgetMapper(this);
         tablemapper->setModel(model);
-        if(table=="equipment"){ //Соединение элементов формы редактирования с данными таблицы в зависимости от набора полей этой таблицы
-            /*tablemapper->addMapping(ui->leNameEq, model->fieldIndex("nameequip"));
-            tablemapper->addMapping(ui->leNote, model->fieldIndex("note"), "plainText");
-            tablemapper->addMapping(ui->deFirstExpDate, model->fieldIndex("firstexpldate"));
-            ui->gbTest->hide();
-            ui->gbEquip->show();*/
+
+        if(table==BLOK){ //Соединение элементов формы редактирования с данными таблицы в зависимости от набора полей этой таблицы
             QSqlTableModel *temptable=new QSqlTableModel(this, *db);
-            temptable->setTable("equipment");
+            temptable->setTable("KA");
             temptable->select();
-            id="idequip";
-            name="nameequip";
-            ui->cbStructEq->setForeignKey(&id, &name, temptable);
-            ui->cbStructEq->addItem("<нет>", "NULL");
-            tablemapper->addMapping(ui->leNameEq, model->fieldIndex("nameequip"));
-            tablemapper->addMapping(ui->leDescriptEq, model->fieldIndex("descriptionequip"), "plainText");
-            tablemapper->addMapping(ui->cbStructEq, model->fieldIndex("equipment_nameequip_2"));
-            ui->gbCond->hide();
+            id="NumberKA";
+            name="NameKA";
+            ui->cbBlokKA->setForeignKey(&id, &name, temptable, "STR");
+            ui->cbBlokKA->setCurrentIndex(-1);
+
+            tablemapper->addMapping(ui->leNameBlok, model->fieldIndex("NameBlok"));
+            tablemapper->addMapping(ui->leBlokSerial, model->fieldIndex("SerialNumberBlok"));
+            tablemapper->addMapping(ui->leBlokBISerial, model->fieldIndex("BIid"));
+
+            ui->leBlokBISerial->hide();
+            ui->leBlokBISerialCurr->hide();
+
+            ui->gbParm->hide();
             ui->gbLog->hide();
             ui->gbSolution->hide();
-            ui->gbBreak->hide();
-            ui->gbEquip->show();
+            ui->gbKA->hide();
+            ui->gbBlok->show();
+            ui->gbBI->hide();
         }
-        else if(table=="condition"){
-            /*id="id";
-            text="nameequip";
-            ui->cbEquipId->setForeignKey(&id, &text, model->relationModel(model->fieldIndex("nameequip")));
-            tablemapper->addMapping(ui->leNameTest, model->fieldIndex("nametest"));
-            tablemapper->addMapping(ui->deDateTest, model->fieldIndex("datetest"));
-            tablemapper->addMapping(ui->leDescript, model->fieldIndex("description"), "plainText");
-            tablemapper->addMapping(ui->cbEquipId, model->fieldIndex("nameequip"));
-            ui->gbTest->show();
-            ui->gbEquip->hide();*/
-            tablemapper->addMapping(ui->leNameCond, model->fieldIndex("type"));
-            tablemapper->addMapping(ui->sbLoadCond, model->fieldIndex("load"));
-            ui->gbCond->show();
+        else if(table==BI){
+            id="NumberKA";
+            name="NameKA";
+            ui->cbBIKA->setForeignKey(&id, &name, model->relationModel(model->fieldIndex("NameKA")));
+            ui->cbBIKA->setCurrentIndex(-1);
+
+            tablemapper->addMapping(ui->leBISerial, model->fieldIndex("SerialNumberBI"));
+            tablemapper->addMapping(ui->leNameBI, model->fieldIndex("NameBI"));
+            tablemapper->addMapping(ui->cbBIKA, model->fieldIndex("NameKA"));
+
+            ui->gbParm->hide();
             ui->gbLog->hide();
             ui->gbSolution->hide();
-            ui->gbBreak->hide();
-            ui->gbEquip->hide();
+            ui->gbKA->hide();
+            ui->gbBlok->hide();
+            ui->gbBI->show();
         }
-        else if(table=="solution"){
-            tablemapper->addMapping(ui->leNameSolut, model->fieldIndex("namesol"));
-            tablemapper->addMapping(ui->leDescriptSolut, model->fieldIndex("descriptionsol"), "plainText");
-            ui->gbCond->hide();
+        else if(table==SOL){
+            tablemapper->addMapping(ui->leNameSolut, model->fieldIndex("NameSol"));
+            tablemapper->addMapping(ui->leDescriptSolut, model->fieldIndex("DescrSol"), "plainText");
+
+            ui->gbParm->hide();
             ui->gbLog->hide();
             ui->gbSolution->show();
-            ui->gbBreak->hide();
-            ui->gbEquip->hide();
+            ui->gbKA->hide();
+            ui->gbBlok->hide();
+            ui->gbBI->hide();
         }
-        else if(table=="breaking"){
-            tablemapper->addMapping(ui->leCodeBreak, model->fieldIndex("code"));
-            tablemapper->addMapping(ui->leNameBreak, model->fieldIndex("namebreak"));
-            tablemapper->addMapping(ui->leDescriptBreak, model->fieldIndex("descriptionbreak"), "plainText");
-            ui->gbCond->hide();
+        else if(table==PARM){
+            tablemapper->addMapping(ui->leNameParm, model->fieldIndex("NameParm"));
+            tablemapper->addMapping(ui->leDescriptParm, model->fieldIndex("DescrParm"), "plainText");
+
+            ui->gbParm->show();
             ui->gbLog->hide();
             ui->gbSolution->hide();
-            ui->gbBreak->show();
-            ui->gbEquip->hide();
+            ui->gbKA->hide();
+            ui->gbBlok->hide();
+            ui->gbBI->hide();
         }
-        else if(table=="conditionlog"){
-            /*temptable->setTable("equipment");
-            temptable->select();*/
-            id="idequip";
-            name="nameequip";
-            ui->cbEquip->setForeignKey(&id, &name, model->relationModel(model->fieldIndex("nameequip")));
+        else if(table==KA){
+            tablemapper->addMapping(ui->leNumberKA, model->fieldIndex("NumberKA"));
+            tablemapper->addMapping(ui->leNameKA, model->fieldIndex("NameKA"));
+            tablemapper->addMapping(ui->dtLaunchKA, model->fieldIndex("LaunchDateKA"));
+            ui->gbParm->hide();
+            ui->gbLog->hide();
+            ui->gbSolution->hide();
+            ui->gbKA->show();
+            ui->gbBlok->hide();
+            ui->gbBI->hide();
+        }
+        else if(table==LOG){
 
-            id="code";
-            name="namebreak";
-            ui->cbBreak->addItem("<нет>", "NULL");
-            ui->cbBreak->setForeignKey(&id, &name, model->relationModel(model->fieldIndex("namebreak")), "STR");
+            QSqlTableModel *temptable=new QSqlTableModel(this, *db);
+            temptable->setTable("Blok");
+            temptable->select();
+            id="idBlok";
+            name="SerialNumberBlok";
+            ui->cbEquip->setForeignKey(&id, &name, temptable);
 
-
-            id="idcond";
-            name="type";
-            ui->cbCond->setForeignKey(&id, &name, model->relationModel(model->fieldIndex("type")));
-
-            id="idsol";
-            name="namesol";
+            id="idSol";
+            name="NameSol";
             ui->cbSolut->addItem("<нет>", "NULL");
-            ui->cbSolut->setForeignKey(&id, &name, model->relationModel(model->fieldIndex("namesol")));
+            ui->cbSolut->setForeignKey(&id, &name, model->relationModel(model->fieldIndex("NameSol")));
 
 
-            tablemapper->addMapping(ui->dtCurrTime, model->fieldIndex("currdatetime"));
-            tablemapper->addMapping(ui->cbEquip, model->fieldIndex("nameequip"));
-            tablemapper->addMapping(ui->cbBreak, model->fieldIndex("namebreak"));
-            tablemapper->addMapping(ui->cbCond, model->fieldIndex("type"));
-            tablemapper->addMapping(ui->cbSolut, model->fieldIndex("namesol"));
-            tablemapper->addMapping(ui->rbUnnormalLog, model->fieldIndex("unnormal"));
-            tablemapper->addMapping(ui->leDescriptLog, model->fieldIndex("descriptionlog"), "plainText");
-            tablemapper->addMapping(ui->ledtSolutExec, model->fieldIndex("solutiondatetime"));
+            tablemapper->addMapping(ui->dtCurrTime, model->fieldIndex("DateRec"));
+            tablemapper->addMapping(ui->cbEquip, model->fieldIndex("BlokId"));
+            tablemapper->addMapping(ui->cbSolut, model->fieldIndex("NameSol"));
+            tablemapper->addMapping(ui->leDescriptLog, model->fieldIndex("DescrRec"), "plainText");
+            tablemapper->addMapping(ui->ledtSolutExec, model->fieldIndex("DateSol"));
 
             ui->ledtSolutExec->hide();
-            /*if(!ui->ledtSolutExec->text().isEmpty()){
-                QDateTime dateTime = QDateTime::fromString(ui->ledtSolutExec->text(),"yyyy-MM-ddThh:mm:ss.zzz");
-                ui->dtSolutExec->setDateTime(dateTime);
-            }*/
 
-            /*if(havesoldate){
-
-            }*/
-
-            ui->gbCond->hide();
+            ui->gbParm->hide();
             ui->gbLog->show();
             ui->gbSolution->hide();
-            ui->gbBreak->hide();
-            ui->gbEquip->hide();
+            ui->gbKA->hide();
+            ui->gbBlok->hide();
+            ui->gbBI->hide();
         }
-        if(table!="conditionlog"){
+        else return 0;
+        if(table!=LOG){
             ui->btLogFile->hide();
         }
         else{
             ui->btLogFile->show();
         }
         return 1;
-    }  catch (...) {
-        return 0;
-    }
 }
-
-void Edit::PasteCurrTimeInto(QDateTimeEdit *widget)
+/*Событие для вставки текущей даты в виджет*/
+void Edit::pasteCurrTimeInto(QDateTimeEdit *widget)
 {
     widget->setDateTime(QDateTime::currentDateTime());
 }
@@ -170,6 +168,8 @@ void Edit::PasteCurrTimeInto(QDateTimeEdit *widget)
 */
 void Edit::on_Apply_clicked()
 {
+    ui->leBlokBISerial->setText(ui->leBlokBISerialCurr->text());
+
     tablemapper->submit();  //Сохранение изменений в локальном экземпляре таблицы
     emit saveYes(true); //Отправка сигнала о внесении изменений основной форме
     close();
@@ -182,39 +182,39 @@ void Edit::on_Delete_clicked()
     close();
 }
 
+/*Событие для вствки текущей даты в поле для даты получения данных в таблице Прием данных*/
 void Edit::on_CurrDTPaste_clicked()
 {
-    PasteCurrTimeInto(ui->dtCurrTime);
+    pasteCurrTimeInto(ui->dtCurrTime);
 }
-
+/*Событие для вствки текущей даты в поле для даты выполнения решения в таблице Прием данных*/
 void Edit::on_SolDTPaste_clicked()
 {
-    PasteCurrTimeInto(ui->dtSolutExec);
+    pasteCurrTimeInto(ui->dtSolutExec);
 }
 
-
+/*Заполнение элемента, связанного с ячейкой даты выполнения решения в таблице Прием данных
+это необходимо ввиду отсутствия прямой связи между этой ячейкой и полем для даты.
+связь через mapper не позволяет удалить данные из этого поля,
+например при случайном заполнении*/
 void Edit::on_dtSolutExec_dateTimeChanged(const QDateTime &dateTime)
 {
-    //QMessageBox::aboutQt(this, "dt");
     ui->ledtSolutExec->setText(dateTime.toString("yyyy-MM-ddThh:mm:ss.zzz"));
-    //tablemapper->addMapping(ui->ledtSolutExec, ui->dtSolutExec);
-    //QMessageBox::aboutQt(this);
 }
-
+/*Заполнение элемента datetimepicker датой из ячейки даты выполнения решения в таблице Прием данных*/
 void Edit::on_ledtSolutExec_textChanged(const QString &arg1)
 {
-    //QMessageBox::aboutQt(this, "le");
-    if(ui->ledtSolutExec->text()!="NULL"){//&&ui->dtSolutExec->dateTime().toString()!=
+    if(arg1!="NULL"){
         QDateTime dateTime = QDateTime::fromString(ui->ledtSolutExec->text(),"yyyy-MM-ddThh:mm:ss.zzz");
         ui->dtSolutExec->setDateTime(dateTime);
     }
 }
-
+/*Удаление даты из элемента, связанного с ячейкой даты выполнения решения в таблице Прием данных*/
 void Edit::on_SolDTDelete_clicked()
 {
     ui->ledtSolutExec->setText("NULL");
 }
-
+/*Просмотр данных таблицы Состояние парамеров для выбранной записи Прием данных*/
 void Edit::on_btLogFile_clicked()
 {
     file=new filelog;
@@ -222,4 +222,44 @@ void Edit::on_btLogFile_clicked()
     file->setLog(curruentLog, db);
     file->setModal(true);
     file->show();
+}
+/*Событие загрузки БИ для выбранного КА*/
+void Edit::on_cbBlokKA_currentIndexChanged(int index)
+{
+    if(index!=-1){
+        QString id, name;
+        QSqlTableModel *temptable=new QSqlTableModel(this, *db);
+        temptable->setTable("BI");
+        temptable->select();
+        temptable->setFilter("kanumber='"+ui->cbBlokKA->currentData().toString()+"'");
+        ui->cbBlokBI->clear();
+        id="idBI";
+        name="NameBI";
+        ui->cbBlokBI->setForeignKey(&id, &name, temptable);
+        ui->cbBlokBI->setCurrentIndex(-1);
+        ui->cbBlokBI->setData(ui->leBlokBISerial->text());
+    }
+    else{
+        ui->cbBlokBI->clear();
+    }
+}
+/*Событие изменения */
+void Edit::on_cbBlokBI_currentIndexChanged(int index)
+{
+    QString currdata=ui->cbBlokBI->currentData().toString();
+    ui->leBlokBISerialCurr->setText(currdata);
+}
+/*Событие для выбора КА по идентификатору указанного БИ*/
+void Edit::on_leBlokBISerial_textChanged(const QString &arg1)
+{
+    if(arg1!="NULL"&&arg1!=ui->cbBlokBI->currentData().toString()){
+        ui->cbBlokKA->setCurrentIndex(-1);
+        QString name;
+        QSqlTableModel *temptable=new QSqlTableModel(this, *db);
+        temptable->setTable("BI");
+        temptable->select();
+        temptable->setFilter("idBI="+ui->leBlokBISerial->text());
+        name=temptable->index(0, temptable->fieldIndex("kanumber")).data().toString();
+        ui->cbBlokKA->setData(name);
+    }
 }

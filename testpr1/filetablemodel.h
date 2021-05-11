@@ -1,3 +1,4 @@
+//Это не относится к текущей версии проекта
 #ifndef FILETABLEMODEL_H
 #define FILETABLEMODEL_H
 #include <QSqlTableModel>

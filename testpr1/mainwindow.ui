@@ -40,59 +40,6 @@
       </attribute>
      </widget>
     </item>
-    <item row="3" column="1">
-     <widget class="QGroupBox" name="groupBox">
-      <property name="maximumSize">
-       <size>
-        <width>200</width>
-        <height>16777215</height>
-       </size>
-      </property>
-      <property name="title">
-       <string>Выборка</string>
-      </property>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <layout class="QFormLayout" name="formLayout">
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_2">
-           <property name="text">
-            <string>Столбец</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="ComboBoxForDB" name="cbSelectColumn"/>
-         </item>
-         <item row="1" column="0">
-          <widget class="QLabel" name="label_3">
-           <property name="text">
-            <string>Значение</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="1">
-          <widget class="QTextEdit" name="teDecript"/>
-         </item>
-         <item row="2" column="0" colspan="2">
-          <widget class="QPushButton" name="Search">
-           <property name="text">
-            <string>Найти</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" colspan="2">
-          <widget class="QPushButton" name="RevertTable">
-           <property name="text">
-            <string>Восстановить</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-     </widget>
-    </item>
     <item row="1" column="0">
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
@@ -143,6 +90,18 @@
      <layout class="QFormLayout" name="formLayout_2">
       <item row="0" column="0">
        <widget class="QPushButton" name="SaveButton">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>22</height>
+         </size>
+        </property>
         <property name="text">
          <string>Сохранить</string>
         </property>
@@ -150,6 +109,12 @@
       </item>
       <item row="0" column="1">
        <widget class="QPushButton" name="RevertButton">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>22</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>80</width>
@@ -163,6 +128,18 @@
       </item>
       <item row="1" column="0">
        <widget class="QPushButton" name="Add">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>22</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>80</width>
+          <height>22</height>
+         </size>
+        </property>
         <property name="text">
          <string>Добавить</string>
         </property>
@@ -170,6 +147,12 @@
       </item>
       <item row="1" column="1">
        <widget class="QPushButton" name="Delete">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>22</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>80</width>
@@ -182,25 +165,6 @@
        </widget>
       </item>
      </layout>
-    </item>
-    <item row="2" column="1">
-     <widget class="QGroupBox" name="gbEquipShow">
-      <property name="title">
-       <string>Оборудование</string>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout">
-       <item>
-        <widget class="ComboBoxForDB" name="cbEquipment"/>
-       </item>
-       <item>
-        <widget class="QPushButton" name="LogEqSave">
-         <property name="text">
-          <string>OK</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
     </item>
     <item row="7" column="0" colspan="2">
      <widget class="QGroupBox" name="gbTimeScroll">
@@ -317,6 +281,59 @@
       </layout>
      </widget>
     </item>
+    <item row="2" column="1" rowspan="2">
+     <widget class="QGroupBox" name="gbSearch">
+      <property name="maximumSize">
+       <size>
+        <width>200</width>
+        <height>16777215</height>
+       </size>
+      </property>
+      <property name="title">
+       <string>Выборка</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <layout class="QFormLayout" name="formLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>Столбец</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="ComboBoxForDB" name="cbSelectColumn"/>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_3">
+           <property name="text">
+            <string>Значение</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QTextEdit" name="teDecript"/>
+         </item>
+         <item row="2" column="0" colspan="2">
+          <widget class="QPushButton" name="Search">
+           <property name="text">
+            <string>Найти</string>
+           </property>
+          </widget>
+         </item>
+         <item row="3" column="0" colspan="2">
+          <widget class="QPushButton" name="RevertTable">
+           <property name="text">
+            <string>Восстановить</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -334,7 +351,6 @@
     </property>
     <addaction name="RetryConnection"/>
     <addaction name="UnloadFrom"/>
-    <addaction name="SaveTo"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -350,11 +366,6 @@
   <action name="UnloadFrom">
    <property name="text">
     <string>Выгрузить данные из...</string>
-   </property>
-  </action>
-  <action name="SaveTo">
-   <property name="text">
-    <string>Сохранить отчет в...</string>
    </property>
   </action>
  </widget>

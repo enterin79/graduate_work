@@ -9,6 +9,7 @@
 #include <QtSql/QSqlTableModel>
 #include <QtSql/QSqlRecord>
 #include "filelog.h"
+#include "Enumexec.h"
 
 namespace Ui {
 class Edit;
@@ -25,11 +26,19 @@ class Edit;
  * Edit - конструктор класса по умолчанию;
  * ~Edit - деструктор класса;
  * setModelTable - метод для соединения данных таблицы с элементами формы редактирования;
+ * pasteCurrTimeInto - процедура для вставки текущей даты и времени в выбранный элемент;
  * on_Apply_clicked - событие сохранения текущих изменений и закрытия формы редактирования;
- * on_Delete_clicked - событие закрытия формы редактирования.
- *
+ * on_Delete_clicked - событие закрытия формы редактирования;
+ * on_CurrDTPaste_clicked, on_SolDTPaste_clicked - события для вставки в нужное поле даты;
+ * on_dtSolutExec_dateTimeChanged - событие для изменения даты в элементе, связанномм с таблицей;
+ * on_ledtSolutExec_textChanged - событие для изменения даты в элементе datetimepicker;
+ * on_SolDTDelete_clicked - событие для удаления значения даты;
+ * on_btLogFile_clicked - событие загрузки записей из таблицы "Состояние параметров" для выбранной записи таблицы "Прием данных";
+ * on_cbBlokKA_currentIndexChanged - событие для загрзки списка БИ, соответствующих указанному КА;
+ * on_cbBlokBI_currentIndexChanged - событие изменения данных в элементе, свзанном с таблицей "Блок";
+ * on_leBlokBISerial_textChanged - событие для загрузки данных о родительских устройствах по данным выбранной записи таблицы "Блок".
 */
-class Edit : public QDialog//public QWidget,
+class Edit : public QDialog
 {
     Q_OBJECT
 signals:
@@ -38,25 +47,26 @@ public:
     explicit Edit(QWidget *parent = nullptr);
     ~Edit();
     bool setModelTable(QSqlRelationalTableModel *model, QString table, int idLog, QSqlDatabase *db=nullptr);
-    QDataWidgetMapper *tablemapper;
-    void PasteCurrTimeInto(QDateTimeEdit *widget);
-    QSqlRelationalTableModel *model;
-    filelog *file;
+    void pasteCurrTimeInto(QDateTimeEdit *widget);
+
+    QSqlDatabase *db=nullptr;
+    QDataWidgetMapper *tablemapper=nullptr;
+    QSqlRelationalTableModel *model=nullptr;
+    filelog *file=nullptr;
     int curruentLog;
-    QSqlDatabase *db;
+
 public slots:
     void on_Apply_clicked();
     void on_Delete_clicked();
     void on_CurrDTPaste_clicked();
     void on_SolDTPaste_clicked();
     void on_dtSolutExec_dateTimeChanged(const QDateTime &dateTime);
-
-private slots:
     void on_ledtSolutExec_textChanged(const QString &arg1);
-
     void on_SolDTDelete_clicked();
-
     void on_btLogFile_clicked();
+    void on_cbBlokKA_currentIndexChanged(int index);
+    void on_cbBlokBI_currentIndexChanged(int index);
+    void on_leBlokBISerial_textChanged(const QString &arg1);
 
 private:
     Ui::Edit *ui;

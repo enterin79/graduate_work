@@ -29,7 +29,6 @@
 #include <QtWidgets/QStatusBar>
 #include <QtWidgets/QTableView>
 #include <QtWidgets/QTextEdit>
-#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "comboboxfordb.h"
 
@@ -40,19 +39,9 @@ class Ui_MainWindow
 public:
     QAction *RetryConnection;
     QAction *UnloadFrom;
-    QAction *SaveTo;
     QWidget *centralwidget;
     QGridLayout *gridLayout_4;
     QTableView *tvModel;
-    QGroupBox *groupBox;
-    QGridLayout *gridLayout;
-    QFormLayout *formLayout;
-    QLabel *label_2;
-    ComboBoxForDB *cbSelectColumn;
-    QLabel *label_3;
-    QTextEdit *teDecript;
-    QPushButton *Search;
-    QPushButton *RevertTable;
     QHBoxLayout *horizontalLayout;
     QLabel *label;
     QComboBox *cbChooseTable;
@@ -62,10 +51,6 @@ public:
     QPushButton *RevertButton;
     QPushButton *Add;
     QPushButton *Delete;
-    QGroupBox *gbEquipShow;
-    QVBoxLayout *verticalLayout;
-    ComboBoxForDB *cbEquipment;
-    QPushButton *LogEqSave;
     QGroupBox *gbTimeScroll;
     QGridLayout *gridLayout_2;
     QPushButton *Retry;
@@ -75,6 +60,15 @@ public:
     QSpacerItem *horizontalSpacer_3;
     QSlider *LogSlider;
     QDateTimeEdit *dtScroll;
+    QGroupBox *gbSearch;
+    QGridLayout *gridLayout;
+    QFormLayout *formLayout;
+    QLabel *label_2;
+    ComboBoxForDB *cbSelectColumn;
+    QLabel *label_3;
+    QTextEdit *teDecript;
+    QPushButton *Search;
+    QPushButton *RevertTable;
     QMenuBar *menubar;
     QMenu *menu;
     QStatusBar *statusbar;
@@ -90,8 +84,6 @@ public:
         RetryConnection->setMenuRole(QAction::ApplicationSpecificRole);
         UnloadFrom = new QAction(MainWindow);
         UnloadFrom->setObjectName(QString::fromUtf8("UnloadFrom"));
-        SaveTo = new QAction(MainWindow);
-        SaveTo->setObjectName(QString::fromUtf8("SaveTo"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout_4 = new QGridLayout(centralwidget);
@@ -104,49 +96,6 @@ public:
         tvModel->horizontalHeader()->setStretchLastSection(false);
 
         gridLayout_4->addWidget(tvModel, 2, 0, 2, 1);
-
-        groupBox = new QGroupBox(centralwidget);
-        groupBox->setObjectName(QString::fromUtf8("groupBox"));
-        groupBox->setMaximumSize(QSize(200, 16777215));
-        gridLayout = new QGridLayout(groupBox);
-        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
-        formLayout = new QFormLayout();
-        formLayout->setObjectName(QString::fromUtf8("formLayout"));
-        label_2 = new QLabel(groupBox);
-        label_2->setObjectName(QString::fromUtf8("label_2"));
-
-        formLayout->setWidget(0, QFormLayout::LabelRole, label_2);
-
-        cbSelectColumn = new ComboBoxForDB(groupBox);
-        cbSelectColumn->setObjectName(QString::fromUtf8("cbSelectColumn"));
-
-        formLayout->setWidget(0, QFormLayout::FieldRole, cbSelectColumn);
-
-        label_3 = new QLabel(groupBox);
-        label_3->setObjectName(QString::fromUtf8("label_3"));
-
-        formLayout->setWidget(1, QFormLayout::LabelRole, label_3);
-
-        teDecript = new QTextEdit(groupBox);
-        teDecript->setObjectName(QString::fromUtf8("teDecript"));
-
-        formLayout->setWidget(1, QFormLayout::FieldRole, teDecript);
-
-        Search = new QPushButton(groupBox);
-        Search->setObjectName(QString::fromUtf8("Search"));
-
-        formLayout->setWidget(2, QFormLayout::SpanningRole, Search);
-
-        RevertTable = new QPushButton(groupBox);
-        RevertTable->setObjectName(QString::fromUtf8("RevertTable"));
-
-        formLayout->setWidget(3, QFormLayout::SpanningRole, RevertTable);
-
-
-        gridLayout->addLayout(formLayout, 0, 0, 1, 1);
-
-
-        gridLayout_4->addWidget(groupBox, 3, 1, 1, 1);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
@@ -174,45 +123,34 @@ public:
         formLayout_2->setObjectName(QString::fromUtf8("formLayout_2"));
         SaveButton = new QPushButton(centralwidget);
         SaveButton->setObjectName(QString::fromUtf8("SaveButton"));
+        SaveButton->setMinimumSize(QSize(80, 22));
+        SaveButton->setMaximumSize(QSize(80, 22));
 
         formLayout_2->setWidget(0, QFormLayout::LabelRole, SaveButton);
 
         RevertButton = new QPushButton(centralwidget);
         RevertButton->setObjectName(QString::fromUtf8("RevertButton"));
+        RevertButton->setMinimumSize(QSize(80, 22));
         RevertButton->setMaximumSize(QSize(80, 22));
 
         formLayout_2->setWidget(0, QFormLayout::FieldRole, RevertButton);
 
         Add = new QPushButton(centralwidget);
         Add->setObjectName(QString::fromUtf8("Add"));
+        Add->setMinimumSize(QSize(80, 22));
+        Add->setMaximumSize(QSize(80, 22));
 
         formLayout_2->setWidget(1, QFormLayout::LabelRole, Add);
 
         Delete = new QPushButton(centralwidget);
         Delete->setObjectName(QString::fromUtf8("Delete"));
+        Delete->setMinimumSize(QSize(80, 22));
         Delete->setMaximumSize(QSize(80, 22));
 
         formLayout_2->setWidget(1, QFormLayout::FieldRole, Delete);
 
 
         gridLayout_4->addLayout(formLayout_2, 8, 0, 1, 1);
-
-        gbEquipShow = new QGroupBox(centralwidget);
-        gbEquipShow->setObjectName(QString::fromUtf8("gbEquipShow"));
-        verticalLayout = new QVBoxLayout(gbEquipShow);
-        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        cbEquipment = new ComboBoxForDB(gbEquipShow);
-        cbEquipment->setObjectName(QString::fromUtf8("cbEquipment"));
-
-        verticalLayout->addWidget(cbEquipment);
-
-        LogEqSave = new QPushButton(gbEquipShow);
-        LogEqSave->setObjectName(QString::fromUtf8("LogEqSave"));
-
-        verticalLayout->addWidget(LogEqSave);
-
-
-        gridLayout_4->addWidget(gbEquipShow, 2, 1, 1, 1);
 
         gbTimeScroll = new QGroupBox(centralwidget);
         gbTimeScroll->setObjectName(QString::fromUtf8("gbTimeScroll"));
@@ -264,6 +202,49 @@ public:
 
         gridLayout_4->addWidget(gbTimeScroll, 7, 0, 1, 2);
 
+        gbSearch = new QGroupBox(centralwidget);
+        gbSearch->setObjectName(QString::fromUtf8("gbSearch"));
+        gbSearch->setMaximumSize(QSize(200, 16777215));
+        gridLayout = new QGridLayout(gbSearch);
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
+        formLayout = new QFormLayout();
+        formLayout->setObjectName(QString::fromUtf8("formLayout"));
+        label_2 = new QLabel(gbSearch);
+        label_2->setObjectName(QString::fromUtf8("label_2"));
+
+        formLayout->setWidget(0, QFormLayout::LabelRole, label_2);
+
+        cbSelectColumn = new ComboBoxForDB(gbSearch);
+        cbSelectColumn->setObjectName(QString::fromUtf8("cbSelectColumn"));
+
+        formLayout->setWidget(0, QFormLayout::FieldRole, cbSelectColumn);
+
+        label_3 = new QLabel(gbSearch);
+        label_3->setObjectName(QString::fromUtf8("label_3"));
+
+        formLayout->setWidget(1, QFormLayout::LabelRole, label_3);
+
+        teDecript = new QTextEdit(gbSearch);
+        teDecript->setObjectName(QString::fromUtf8("teDecript"));
+
+        formLayout->setWidget(1, QFormLayout::FieldRole, teDecript);
+
+        Search = new QPushButton(gbSearch);
+        Search->setObjectName(QString::fromUtf8("Search"));
+
+        formLayout->setWidget(2, QFormLayout::SpanningRole, Search);
+
+        RevertTable = new QPushButton(gbSearch);
+        RevertTable->setObjectName(QString::fromUtf8("RevertTable"));
+
+        formLayout->setWidget(3, QFormLayout::SpanningRole, RevertTable);
+
+
+        gridLayout->addLayout(formLayout, 0, 0, 1, 1);
+
+
+        gridLayout_4->addWidget(gbSearch, 2, 1, 2, 1);
+
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
@@ -278,7 +259,6 @@ public:
         menubar->addAction(menu->menuAction());
         menu->addAction(RetryConnection);
         menu->addAction(UnloadFrom);
-        menu->addAction(SaveTo);
 
         retranslateUi(MainWindow);
 
@@ -290,24 +270,21 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "\320\221\320\260\320\267\320\260 \320\264\320\260\320\275\320\275\321\213\321\205", nullptr));
         RetryConnection->setText(QApplication::translate("MainWindow", "\320\237\320\276\320\262\321\202\320\276\321\200\320\275\320\276\320\265 \320\277\320\276\320\264\320\272\320\273\321\216\321\207\320\265\320\275\320\270\320\265", nullptr));
         UnloadFrom->setText(QApplication::translate("MainWindow", "\320\222\321\213\320\263\321\200\321\203\320\267\320\270\321\202\321\214 \320\264\320\260\320\275\320\275\321\213\320\265 \320\270\320\267...", nullptr));
-        SaveTo->setText(QApplication::translate("MainWindow", "\320\241\320\276\321\205\321\200\320\260\320\275\320\270\321\202\321\214 \320\276\321\202\321\207\320\265\321\202 \320\262...", nullptr));
-        groupBox->setTitle(QApplication::translate("MainWindow", "\320\222\321\213\320\261\320\276\321\200\320\272\320\260", nullptr));
-        label_2->setText(QApplication::translate("MainWindow", "\320\241\321\202\320\276\320\273\320\261\320\265\321\206", nullptr));
-        label_3->setText(QApplication::translate("MainWindow", "\320\227\320\275\320\260\321\207\320\265\320\275\320\270\320\265", nullptr));
-        Search->setText(QApplication::translate("MainWindow", "\320\235\320\260\320\271\321\202\320\270", nullptr));
-        RevertTable->setText(QApplication::translate("MainWindow", "\320\222\320\276\321\201\321\201\321\202\320\260\320\275\320\276\320\262\320\270\321\202\321\214", nullptr));
         label->setText(QApplication::translate("MainWindow", "\320\242\320\265\321\203\321\211\320\260\321\217 \321\202\320\260\320\261\320\273\320\270\321\206\320\260:", nullptr));
         SaveButton->setText(QApplication::translate("MainWindow", "\320\241\320\276\321\205\321\200\320\260\320\275\320\270\321\202\321\214", nullptr));
         RevertButton->setText(QApplication::translate("MainWindow", "\320\236\321\202\320\274\320\265\320\275\320\270\321\202\321\214", nullptr));
         Add->setText(QApplication::translate("MainWindow", "\320\224\320\276\320\261\320\260\320\262\320\270\321\202\321\214", nullptr));
         Delete->setText(QApplication::translate("MainWindow", "\320\243\320\264\320\260\320\273\320\270\321\202\321\214", nullptr));
-        gbEquipShow->setTitle(QApplication::translate("MainWindow", "\320\236\320\261\320\276\321\200\321\203\320\264\320\276\320\262\320\260\320\275\320\270\320\265", nullptr));
-        LogEqSave->setText(QApplication::translate("MainWindow", "OK", nullptr));
         gbTimeScroll->setTitle(QString());
         Retry->setText(QApplication::translate("MainWindow", "\320\227\320\260\320\275\320\276\320\262\320\276", nullptr));
         StartStopScroll->setText(QApplication::translate("MainWindow", "\320\241\321\202\320\260\321\200\321\202/\320\241\321\202\320\276\320\277", nullptr));
         timelabel->setText(QApplication::translate("MainWindow", "TextLabel", nullptr));
         dtScroll->setDisplayFormat(QApplication::translate("MainWindow", "dd.MM.yyyy H:mm:ss", nullptr));
+        gbSearch->setTitle(QApplication::translate("MainWindow", "\320\222\321\213\320\261\320\276\321\200\320\272\320\260", nullptr));
+        label_2->setText(QApplication::translate("MainWindow", "\320\241\321\202\320\276\320\273\320\261\320\265\321\206", nullptr));
+        label_3->setText(QApplication::translate("MainWindow", "\320\227\320\275\320\260\321\207\320\265\320\275\320\270\320\265", nullptr));
+        Search->setText(QApplication::translate("MainWindow", "\320\235\320\260\320\271\321\202\320\270", nullptr));
+        RevertTable->setText(QApplication::translate("MainWindow", "\320\222\320\276\321\201\321\201\321\202\320\260\320\275\320\276\320\262\320\270\321\202\321\214", nullptr));
         menu->setTitle(QApplication::translate("MainWindow", "\320\234\320\265\320\275\321\216", nullptr));
     } // retranslateUi
 

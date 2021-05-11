@@ -16,6 +16,9 @@ dbWorking::~dbWorking(){
     if(generalmodel!=nullptr){  //Очистка памяти, определенной под основную таблицу
         delete generalmodel;
     }
+    if(tempmodel!=nullptr){
+        delete tempmodel;
+    }
 }
 /*Функция создания подключения к базе данных на основании предоставленных реквизитов пользовтеля и загрузки списка доступных таблиц
 */
@@ -23,12 +26,12 @@ Enumerr dbWorking::connection()
 {
      db = QSqlDatabase::addDatabase("QPSQL");
      db.setHostName("127.0.0.1");
-     db.setDatabaseName("equipmentstatus");
+     db.setDatabaseName("BlokStatus");
      db.setUserName("postgres");
      db.setPassword("admin123");
      if(db.open()) {//Выполнение подключения к базе данных с текущими реквизитами
          qInfo(loggerInfo())<<"Connection OK";
-         choosingmodel=new QSqlTableModel;   //Загрузка списка доступных таблиц из таблицы мета-данных
+         choosingmodel=new QSqlQueryModel;   //Загрузка списка доступных таблиц из таблицы мета-данных
          choosingmodel->setQuery("select * from synonim");
          if(choosingmodel->rowCount()!=0){   //Проверка наличия записей об отображаемых таблицах
              qInfo(loggerInfo())<<"Reading synonim OK";
@@ -48,17 +51,19 @@ Enumerr dbWorking::connection()
  *
  * Формальные параметры:
  * idTable - название атрибута первичного ключа загружаемой таблицы;
- * relcol - название атрибута внешнего ключа загружаемой таблицы;
- * reltable - название таблицы, от которой зависит загружаемая таблица;
- * relid - название поля, от которого зависит внешний ключ;
- * reloutcol - название поля, которое будет отображаться вместо поля внешнего ключа в загружаемой таблицы;
+ * relcol - названия атрибутов внешнего ключа загружаемой таблицы;
+ * reltable - названия таблиц, от которых зависит загружаемая таблица;
+ * relid - названия полей, от которых зависит внешний ключ;
+ * reloutcol - названия полей, которые будут отображаться вместо полей внешнего ключа в загружаемой таблице;
  * relcount - количество зависимых полей;
  * hideFKcol - наличие скрываемого ключевого поля;
+ *
+ * Локальная переменная:
  * i - счетчик для перебора названий столбцов таблицы и их синонимов.
 */
 Enumerr dbWorking::chooseTable(QString *idTable, QList<QString> &relcol, QList<QString> &reltable, QList<QString> &relid, QList<QString> &reloutcol, int relcount, bool hideFKcol)
 {
-    generalmodel->setTable(currtable);  //Выбор загружаемой таблицы
+    generalmodel->setTable(currtable.toLower());  //Выбор загружаемой таблицы
     for(int i=0; i<relcount; i++){    //Определение соединения, если таблица зависимая
         generalmodel->setRelation(generalmodel->fieldIndex(relcol.at(i)),
                            QSqlRelation(reltable.at(i), relid.at(i), reloutcol.at(i)));
@@ -67,9 +72,7 @@ Enumerr dbWorking::chooseTable(QString *idTable, QList<QString> &relcol, QList<Q
     if(generalmodel->select()){ //Загрузка данных таблицы
         generalmodel->setEditStrategy(QSqlTableModel::OnManualSubmit);  //Настройка отображения таблицы
         generalmodel->sort(generalmodel->fieldIndex(*idTable), Qt::AscendingOrder);
-        for(int i=0; i<fieldsynonims.count(); i++){    //Загрузка данных о столбцах таблицы в элемент интерфейса для осуществления простейшей выборки
-            generalmodel->setHeaderData(i+hideFKcol, Qt::Horizontal, fieldsynonims[i]);
-        };
+        setHeadersModel(generalmodel, hideFKcol);
         qInfo(loggerInfo())<<"Reading "<<currtable<<" OK";
         return Enumerr::READINGOK;  //Возврат кода успешной загрузки таблицы
     }
@@ -80,7 +83,7 @@ Enumerr dbWorking::chooseTable(QString *idTable, QList<QString> &relcol, QList<Q
 }
 /*Процедура для сохранения внесенных в таблицу изменений
 */
-Enumerr dbWorking::savechanges()
+Enumerr dbWorking::saveChanges()
 {
     if(generalmodel->submitAll()){  //Сохранение изменений таблицы
         qInfo(loggerInfo())<<"Saving "<<currtable<<" OK";
@@ -92,23 +95,68 @@ Enumerr dbWorking::savechanges()
     }
 }
 
+/*Процедура для установки заголовков столбцов в таблице
+ *
+ * Локальная переменная:
+ * i - счетчик для перебора названий столбцов таблицы и их синонимов.
+*/
+void dbWorking::setHeadersModel(QSqlQueryModel *model, bool hideFKcol)
+{
+    for(int i=0; i<fieldsynonims.count(); i++){//Установка заголовков полей таблицы
+        model->setHeaderData(i+hideFKcol, Qt::Horizontal, fieldsynonims[i]);
+    };
+}
+
+/*Функция загрузки представления для таблицы
+ *
+ * Формальные параметры:
+ * hideFKcol - наличие скрываемого ключевого поля;
+ * where - необязательное условие выборки для представления.
+*/
+Enumerr dbWorking::loadTemp(bool hideFKcol, QString where)
+{
+    if(tempquery!=""){//Проверка наличия основного запроса для представления
+        tempmodel->setQuery(tempquery+" "+where+" "+temporder);//Загрузка прелставления
+        if(tempmodel->rowCount()!=0){//Проверка наличия загруженных данных
+             qInfo(loggerInfo())<<"Reading temp for "+currtable+" OK";
+             setHeadersModel(tempmodel, hideFKcol);
+             return Enumerr::READINGOK;
+        }
+        else {
+            qCritical(loggerCritical())<<"Reading temp for "+currtable+" error "<<tempmodel->lastError().text();
+            return Enumerr::READINGERROR;
+        }
+    }
+    else{
+        return Enumerr::READINGERROR;
+    }
+}
+/*Функция для поиска идентификатора значения в таблице*/
+//В РАЗРАБОТКЕ
 QVariant dbWorking::getId(QString *value, QString *nametable)
 {
-
     QString idcol, valuecol;
-    if((*nametable).toLower()=="equipment"){
-        idcol="idEquip";
-        valuecol="NameEquip";
+    if((*nametable).toLower()==KA){
+        idcol="NumberKA";
+        valuecol="NameKA";
     }
-    else if((*nametable).toLower()=="solution"){
+    else if((*nametable).toLower()==BI){
         idcol="idSol";
         valuecol="NameSol";
     }
-    else if((*nametable).toLower()=="condition"){
+    else if((*nametable).toLower()==BLOK){
         idcol="idCond";
         valuecol="Type";
     }
-    else if((*nametable).toLower()=="breaking"){
+    else if((*nametable).toLower()==SOL){
+        idcol="Code";
+        valuecol="NameBreak";
+    }
+    else if((*nametable).toLower()==PARM){
+        idcol="Code";
+        valuecol="NameBreak";
+    }
+    else if((*nametable).toLower()==FILE){
         idcol="Code";
         valuecol="NameBreak";
     }

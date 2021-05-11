@@ -1,5 +1,5 @@
 #include "comboboxfordb.h"
-
+#include <QMessageBox>
 /*Конструктор класса по умолчанию
  *
  * Формальный параметр:
@@ -16,8 +16,8 @@ ComboBoxForDB::ComboBoxForDB(QWidget *parent):QComboBox(parent)
  * Формальные параметры:
  * id - название атрибута первичного ключа таблицы;
  * name - название атрибута с текстом, который определяется первичным ключом;
- * temp - таблица, откуда будут получены данные.
- *
+ * temp - таблица, откуда будут получены данные;
+ * typeofkey - тип данных для первичного ключа.
 */
 bool ComboBoxForDB::setForeignKey(const QString *id, const QString *name, QSqlTableModel *temp, QString typeofkey)
 {
@@ -59,21 +59,17 @@ bool ComboBoxForDB::setForeignKey(const QString *id, const QString *name, QSqlTa
 */
 void ComboBoxForDB::setData(QVariant value)
 {
-    //qDebug()<<"here "<<value.toInt();
-    int row=findData(value.toInt()); //Опредение номера строки в наборе данных, сходя из загружаемого текста
-    if(row<0){  //Повтор поиска номера строки, исходя из загружаемых данных
+    int row=findData(value.toInt());//Опредение номера строки в наборе данных, сходя из загружаемого текста
+    if(row<0){//Повтор поиска номера строки, исходя из загружаемых данных
+        row=findData(value.toString());
+    }
+    if(row<0){//Повтор поиска номера строки, исходя из загружаемого текста
         row=findText(value.toString());
     }
     if(row>=0&&row!=currentIndex()){ //Проверка значения необходимой строки
-        setCurrentIndex(row);   //Если по указанному тексту была найдена запись, она устанавливается в качестве отображаемой
+        setCurrentIndex(row);   //Если по указанным данным была найдена запись, она устанавливается в качестве отображаемой
     }
-    /*else if(row<0){ //Попытка установки пользовательского значения по умолчанию при отсутствии найденных записей
-        row=findData(-1);
-        if(row<0){  //Проверка наличия пользовательского значения по умолчанию
-            setCurrentIndex(-1); //Установка пустого значения при отсутствии значения по умолчанию
-        }
-        else {
-            setCurrentIndex(row);
-        }
-    }*/
+    else if(row<0){
+        setCurrentIndex(-1);
+    }
 }

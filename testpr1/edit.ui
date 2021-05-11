@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>283</width>
-    <height>316</height>
+    <width>282</width>
+    <height>314</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -25,7 +25,7 @@
   <property name="windowTitle">
    <string>Редактирование</string>
   </property>
-  <widget class="QGroupBox" name="gbEquip">
+  <widget class="QGroupBox" name="gbBlok">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -35,46 +35,82 @@
     </rect>
    </property>
    <property name="title">
-    <string>Оборудование</string>
+    <string>Блок</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
     <item row="0" column="0">
      <layout class="QFormLayout" name="formLayout_2">
       <item row="0" column="0">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>КА</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="ComboBoxForDB" name="cbBlokKA"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>БИ</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="ComboBoxForDB" name="cbBlokBI"/>
+      </item>
+      <item row="5" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
          <string>Название</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="leNameEq"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_3">
-        <property name="text">
-         <string>Описание</string>
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="leNameBlok">
+        <property name="maxLength">
+         <number>50</number>
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QTextEdit" name="leDescriptEq"/>
-      </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_2">
+      <item row="4" column="1">
+       <widget class="QLineEdit" name="leBlokBISerial">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
-         <string>Входит в</string>
+         <string>NULL</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QLineEdit" name="leBlokBISerialCurr">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="ComboBoxForDB" name="cbStructEq"/>
+       <widget class="QLineEdit" name="leBlokSerial">
+        <property name="maxLength">
+         <number>15</number>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QLabel" name="label_3">
+        <property name="text">
+         <string>Серийный
+номер</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="gbCond">
+  <widget class="QGroupBox" name="gbParm">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -84,11 +120,21 @@
     </rect>
    </property>
    <property name="title">
-    <string>Состояние</string>
+    <string>Параметр</string>
    </property>
    <layout class="QGridLayout" name="gridLayout_3">
     <item row="0" column="0">
      <layout class="QFormLayout" name="formLayout">
+      <item row="1" column="1">
+       <widget class="QPlainTextEdit" name="leDescriptParm"/>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="leNameParm">
+        <property name="maxLength">
+         <number>50</number>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
@@ -96,16 +142,10 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="leNameCond"/>
-      </item>
-      <item row="1" column="1">
-       <widget class="QSpinBox" name="sbLoadCond"/>
-      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Нагрузка(%)</string>
+         <string>Описание</string>
         </property>
        </widget>
       </item>
@@ -140,7 +180,7 @@
     <item>
      <widget class="QPushButton" name="btLogFile">
       <property name="text">
-       <string>Файлы</string>
+       <string>Параметры</string>
       </property>
      </widget>
     </item>
@@ -169,7 +209,11 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QLineEdit" name="leNameSolut"/>
+       <widget class="QLineEdit" name="leNameSolut">
+        <property name="maxLength">
+         <number>50</number>
+        </property>
+       </widget>
       </item>
       <item row="1" column="1">
        <widget class="QTextEdit" name="leDescriptSolut"/>
@@ -185,7 +229,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QGroupBox" name="gbBreak">
+  <widget class="QGroupBox" name="gbKA">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -195,11 +239,25 @@
     </rect>
    </property>
    <property name="title">
-    <string>Ошибка</string>
+    <string>Космический аппарат</string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="0" column="0">
      <layout class="QFormLayout" name="formLayout_4">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>Код</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QLineEdit" name="leNumberKA">
+        <property name="maxLength">
+         <number>3</number>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_8">
         <property name="text">
@@ -208,25 +266,23 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QLineEdit" name="leNameBreak"/>
+       <widget class="QLineEdit" name="leNameKA">
+        <property name="maxLength">
+         <number>50</number>
+        </property>
+       </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QTextEdit" name="leDescriptBreak"/>
+       <widget class="QDateTimeEdit" name="dtLaunchKA">
+        <property name="calendarPopup">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
       <item row="2" column="0">
        <widget class="QLabel" name="label_9">
         <property name="text">
-         <string>Описание</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QLineEdit" name="leCodeBreak"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_10">
-        <property name="text">
-         <string>Код</string>
+         <string>Дата запуска</string>
         </property>
        </widget>
       </item>
@@ -249,10 +305,13 @@
    <layout class="QGridLayout" name="gridLayout_6">
     <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout_5">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_14">
+      <item row="5" column="1">
+       <widget class="QLineEdit" name="ledtSolutExec">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
         <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Дата и время &lt;br/&gt;снятия показаний&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         <string>NULL</string>
         </property>
        </widget>
       </item>
@@ -282,48 +341,14 @@
         </property>
        </widget>
       </item>
-      <item row="9" column="1">
+      <item row="6" column="1">
        <widget class="QLabel" name="label_11">
         <property name="text">
          <string>Описание</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="1" colspan="2">
-       <widget class="ComboBoxForDB" name="cbSolut"/>
-      </item>
-      <item row="8" column="0" colspan="3">
-       <widget class="QRadioButton" name="rbUnnormalLog">
-        <property name="text">
-         <string>Отклонение от нормы</string>
-        </property>
-       </widget>
-      </item>
-      <item row="6" column="0">
-       <widget class="QLabel" name="label_19">
-        <property name="text">
-         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Дата и время&lt;br/&gt;решения&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="2">
-       <widget class="QPushButton" name="CurrDTPaste">
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>30</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Вставить
-текущее</string>
-        </property>
-       </widget>
-      </item>
-      <item row="10" column="0" colspan="3">
-       <widget class="QTextEdit" name="leDescriptLog"/>
-      </item>
-      <item row="6" column="1">
+      <item row="4" column="1">
        <widget class="QDateTimeEdit" name="dtSolutExec">
         <property name="minimumSize">
          <size>
@@ -349,7 +374,62 @@
         </property>
        </widget>
       </item>
-      <item row="6" column="2">
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_18">
+        <property name="text">
+         <string>Решение</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2">
+       <widget class="ComboBoxForDB" name="cbEquip"/>
+      </item>
+      <item row="0" column="2">
+       <widget class="QPushButton" name="CurrDTPaste">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Вставить
+текущее</string>
+        </property>
+       </widget>
+      </item>
+      <item row="5" column="2">
+       <widget class="QPushButton" name="SolDTDelete">
+        <property name="maximumSize">
+         <size>
+          <width>50</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Удалить
+время</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Дата и время &lt;br/&gt;снятия показаний&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QLabel" name="label_19">
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Дата и время&lt;br/&gt;решения&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2">
+       <widget class="ComboBoxForDB" name="cbSolut"/>
+      </item>
+      <item row="4" column="2">
        <widget class="QPushButton" name="SolDTPaste">
         <property name="maximumSize">
          <size>
@@ -363,57 +443,64 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1" colspan="2">
-       <widget class="ComboBoxForDB" name="cbEquip"/>
+      <item row="7" column="0" colspan="3">
+       <widget class="QTextEdit" name="leDescriptLog"/>
       </item>
-      <item row="4" column="1" colspan="2">
-       <widget class="ComboBoxForDB" name="cbBreak"/>
-      </item>
-      <item row="4" column="0">
-       <widget class="QLabel" name="label_17">
+     </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGroupBox" name="gbBI">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>261</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Бортовое изделие</string>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_7">
+    <item row="0" column="0">
+     <layout class="QFormLayout" name="formLayout_5">
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_13">
         <property name="text">
-         <string>Ошибка</string>
+         <string>КА</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="0" column="1">
+       <widget class="ComboBoxForDB" name="cbBIKA"/>
+      </item>
+      <item row="2" column="0">
        <widget class="QLabel" name="label_16">
         <property name="text">
-         <string>Состояние</string>
+         <string>Название</string>
         </property>
        </widget>
       </item>
-      <item row="5" column="0">
-       <widget class="QLabel" name="label_18">
-        <property name="text">
-         <string>Решение</string>
+      <item row="2" column="1">
+       <widget class="QLineEdit" name="leNameBI">
+        <property name="maxLength">
+         <number>50</number>
         </property>
        </widget>
       </item>
-      <item row="3" column="1" colspan="2">
-       <widget class="ComboBoxForDB" name="cbCond"/>
-      </item>
-      <item row="7" column="1">
-       <widget class="QLineEdit" name="ledtSolutExec">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="text">
-         <string>NULL</string>
+      <item row="1" column="1">
+       <widget class="QLineEdit" name="leBISerial">
+        <property name="maxLength">
+         <number>15</number>
         </property>
        </widget>
       </item>
-      <item row="7" column="2">
-       <widget class="QPushButton" name="SolDTDelete">
-        <property name="maximumSize">
-         <size>
-          <width>50</width>
-          <height>30</height>
-         </size>
-        </property>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_17">
         <property name="text">
-         <string>Удалить
-время</string>
+         <string>Серийный
+номер</string>
         </property>
        </widget>
       </item>

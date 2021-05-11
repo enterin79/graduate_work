@@ -29,7 +29,6 @@ public:
     bool setForeignKey(const QString *id, const QString *name, QSqlTableModel *temp, QString typeofkey="INT");
 signals:
     void dataChanged();
-private:
     void setData(QVariant value);
 };
 

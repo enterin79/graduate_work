@@ -1,3 +1,4 @@
+//Это не относится к текущей версии проекта
 #include "filetablemodel.h"
 
 FileTableModel::FileTableModel(QObject *parent, QSqlDatabase db): QSqlTableModel(parent, db)

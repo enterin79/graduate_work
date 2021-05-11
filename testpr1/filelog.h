@@ -4,12 +4,14 @@
 #include <QWidget>
 #include <QFileDialog>
 #include "filetablemodel.h"
-#include <QSqlDatabase>
-#include <QSqlRecord>
 #include <QMessageBox>
 #include <QtSql>
 #include <QDesktopServices>
 #include <QClipboard>
+#include <upgradedmodel.h>
+#include <QDataWidgetMapper>
+#include "logger.h"
+#include "Enumexec.h"
 
 namespace Ui {
 class filelog;
@@ -22,16 +24,16 @@ class filelog : public QDialog
 public:
     explicit filelog(QWidget *parent = nullptr);
     void setLog(int idLog, QSqlDatabase *db);
+    int getFileID(QByteArray *path);
     ~filelog();
-    FileTableModel *filetable;
+
+    UpgradedModel *filetable;
+    QDataWidgetMapper *tablemapper;
     int idLog;
+    int idFile;
 
-private slots:
+public slots:
     void on_selectFile_clicked();
-
-    void on_addFile_clicked();
-
-
 
     void on_openFile_clicked();
 
@@ -39,8 +41,15 @@ private slots:
 
     void on_copy_clicked();
 
+    void on_saveParm_clicked();
+
+    void on_tvFiles_doubleClicked(const QModelIndex &index);
+
+    void on_newRow_clicked();
+
 private:
     Ui::filelog *ui;
+
 };
 
 #endif // FILELOG_H
