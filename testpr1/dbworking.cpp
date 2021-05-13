@@ -26,7 +26,7 @@ Enumerr dbWorking::connection()
 {
      db = QSqlDatabase::addDatabase("QPSQL");
      db.setHostName("127.0.0.1");
-     db.setDatabaseName("testing");
+     db.setDatabaseName("BlokStatus");
      db.setUserName("postgres");
      db.setPassword("admin123");
      if(db.open()) {//Выполнение подключения к базе данных с текущими реквизитами

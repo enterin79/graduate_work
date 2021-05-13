@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>282</width>
+    <width>281</width>
     <height>314</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>264</width>
-    <height>293</height>
+    <width>281</width>
+    <height>314</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1000</width>
-    <height>1000</height>
+    <width>281</width>
+    <height>314</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -361,9 +361,19 @@
           <hour>0</hour>
           <minute>0</minute>
           <second>0</second>
-          <year>1752</year>
+          <year>1900</year>
           <month>9</month>
           <day>14</day>
+         </datetime>
+        </property>
+        <property name="minimumDateTime">
+         <datetime>
+          <hour>0</hour>
+          <minute>0</minute>
+          <second>0</second>
+          <year>1900</year>
+          <month>1</month>
+          <day>1</day>
          </datetime>
         </property>
         <property name="displayFormat">
@@ -505,6 +515,35 @@
        </widget>
       </item>
      </layout>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QGroupBox" name="gbFile">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>261</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Файл</string>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QTextEdit" name="leFilePath">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="ChooseFile">
+      <property name="text">
+       <string>Выбрать файл</string>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

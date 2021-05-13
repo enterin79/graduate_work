@@ -105,7 +105,7 @@ void MainWindow::createEdit(QModelIndex index)
     if(!edit->setModelTable(dbworking->generalmodel,
                             dbworking->currtable,
                             dbworking->generalmodel->index(index.row(),
-                            dbworking->generalmodel->fieldIndex("idRec")).data().toInt(),
+                            dbworking->generalmodel->fieldIndex("idrec")).data().toInt(),
                             &dbworking->db)){//Передача в форму реактирования данных о текущей таблице
       criticalError("Невозможно редактировать запись.");
     }
@@ -134,7 +134,8 @@ void MainWindow::setScroll()
  * forgnprimkey - массив названий полей первичного ключа для внешних таблиц;
  * forgntext - массив названий полей внешней таблицы, данные из которых должны быть отобрадены вместо внешних ключей;
  * relstatus - количество соединений с внешними таблицами;
- * hideFKcol - отметка о сокрытии 1 поля таблицы (как правило, ключевого поля).
+ * hideFKcol - отметка о сокрытии 1 поля таблицы (как правило, ключевого поля);
+ * i - счетчик для перебора названий полей таблицы и их синонимов.
 */
 void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
 {
@@ -159,29 +160,29 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
         dbworking->fieldsynonims.push_back("Дата выполнения");
         dbworking->fieldsynonims.push_back("Описание");
 
-        primkey="DateRec";
+        primkey="daterec";
 
-        forgnkey.push_back("SolId");
-        forgntable.push_back("Solution");
-        forgnprimkey.push_back("idSol");
-        forgntext.push_back("NameSol");
+        forgnkey.push_back("solid");
+        forgntable.push_back("solution");
+        forgnprimkey.push_back("idsol");
+        forgntext.push_back("namesol");
 
         relstatus=1;
 
-        dbworking->tempquery="select idRec, DateRec, NameKA, NameBI, NameBlok, SerialNumberBlok, NameSol, DateSol, DescrRec "
-        "from ReceptionData "
-        "left join Blok on idBlok=BlokId "
-        "left join BI on idBI=BIid "
-        "left join KA on NumberKA=KANumber "
-        "left join Solution on idSol=SolId ";
-        dbworking->temporder="order by DateRec asc";
+        dbworking->tempquery="select idrec, daterec, nameka, namebi, nameblok, serialnumberblok, namesol, datesol, descrrec "
+        "from receptiondata "
+        "left join blok on idblok=blokid "
+        "left join bi on idbi=biid "
+        "left join ka on numberka=kanumber "
+        "left join solution on idsol=solid ";
+        dbworking->temporder="order by daterec asc";
 
     }
     else if(nametable==KA){
         dbworking->fieldsynonims.push_back("Номер");
         dbworking->fieldsynonims.push_back("Название");
         dbworking->fieldsynonims.push_back("Дата запуска");
-        primkey="LaunchDateKA";
+        primkey="launchdateka";
         hideFKcol=false;
     }
     else if(nametable==BI){
@@ -189,10 +190,10 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
         dbworking->fieldsynonims.push_back("Название");
         dbworking->fieldsynonims.push_back("Входит в");
         primkey="idBI";
-        forgnkey.push_back("KANumber");
-        forgntable.push_back("KA");
-        forgnprimkey.push_back("NumberKA");
-        forgntext.push_back("NameKA");
+        forgnkey.push_back("kanumber");
+        forgntable.push_back("ka");
+        forgnprimkey.push_back("numberka");
+        forgntext.push_back("nameka");
 
         relstatus=1;
         ui->tvModel->setItemDelegate(new QSqlRelationalDelegate(ui->tvModel));
@@ -201,22 +202,26 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
         dbworking->fieldsynonims.push_back("Серийный номер");
         dbworking->fieldsynonims.push_back("Название");
         dbworking->fieldsynonims.push_back("БИ");
-        primkey="idBlok";
-        dbworking->tempquery="select idBlok, SerialNumberBlok, NameBlok, NameBI, NameKA "
-        "from Blok "
-        "left join BI on idBI=BIid "
-        "left join KA on NumberKA=KANumber ";
-        dbworking->temporder="order by idBlok asc";
+        primkey="idblok";
+        dbworking->tempquery="select idblok, serialnumberblok, nameblok, namebi, nameka "
+        "from blok "
+        "left join bi on idbi=biid "
+        "left join ka on numberka=kanumber ";
+        dbworking->temporder="order by idblok asc";
     }
     else if(nametable==SOL){
         dbworking->fieldsynonims.push_back("Название");
         dbworking->fieldsynonims.push_back("Описание");
-        primkey="idSol";
+        primkey="idsol";
     }
     else if(nametable==PARM){
         dbworking->fieldsynonims.push_back("Название");
         dbworking->fieldsynonims.push_back("Описание");
-        primkey="idParm";
+        primkey="idparm";
+    }
+    else if(nametable==FILE){
+        dbworking->fieldsynonims.push_back("Путь");
+        primkey="idfile";
     }
     else {
         criticalError("Ошибка загрузки таблицы!");//Попытка переподключения при обнаружении неизвестной таблицы
@@ -266,6 +271,7 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
         ui->tvModel->showColumn(0);
     }
     ui->tvModel->resizeColumnsToContents();//Настройка размеров ячеек таблицы
+    ui->tvModel->resizeRowsToContents();
 
     for(int i=hideFKcol; i<fields.count();i++){//Заполнение элемента определения столбца для операции выборки текущими названиями полей
         ui->cbSelectColumn->addItem(dbworking->fieldsynonims[i-hideFKcol], fields.fieldName(i));//dbworking->fieldsynonims[i-hideFKcol] fields.fieldName(i)
@@ -430,7 +436,7 @@ void MainWindow::on_LogSlider_valueChanged(int value)
     }
     scrollingValue=value;
     //Загрузка записей, соответствующих текущему временному промежутку
-    dbworking->loadTemp(1, "where DateRec<='"+selectedDT->toString("yyyy-MM-ddThh:mm:ss.zzz")+"' and DateRec>='"+ui->dtScroll->dateTime().toString("yyyy-MM-ddThh:mm:ss.zzz")+"'");
+    dbworking->loadTemp(1, "where daterec<='"+selectedDT->toString("yyyy-MM-ddThh:mm:ss.zzz")+"' and daterec>='"+ui->dtScroll->dateTime().toString("yyyy-MM-ddThh:mm:ss.zzz")+"'");
     ui->tvModel->scrollTo(dbworking->generalmodel->index(dbworking->generalmodel->rowCount()-1, 1));
     ui->timelabel->setText(selectedDT->toString("dd.MM.yyyy hh:mm:ss"));
 }

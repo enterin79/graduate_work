@@ -19,6 +19,7 @@ class Edit;
  * Позволяет редактировать данные данные записи
  *
  * Поле:
+ * ui - экемпляр формы графического интерфейса;
  * tablemapper - элемент для связывания данных из таблицы с элементами формы редактирования.
  *
  * Методы:
@@ -35,8 +36,9 @@ class Edit;
  * on_SolDTDelete_clicked - событие для удаления значения даты;
  * on_btLogFile_clicked - событие загрузки записей из таблицы "Состояние параметров" для выбранной записи таблицы "Прием данных";
  * on_cbBlokKA_currentIndexChanged - событие для загрзки списка БИ, соответствующих указанному КА;
- * on_cbBlokBI_currentIndexChanged - событие изменения данных в элементе, свзанном с таблицей "Блок";
- * on_leBlokBISerial_textChanged - событие для загрузки данных о родительских устройствах по данным выбранной записи таблицы "Блок".
+ * on_cbBlokBI_currentIndexChanged - событие изменения данных в элементе, свзанном со столбцом родительского устройства в таблице "Блок";
+ * on_leBlokBISerial_textChanged - событие для загрузки данных о родительских устройствах по данным выбранной записи таблицы "Блок";
+ * on_ChooseFile_clicked - событие для выбора загружаемого файла.
 */
 class Edit : public QDialog
 {
@@ -67,6 +69,9 @@ public slots:
     void on_cbBlokKA_currentIndexChanged(int index);
     void on_cbBlokBI_currentIndexChanged(int index);
     void on_leBlokBISerial_textChanged(const QString &arg1);
+
+private slots:
+    void on_ChooseFile_clicked();
 
 private:
     Ui::Edit *ui;

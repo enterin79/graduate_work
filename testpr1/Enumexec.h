@@ -5,9 +5,10 @@
 #define BLOK "Blok"
 #define KA "KA"
 #define BI "BI"
-#define PARM "ParameterOfBlock"
+#define PARM "ParameterOfBloсk"
 #define SOL "Solution"
 #define PARMLOG "ConditionOfParm"
+#define PARMLOG_L "conditionofparm"
 #define FILE "FileOfParameter"
 
 enum class Enumerr:int{

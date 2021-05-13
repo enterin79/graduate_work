@@ -21,8 +21,9 @@ ComboBoxForDB::ComboBoxForDB(QWidget *parent):QComboBox(parent)
 */
 bool ComboBoxForDB::setForeignKey(const QString *id, const QString *name, QSqlTableModel *temp, QString typeofkey)
 {
-    temp->sort(temp->fieldIndex(*id), Qt::AscendingOrder);
+
     if(temp->rowCount()>0){    //Проверка наличия записей в предоставленной таблице
+        temp->sort(temp->fieldIndex(*id), Qt::AscendingOrder);
         if(typeofkey=="INT"){   //Выбор типа значения
             for(int i=0; i<temp->rowCount();i++){
                addItem(temp->record(i).value(temp->fieldIndex(*name)).toString(),  //Чтение соответствующих данных из таблицы
@@ -57,7 +58,7 @@ bool ComboBoxForDB::setForeignKey(const QString *id, const QString *name, QSqlTa
  * Локальная переменная:
  * row - номер строки в наборе данных элемента.
 */
-void ComboBoxForDB::setData(QVariant value)
+void ComboBoxForDB::newSetData(QVariant value)
 {
     int row=findData(value.toInt());//Опредение номера строки в наборе данных, сходя из загружаемого текста
     if(row<0){//Повтор поиска номера строки, исходя из загружаемых данных

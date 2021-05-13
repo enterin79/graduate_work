@@ -23,13 +23,13 @@
 class ComboBoxForDB : public QComboBox
 {
     Q_OBJECT
-    Q_PROPERTY(QVariant Data READ currentData WRITE setData NOTIFY DataChanged USER true)
+    Q_PROPERTY(QVariant Data READ currentData WRITE newSetData NOTIFY dataChanged USER true)
 public:
     ComboBoxForDB(QWidget *parent=nullptr);
     bool setForeignKey(const QString *id, const QString *name, QSqlTableModel *temp, QString typeofkey="INT");
+    void newSetData(QVariant value);
 signals:
     void dataChanged();
-    void setData(QVariant value);
 };
 
 #endif // COMBOBOXFORDB_H

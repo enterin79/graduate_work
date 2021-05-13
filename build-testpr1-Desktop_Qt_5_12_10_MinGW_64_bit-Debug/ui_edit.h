@@ -21,6 +21,7 @@
 #include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QTextEdit>
+#include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 #include "comboboxfordb.h"
 
@@ -96,14 +97,18 @@ public:
     QLineEdit *leNameBI;
     QLineEdit *leBISerial;
     QLabel *label_17;
+    QGroupBox *gbFile;
+    QVBoxLayout *verticalLayout;
+    QTextEdit *leFilePath;
+    QPushButton *ChooseFile;
 
     void setupUi(QWidget *Edit)
     {
         if (Edit->objectName().isEmpty())
             Edit->setObjectName(QString::fromUtf8("Edit"));
-        Edit->resize(282, 314);
-        Edit->setMinimumSize(QSize(264, 293));
-        Edit->setMaximumSize(QSize(1000, 1000));
+        Edit->resize(281, 314);
+        Edit->setMinimumSize(QSize(281, 314));
+        Edit->setMaximumSize(QSize(281, 314));
         gbBlok = new QGroupBox(Edit);
         gbBlok->setObjectName(QString::fromUtf8("gbBlok"));
         gbBlok->setGeometry(QRect(10, 10, 261, 261));
@@ -328,7 +333,8 @@ public:
         dtSolutExec = new QDateTimeEdit(gbLog);
         dtSolutExec->setObjectName(QString::fromUtf8("dtSolutExec"));
         dtSolutExec->setMinimumSize(QSize(100, 0));
-        dtSolutExec->setDateTime(QDateTime(QDate(1752, 9, 14), QTime(0, 0, 0)));
+        dtSolutExec->setDateTime(QDateTime(QDate(1900, 9, 14), QTime(0, 0, 0)));
+        dtSolutExec->setMinimumDateTime(QDateTime(QDate(1900, 1, 1), QTime(0, 0, 0)));
         dtSolutExec->setCalendarPopup(true);
 
         gridLayout_5->addWidget(dtSolutExec, 4, 1, 1, 1);
@@ -426,6 +432,22 @@ public:
 
         gridLayout_7->addLayout(formLayout_5, 0, 0, 1, 1);
 
+        gbFile = new QGroupBox(Edit);
+        gbFile->setObjectName(QString::fromUtf8("gbFile"));
+        gbFile->setGeometry(QRect(10, 10, 261, 261));
+        verticalLayout = new QVBoxLayout(gbFile);
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
+        leFilePath = new QTextEdit(gbFile);
+        leFilePath->setObjectName(QString::fromUtf8("leFilePath"));
+        leFilePath->setReadOnly(true);
+
+        verticalLayout->addWidget(leFilePath);
+
+        ChooseFile = new QPushButton(gbFile);
+        ChooseFile->setObjectName(QString::fromUtf8("ChooseFile"));
+
+        verticalLayout->addWidget(ChooseFile);
+
 
         retranslateUi(Edit);
 
@@ -475,6 +497,8 @@ public:
         label_16->setText(QApplication::translate("Edit", "\320\235\320\260\320\267\320\262\320\260\320\275\320\270\320\265", nullptr));
         label_17->setText(QApplication::translate("Edit", "\320\241\320\265\321\200\320\270\320\271\320\275\321\213\320\271\n"
 "\320\275\320\276\320\274\320\265\321\200", nullptr));
+        gbFile->setTitle(QApplication::translate("Edit", "\320\244\320\260\320\271\320\273", nullptr));
+        ChooseFile->setText(QApplication::translate("Edit", "\320\222\321\213\320\261\321\200\320\260\321\202\321\214 \321\204\320\260\320\271\320\273", nullptr));
     } // retranslateUi
 
 };
