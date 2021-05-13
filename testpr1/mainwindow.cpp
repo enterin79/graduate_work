@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+
 /*Конструктор класса по умолчанию
  *
  * Формальный параметр:
@@ -43,7 +44,7 @@ MainWindow::~MainWindow()
 bool MainWindow::saveChanges(QString message)
 {
     if(dbworking->saveChanges()==Enumerr::SAVINGOK){//Проверка выполнения сохранения изменений
-        if(nametable==LOG||nametable==BLOK) {//Загрузка представления для необходимых таблиц
+        if(nametable==_::LOG||nametable==_::BLOK) {//Загрузка представления для необходимых таблиц
             dbworking->loadTemp(1);
         }
         ui->statusbar->showMessage("Операция ("+message+") выполнена успешно "+QTime::currentTime().toString("HH:mm:ss"));
@@ -105,7 +106,7 @@ void MainWindow::createEdit(QModelIndex index)
     if(!edit->setModelTable(dbworking->generalmodel,
                             dbworking->currtable,
                             dbworking->generalmodel->index(index.row(),
-                            dbworking->generalmodel->fieldIndex("idrec")).data().toInt(),
+                            dbworking->generalmodel->fieldIndex(_::LOGID)).data().toInt(),
                             &dbworking->db)){//Передача в форму реактирования данных о текущей таблице
       criticalError("Невозможно редактировать запись.");
     }
@@ -153,75 +154,75 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
     on_Retry_clicked();
     ui->cbSelectColumn->clear();
 
-    if(nametable==LOG){//Определение таблицы и настройка ее отображения
+    if(nametable==_::LOG){//Определение таблицы и настройка ее отображения
         dbworking->fieldsynonims.push_back("Дата и время получения");
         dbworking->fieldsynonims.push_back("Блок");
         dbworking->fieldsynonims.push_back("Решение");
         dbworking->fieldsynonims.push_back("Дата выполнения");
         dbworking->fieldsynonims.push_back("Описание");
 
-        primkey="daterec";
+        primkey=_::LOGDATE;
 
-        forgnkey.push_back("solid");
-        forgntable.push_back("solution");
-        forgnprimkey.push_back("idsol");
-        forgntext.push_back("namesol");
+        forgnkey.push_back(_::LOGSOL);
+        forgntable.push_back(_::SOL);
+        forgnprimkey.push_back(_::SOLID);
+        forgntext.push_back(_::SOLNAME);
 
         relstatus=1;
 
-        dbworking->tempquery="select idrec, daterec, nameka, namebi, nameblok, serialnumberblok, namesol, datesol, descrrec "
-        "from receptiondata "
-        "left join blok on idblok=blokid "
-        "left join bi on idbi=biid "
-        "left join ka on numberka=kanumber "
-        "left join solution on idsol=solid ";
-        dbworking->temporder="order by daterec asc";
+        dbworking->tempquery="select "+_::LOGID+", "+_::LOGDATE+", "+_::KANAME+", "+_::BINAME+", "+_::BLOKNAME+", "+_::BLOKSERIAL+", "+_::SOLNAME+", "+_::LOGSOLDATE+", "+_::LOGDESC+" "
+        "from "+_::LOG+" "
+        "left join "+_::BLOK+" on "+_::BLOKID+"="+_::LOGBLOK+" "
+        "left join "+_::BI+" on "+_::BIID+"="+_::BLOKBI+" "
+        "left join "+_::KA+" on "+_::KAID+"="+_::BIKA+" "
+        "left join "+_::SOL+" on "+_::SOLID+"="+_::LOGSOL+" ";
+        dbworking->temporder="order by "+_::LOGDATE+" asc";
 
     }
-    else if(nametable==KA){
+    else if(nametable==_::KA){
         dbworking->fieldsynonims.push_back("Номер");
         dbworking->fieldsynonims.push_back("Название");
         dbworking->fieldsynonims.push_back("Дата запуска");
-        primkey="launchdateka";
+        primkey=_::KADATE;
         hideFKcol=false;
     }
-    else if(nametable==BI){
+    else if(nametable==_::BI){
         dbworking->fieldsynonims.push_back("Серийный номер");
         dbworking->fieldsynonims.push_back("Название");
         dbworking->fieldsynonims.push_back("Входит в");
-        primkey="idBI";
-        forgnkey.push_back("kanumber");
-        forgntable.push_back("ka");
-        forgnprimkey.push_back("numberka");
-        forgntext.push_back("nameka");
+        primkey=_::BIID;
+        forgnkey.push_back(_::BIKA);
+        forgntable.push_back(_::KA);
+        forgnprimkey.push_back(_::KAID);
+        forgntext.push_back(_::KANAME);
 
         relstatus=1;
         ui->tvModel->setItemDelegate(new QSqlRelationalDelegate(ui->tvModel));
     }
-    else if(nametable==BLOK){
+    else if(nametable==_::BLOK){
         dbworking->fieldsynonims.push_back("Серийный номер");
         dbworking->fieldsynonims.push_back("Название");
         dbworking->fieldsynonims.push_back("БИ");
-        primkey="idblok";
-        dbworking->tempquery="select idblok, serialnumberblok, nameblok, namebi, nameka "
-        "from blok "
-        "left join bi on idbi=biid "
-        "left join ka on numberka=kanumber ";
-        dbworking->temporder="order by idblok asc";
+        primkey=_::BLOKID;
+        dbworking->tempquery="select "+_::BLOKID+", "+_::BLOKSERIAL+", "+_::BLOKNAME+", "+_::BINAME+", "+_::KANAME+" "
+        "from "+_::BLOK+" "
+        "left join "+_::BI+" on "+_::BIID+"="+_::BLOKBI+" "
+        "left join "+_::KA+" on "+_::KAID+"="+_::BIKA+" ";
+        dbworking->temporder="order by "+_::BLOKID+" asc";
     }
-    else if(nametable==SOL){
+    else if(nametable==_::SOL){
         dbworking->fieldsynonims.push_back("Название");
         dbworking->fieldsynonims.push_back("Описание");
-        primkey="idsol";
+        primkey=_::SOLID;
     }
-    else if(nametable==PARM){
+    else if(nametable==_::PARM){
         dbworking->fieldsynonims.push_back("Название");
         dbworking->fieldsynonims.push_back("Описание");
-        primkey="idparm";
+        primkey=_::PARMID;
     }
-    else if(nametable==FILE){
+    else if(nametable==_::FILELOG){
         dbworking->fieldsynonims.push_back("Путь");
-        primkey="idfile";
+        primkey=_::FILELOGID;
     }
     else {
         criticalError("Ошибка загрузки таблицы!");//Попытка переподключения при обнаружении неизвестной таблицы
@@ -233,15 +234,15 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
         return;
     }
 
-    if(nametable!=LOG&&nametable!=BLOK){//Определение отображаемых данных
+    if(nametable!=_::LOG&&nametable!=_::BLOK){//Определение отображаемых данных
         ui->tvModel->setModel(dbworking->generalmodel);//Вывод исходной таблицы
         fields=dbworking->generalmodel->record();//Выгрузка исходных названий полей таблицы
     }
     else{
-        if (nametable==BLOK){//Настройка представлений для определенных таблиц
+        if (nametable==_::BLOK){//Настройка представлений для определенных таблиц
             dbworking->fieldsynonims.push_back("КА");
         }
-        else if(nametable==LOG){
+        else if(nametable==_::LOG){
             dbworking->fieldsynonims.clear();
             dbworking->fieldsynonims.push_back("Дата и время получения");
             dbworking->fieldsynonims.push_back("КА");
@@ -278,7 +279,7 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
         ui->cbSelectColumn->setCurrentIndex(0);
     }
 
-    if(nametable==LOG){//Настройка отображения скроллера
+    if(nametable==_::LOG){//Настройка отображения скроллера
         ui->gbTimeScroll->show();
         ui->dtScroll->setDateTime(QDateTime::currentDateTime());
         ui->LogSlider->setValue(0);
@@ -302,7 +303,7 @@ void MainWindow::on_RevertButton_clicked()
 {
     dbworking->generalmodel->revertAll();
     dbworking->generalmodel->select();
-    if(nametable==LOG||nametable==BLOK) {
+    if(nametable==_::LOG||nametable==_::BLOK) {
         dbworking->loadTemp(1);
     }
 }
@@ -320,7 +321,7 @@ void MainWindow::on_RevertButton_clicked()
 void MainWindow::on_tvModel_doubleClicked(const QModelIndex &index)
 {
     QModelIndex startindex=index;
-    if(nametable==LOG||nametable==BLOK){//Выполнение поиска индекса в исходной таблице при отображении представления
+    if(nametable==_::LOG||nametable==_::BLOK){//Выполнение поиска индекса в исходной таблице при отображении представления
         QVariant id=dbworking->tempmodel->index(index.row(), 0).data();
         startindex=dbworking->generalmodel->index(0, 0);
         QModelIndexList indexlist=dbworking->generalmodel->match(startindex, Qt::DisplayRole, id);
@@ -388,7 +389,7 @@ void MainWindow::on_Search_clicked()
     QString selectionquery;
     int colcount=0;
     selectionquery='"'+ui->cbSelectColumn->currentData().toString()+'"'+"='"+ui->teDecript->toPlainText()+"'";
-    if(nametable!=LOG&&nametable!=BLOK){
+    if(nametable!=_::LOG&&nametable!=_::BLOK){
         dbworking->generalmodel->setFilter(selectionquery.toUtf8());    //Выполнение выборки
         colcount=dbworking->generalmodel->rowCount();
     }
@@ -436,7 +437,7 @@ void MainWindow::on_LogSlider_valueChanged(int value)
     }
     scrollingValue=value;
     //Загрузка записей, соответствующих текущему временному промежутку
-    dbworking->loadTemp(1, "where daterec<='"+selectedDT->toString("yyyy-MM-ddThh:mm:ss.zzz")+"' and daterec>='"+ui->dtScroll->dateTime().toString("yyyy-MM-ddThh:mm:ss.zzz")+"'");
+    dbworking->loadTemp(1, "where "+_::LOGDATE+"<='"+selectedDT->toString("yyyy-MM-ddThh:mm:ss.zzz")+"' and "+_::LOGDATE+">='"+ui->dtScroll->dateTime().toString("yyyy-MM-ddThh:mm:ss.zzz")+"'");
     ui->tvModel->scrollTo(dbworking->generalmodel->index(dbworking->generalmodel->rowCount()-1, 1));
     ui->timelabel->setText(selectedDT->toString("dd.MM.yyyy hh:mm:ss"));
 }

@@ -45,18 +45,18 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
         tablemapper=new QDataWidgetMapper(this);
         tablemapper->setModel(model);
 
-        if(table==BLOK){ //Соединение элементов формы редактирования с данными таблицы в зависимости от набора полей этой таблицы
+        if(table==_::BLOK){ //Соединение элементов формы редактирования с данными таблицы в зависимости от набора полей этой таблицы
             QSqlTableModel *temptable=new QSqlTableModel(this, *db);
-            temptable->setTable(KA);
+            temptable->setTable(_::KA);
             temptable->select();
-            id="numberka";
-            name="nameka";
+            id=_::KAID;
+            name=_::KANAME;
             ui->cbBlokKA->setForeignKey(&id, &name, temptable, "STR");
             ui->cbBlokKA->setCurrentIndex(-1);
 
-            tablemapper->addMapping(ui->leNameBlok, model->fieldIndex("nameblok"));
-            tablemapper->addMapping(ui->leBlokSerial, model->fieldIndex("serialnumberblok"));
-            tablemapper->addMapping(ui->leBlokBISerial, model->fieldIndex("biid"));
+            tablemapper->addMapping(ui->leNameBlok, model->fieldIndex(_::BLOKNAME));
+            tablemapper->addMapping(ui->leBlokSerial, model->fieldIndex(_::BLOKSERIAL));
+            tablemapper->addMapping(ui->leBlokBISerial, model->fieldIndex(_::BLOKBI));
 
             //ui->leBlokBISerial->hide();
             //ui->leBlokBISerialCurr->hide();
@@ -69,15 +69,15 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
             ui->gbBI->hide();
             ui->gbFile->hide();
         }
-        else if(table==BI){
-            id="numberka";
-            name="nameka";
-            ui->cbBIKA->setForeignKey(&id, &name, model->relationModel(model->fieldIndex("nameka")));
+        else if(table==_::BI){
+            id=_::KAID;
+            name=_::KANAME;
+            ui->cbBIKA->setForeignKey(&id, &name, model->relationModel(model->fieldIndex(_::KANAME)));
             ui->cbBIKA->setCurrentIndex(-1);
 
-            tablemapper->addMapping(ui->leBISerial, model->fieldIndex("serialnumberbi"));
-            tablemapper->addMapping(ui->leNameBI, model->fieldIndex("namebi"));
-            tablemapper->addMapping(ui->cbBIKA, model->fieldIndex("nameka"));
+            tablemapper->addMapping(ui->leBISerial, model->fieldIndex(_::BISERIAL));
+            tablemapper->addMapping(ui->leNameBI, model->fieldIndex(_::BINAME));
+            tablemapper->addMapping(ui->cbBIKA, model->fieldIndex(_::KANAME));
 
             ui->gbParm->hide();
             ui->gbLog->hide();
@@ -87,9 +87,9 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
             ui->gbBI->show();
             ui->gbFile->hide();
         }
-        else if(table==SOL){
-            tablemapper->addMapping(ui->leNameSolut, model->fieldIndex("namesol"));
-            tablemapper->addMapping(ui->leDescriptSolut, model->fieldIndex("descrsol"), "plainText");
+        else if(table==_::SOL){
+            tablemapper->addMapping(ui->leNameSolut, model->fieldIndex(_::SOLNAME));
+            tablemapper->addMapping(ui->leDescriptSolut, model->fieldIndex(_::SOLDESC), "plainText");
 
             ui->gbParm->hide();
             ui->gbLog->hide();
@@ -99,9 +99,9 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
             ui->gbBI->hide();
             ui->gbFile->hide();
         }
-        else if(table==PARM){
-            tablemapper->addMapping(ui->leNameParm, model->fieldIndex("nameparm"));
-            tablemapper->addMapping(ui->leDescriptParm, model->fieldIndex("descrparm"), "plainText");
+        else if(table==_::PARM){
+            tablemapper->addMapping(ui->leNameParm, model->fieldIndex(_::PARMNAME));
+            tablemapper->addMapping(ui->leDescriptParm, model->fieldIndex(_::PARMDESC), "plainText");
 
             ui->gbParm->show();
             ui->gbLog->hide();
@@ -111,10 +111,10 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
             ui->gbBI->hide();
             ui->gbFile->hide();
         }
-        else if(table==KA){
-            tablemapper->addMapping(ui->leNumberKA, model->fieldIndex("numberka"));
-            tablemapper->addMapping(ui->leNameKA, model->fieldIndex("nameka"));
-            tablemapper->addMapping(ui->dtLaunchKA, model->fieldIndex("launchdateka"));
+        else if(table==_::KA){
+            tablemapper->addMapping(ui->leNumberKA, model->fieldIndex(_::KAID));
+            tablemapper->addMapping(ui->leNameKA, model->fieldIndex(_::KANAME));
+            tablemapper->addMapping(ui->dtLaunchKA, model->fieldIndex(_::KADATE));
 
             ui->gbParm->hide();
             ui->gbLog->hide();
@@ -124,26 +124,26 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
             ui->gbBI->hide();
             ui->gbFile->hide();
         }
-        else if(table==LOG){
+        else if(table==_::LOG){
 
             QSqlTableModel *temptable=new QSqlTableModel(this, *db);
-            temptable->setTable(BLOK);
+            temptable->setTable(_::BLOK);
             temptable->select();
-            id="idblok";
-            name="serialnumberblok";
+            id=_::BLOKID;
+            name=_::BLOKSERIAL;
             ui->cbEquip->setForeignKey(&id, &name, temptable);
 
-            id="idsol";
-            name="namesol";
+            id=_::SOLID;
+            name=_::SOLNAME;
             ui->cbSolut->addItem("<нет>", "NULL");
-            ui->cbSolut->setForeignKey(&id, &name, model->relationModel(model->fieldIndex("namesol")));
+            ui->cbSolut->setForeignKey(&id, &name, model->relationModel(model->fieldIndex(_::SOLNAME)));
 
 
-            tablemapper->addMapping(ui->dtCurrTime, model->fieldIndex("daterec"));
-            tablemapper->addMapping(ui->cbEquip, model->fieldIndex("blokid"));
-            tablemapper->addMapping(ui->cbSolut, model->fieldIndex("namesol"));
-            tablemapper->addMapping(ui->leDescriptLog, model->fieldIndex("descrrec"), "plainText");
-            tablemapper->addMapping(ui->ledtSolutExec, model->fieldIndex("datesol"));
+            tablemapper->addMapping(ui->dtCurrTime, model->fieldIndex(_::LOGDATE));
+            tablemapper->addMapping(ui->cbEquip, model->fieldIndex(_::LOGBLOK));
+            tablemapper->addMapping(ui->cbSolut, model->fieldIndex(_::SOLNAME));
+            tablemapper->addMapping(ui->leDescriptLog, model->fieldIndex(_::LOGDESC), "plainText");
+            tablemapper->addMapping(ui->ledtSolutExec, model->fieldIndex(_::LOGSOLDATE));
 
             ui->ledtSolutExec->hide();
 
@@ -155,8 +155,8 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
             ui->gbBI->hide();
             ui->gbFile->hide();
         }
-        else if(table==FILE){
-            tablemapper->addMapping(ui->leFilePath, model->fieldIndex("pathfile"), "plainText");
+        else if(table==_::FILELOG){
+            tablemapper->addMapping(ui->leFilePath, model->fieldIndex(_::FILELOGNAME), "plainText");
 
             ui->gbParm->hide();
             ui->gbLog->hide();
@@ -167,7 +167,7 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
             ui->gbFile->show();
         }
         else return 0;
-        if(table!=LOG){
+        if(table!=_::LOG){
             ui->btLogFile->hide();
         }
         else{
@@ -260,12 +260,12 @@ void Edit::on_cbBlokKA_currentIndexChanged(int index)
     if(index!=-1){//Выполнение загрузки, если КА выбран
         QString id, name;
         QSqlTableModel *temptable=new QSqlTableModel(this, *db);
-        temptable->setTable("bi");
+        temptable->setTable(_::BI);
         temptable->select();
-        temptable->setFilter("kanumber='"+ui->cbBlokKA->currentData().toString()+"'");
+        temptable->setFilter(QString(_::BIKA)+"='"+ui->cbBlokKA->currentData().toString()+"'");
         ui->cbBlokBI->clear();
-        id="idbi";
-        name="namebi";
+        id=_::BIID;
+        name=_::BINAME;
         ui->cbBlokBI->setForeignKey(&id, &name, temptable);
         ui->cbBlokBI->setCurrentIndex(-1);
         ui->cbBlokBI->newSetData(ui->leBlokBISerial->text());
@@ -293,10 +293,10 @@ void Edit::on_leBlokBISerial_textChanged(const QString &arg1)
         ui->cbBlokKA->setCurrentIndex(-1);
         QString name;
         QSqlTableModel *temptable=new QSqlTableModel(this, *db);
-        temptable->setTable("bi");
+        temptable->setTable(_::BI);
         temptable->select();
-        temptable->setFilter("idbi="+ui->leBlokBISerial->text());
-        name=temptable->index(0, temptable->fieldIndex("kanumber")).data().toString();
+        temptable->setFilter(QString(_::BIID)+"="+ui->leBlokBISerial->text());
+        name=temptable->index(0, temptable->fieldIndex(_::BIKA)).data().toString();
         ui->cbBlokKA->newSetData(name);
     }
 }

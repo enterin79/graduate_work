@@ -40,6 +40,7 @@ insert into Synonim(nametable, synonim) values
 #include <QScopedPointer>
 #include <QLoggingCategory>
 #include <QtGui>
+#include <DAT.h>
 /*Основная программа
  *
  * Глобальная переменная:

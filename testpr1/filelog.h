@@ -11,7 +11,8 @@
 #include <upgradedmodel.h>
 #include <QDataWidgetMapper>
 #include "logger.h"
-#include "Enumexec.h"
+#include "DAT.h"
+
 
 namespace Ui {
 class filelog;
@@ -46,6 +47,7 @@ public:
     explicit filelog(QWidget *parent = nullptr);
     void setLog(int idLog, QSqlDatabase *db);
     int getFileID(QByteArray *path);
+    void loadTable();
     ~filelog();
 
     UpgradedModel *filetable=nullptr;

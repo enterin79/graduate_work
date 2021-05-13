@@ -10,6 +10,7 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    DAT.cpp \
     comboboxdelegate.cpp \
     comboboxfordb.cpp \
     dbworking.cpp \
@@ -22,7 +23,7 @@ SOURCES += \
     upgradedmodel.cpp
 
 HEADERS += \
-    Enumexec.h \
+    DAT.h \
     comboboxdelegate.h \
     comboboxfordb.h \
     dbworking.h \

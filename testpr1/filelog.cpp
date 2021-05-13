@@ -28,15 +28,7 @@ void filelog::setLog(int idLog, QSqlDatabase *db)
     this->idLog=idLog;
 
     filetable=new UpgradedModel(this, *db);//Загрузка таблицы
-    filetable->setTable(PARMLOG_L);
-    filetable->setJoinMode(QSqlRelationalTableModel::LeftJoin);
-    filetable->setRelation(filetable->fieldIndex("parmid"),
-                           QSqlRelation(PARM, "idparm", "nameparm"));
-    filetable->setRelation(filetable->fieldIndex("fileid"),
-                           QSqlRelation(FILE, "idfile", "pathfile"));
-    filetable->select();
-    filetable->setFilter("recid="+QString("%1").arg(idLog));
-    filetable->setEditStrategy(QSqlTableModel::OnManualSubmit);
+    loadTable();
 
     filetable->setHeaderData(2, Qt::Orientation::Horizontal, "Параметр");//Настройка внешнего вида таблицы
     filetable->setHeaderData(3, Qt::Orientation::Horizontal, "Состояние");
@@ -44,28 +36,28 @@ void filelog::setLog(int idLog, QSqlDatabase *db)
     ui->tvFiles->setModel(filetable);
     ui->tvFiles->horizontalHeader()->show();
     ui->tvFiles->verticalHeader()->show();
-    ui->tvFiles->hideColumn(filetable->fieldIndex("idcond"));
-    ui->tvFiles->hideColumn(filetable->fieldIndex("recid"));
+    ui->tvFiles->hideColumn(filetable->fieldIndex(_::PARMLOGID));
+    ui->tvFiles->hideColumn(filetable->fieldIndex(_::PARMLOGLOG));
 
     tablemapper=new QDataWidgetMapper(this);
     tablemapper->setModel(filetable);
 
-    id="idparm";
-    name="nameparm";
-    ui->cbNameParm->setForeignKey(&id, &name, filetable->relationModel(filetable->fieldIndex("nameparm")));
+    id=_::PARMID;
+    name=_::PARMNAME;
+    ui->cbNameParm->setForeignKey(&id, &name, filetable->relationModel(filetable->fieldIndex(_::PARMNAME)));
     ui->cbCondParm->addItem("норма","норма");
     ui->cbCondParm->addItem("больше","больше");
     ui->cbCondParm->addItem("меньше","меньше");
     on_newRow_clicked();
 
-    tablemapper->addMapping(ui->cbCondParm, filetable->fieldIndex("condmark"));//Соединение элеметов интерфейса с полями таблицы
-    tablemapper->addMapping(ui->cbNameParm, filetable->fieldIndex("nameparm"));
-    tablemapper->addMapping(ui->leLogID, filetable->fieldIndex("recid"));
-    tablemapper->addMapping(ui->leFileParm, filetable->fieldIndex("pathfile"), "plainText");
-    tablemapper->addMapping(ui->leFiletableID, filetable->fieldIndex("idcond"));
+    tablemapper->addMapping(ui->cbCondParm, filetable->fieldIndex(_::PARMLOGCOND));//Соединение элеметов интерфейса с полями таблицы
+    tablemapper->addMapping(ui->cbNameParm, filetable->fieldIndex(_::PARMNAME));
+    tablemapper->addMapping(ui->leLogID, filetable->fieldIndex(_::PARMLOGLOG));
+    tablemapper->addMapping(ui->leFileParm, filetable->fieldIndex(_::FILELOGNAME), "plainText");
+    tablemapper->addMapping(ui->leFiletableID, filetable->fieldIndex(_::PARMLOGID));
     tablemapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
-    //ui->leFiletableID->hide();
-    //ui->leLogID->hide();
+    ui->leFiletableID->hide();
+    ui->leLogID->hide();
     on_newRow_clicked();
     ui->leLogID->setText(QString("%1").arg(idLog));
 }
@@ -80,15 +72,34 @@ void filelog::setLog(int idLog, QSqlDatabase *db)
 int filelog::getFileID(QByteArray *path)
 {
     QSqlQueryModel *tempmodel=new QSqlQueryModel();
-    tempmodel->setQuery("select idfile "
-    "from fileofparameter "
-    "where pathfile='"+*path+"'");
+    tempmodel->setQuery("select "+_::FILELOGID+" "
+    "from "+_::FILELOG+" "
+    "where "+_::FILELOGNAME+"='"+*path+"'");
     if(tempmodel->rowCount()==0){
         return -1;
     }
     else{
         int fileid=tempmodel->index(0, 0).data().toInt();
         return fileid;
+    }
+}
+
+void filelog::loadTable()
+{
+    filetable->setTable(_::PARMLOG);
+    filetable->setJoinMode(QSqlRelationalTableModel::LeftJoin);
+    filetable->setRelation(filetable->fieldIndex(_::PARMLOGPARM),
+                           QSqlRelation(_::PARM, _::PARMID, _::PARMNAME));
+    filetable->setRelation(filetable->fieldIndex(_::PARMLOGFILE),
+                           QSqlRelation(_::FILELOG, _::FILELOGID, _::FILELOGNAME));
+    if(filetable->select()){
+        filetable->setFilter(QString(_::PARMLOGLOG)+"="+QString("%1").arg(idLog));
+        filetable->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        qInfo(loggerInfo())<<"Reading conditionofparm OK";
+    }
+    else{
+        QMessageBox::critical(this, "Ошибка подключения", "Произошла ошибка подключения!");
+        close();
     }
 }
 /*Деструктор класса*/
@@ -116,7 +127,7 @@ void filelog::on_selectFile_clicked()
         if(fileid<=0){
             //QMessageBox::information(this, "", QString("%1").arg(fileid));
             QSqlQuery query;
-            query.exec("insert into fileofparameter(pathfile) values ('"+byarr+"');");
+            query.exec("insert into "+_::FILELOG+"("+_::FILELOGNAME+") values ('"+byarr+"');");
             fileid=getFileID(&byarr);
         }
         //QMessageBox::information(this, "", QString("%1").arg(fileid));
@@ -132,7 +143,7 @@ void filelog::on_selectFile_clicked()
 void filelog::on_openFile_clicked()
 {
     int row=ui->tvFiles->currentIndex().row();
-    QString file=filetable->index(row, filetable->fieldIndex("pathfile")).data().toString();
+    QString file=filetable->index(row, filetable->fieldIndex(_::FILELOGNAME)).data().toString();
     if(!QDesktopServices::openUrl(file)){
         QMessageBox::critical(this, "Ошибка", "Файл не существует или недоступен для просмотра.");
     }
@@ -166,7 +177,7 @@ void filelog::on_deleteFile_clicked()
 void filelog::on_copy_clicked()
 {
     int row=ui->tvFiles->currentIndex().row();
-    QString file=filetable->index(row, filetable->fieldIndex("pathfile")).data().toString();
+    QString file=filetable->index(row, filetable->fieldIndex(_::FILELOGNAME)).data().toString();
     QApplication::clipboard()->setText(file);
     QMessageBox::information(this, "Копирование", "Путь к файлу скопирован.");
 }
@@ -180,30 +191,22 @@ void filelog::on_saveParm_clicked()
     QSqlRecord record=filetable->record();//Получение набора названий полей таблицы
     if(ui->leFiletableID->text()=="NULL"){//Заполнение записи данными
         record.remove(0);
-        filetable->setTable(PARMLOG_L);
-        filetable->setJoinMode(QSqlRelationalTableModel::LeftJoin);
-        filetable->setRelation(filetable->fieldIndex("parmid"),
-                               QSqlRelation(PARM, "idparm", "nameparm"));
-        filetable->setRelation(filetable->fieldIndex("fileid"),
-                               QSqlRelation(FILE, "idfile", "pathfile"));
-        filetable->select();
-        filetable->setFilter("recid="+QString("%1").arg(idLog));
-        filetable->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        loadTable();
     }
     else{
-        record.setValue("idcond", ui->leFiletableID->text().toInt());
+        record.setValue(_::PARMLOGID, ui->leFiletableID->text().toInt());
 
     }
 
-    record.setValue("recid", ui->leLogID->text().toInt());
-    record.setValue("nameparm", ui->cbNameParm->currentData());
-    record.setValue("condmark", ui->cbCondParm->currentData());
-    record.setValue("pathfile", idFile);
+    record.setValue(_::PARMLOGLOG, ui->leLogID->text().toInt());
+    record.setValue(_::PARMNAME, ui->cbNameParm->currentData());
+    record.setValue(_::PARMLOGCOND, ui->cbCondParm->currentData());
+    record.setValue(_::FILELOGNAME, idFile);
 
 
     if(ui->leFiletableID->text()=="NULL"){//Проверка наличия идентификатора записи
-        QMessageBox::information(this, "", QString("%1").arg(record.fieldName(3)));
-        QMessageBox::information(this, "", QString("%1").arg(record.value("pathfile").toString()));
+        //QMessageBox::information(this, "", QString("%1").arg(record.fieldName(3)));
+        //QMessageBox::information(this, "", QString("%1").arg(record.value(_::FILELOGNAME).toString()));
         filetable->insertRecord(-1, record);//Вставка записи
     }
     else{

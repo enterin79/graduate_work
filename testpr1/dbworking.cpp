@@ -1,4 +1,5 @@
 #include "dbworking.h"
+
 /*Конструктор класса по умолчанию
  */
 dbWorking::dbWorking()
@@ -26,7 +27,7 @@ Enumerr dbWorking::connection()
 {
      db = QSqlDatabase::addDatabase("QPSQL");
      db.setHostName("127.0.0.1");
-     db.setDatabaseName("BlokStatus");
+     db.setDatabaseName("testing");
      db.setUserName("postgres");
      db.setPassword("admin123");
      if(db.open()) {//Выполнение подключения к базе данных с текущими реквизитами
@@ -136,27 +137,27 @@ Enumerr dbWorking::loadTemp(bool hideFKcol, QString where)
 QVariant dbWorking::getId(QString *value, QString *nametable)
 {
     QString idcol, valuecol;
-    if((*nametable).toLower()==KA){
+    if((*nametable).toLower()==_::KA){
         idcol="NumberKA";
         valuecol="NameKA";
     }
-    else if((*nametable).toLower()==BI){
+    else if((*nametable).toLower()==_::BI){
         idcol="idSol";
         valuecol="NameSol";
     }
-    else if((*nametable).toLower()==BLOK){
+    else if((*nametable).toLower()==_::BLOK){
         idcol="idCond";
         valuecol="Type";
     }
-    else if((*nametable).toLower()==SOL){
+    else if((*nametable).toLower()==_::SOL){
         idcol="Code";
         valuecol="NameBreak";
     }
-    else if((*nametable).toLower()==PARM){
+    else if((*nametable).toLower()==_::PARM){
         idcol="Code";
         valuecol="NameBreak";
     }
-    else if((*nametable).toLower()==FILE){
+    else if((*nametable).toLower()==_::FILELOG){
         idcol="Code";
         valuecol="NameBreak";
     }

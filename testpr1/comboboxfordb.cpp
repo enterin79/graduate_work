@@ -22,7 +22,7 @@ ComboBoxForDB::ComboBoxForDB(QWidget *parent):QComboBox(parent)
 bool ComboBoxForDB::setForeignKey(const QString *id, const QString *name, QSqlTableModel *temp, QString typeofkey)
 {
 
-    if(temp->rowCount()>0){    //Проверка наличия записей в предоставленной таблице
+    if(temp!=nullptr&&temp->rowCount()>0){    //Проверка наличия записей в предоставленной таблице
         temp->sort(temp->fieldIndex(*id), Qt::AscendingOrder);
         if(typeofkey=="INT"){   //Выбор типа значения
             for(int i=0; i<temp->rowCount();i++){

@@ -12,7 +12,7 @@
 #include "dbworking.h"
 #include "edit.h"
 #include "logger.h"
-#include "Enumexec.h"
+#include "DAT.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -97,5 +97,6 @@ private:
     QJsonDocument doc;
     QJsonParseError docError;
     QString filePath;
+
 };
 #endif // MAINWINDOW_H

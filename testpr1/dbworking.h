@@ -3,9 +3,10 @@
 #include <QDebug>
 #include <QtSql>
 #include "logger.h"
-#include "Enumexec.h"
+#include "DAT.h"
 #include "upgradedmodel.h"
 #include "comboboxfordb.h"
+
 
 /*
  * Класс dbWorking
@@ -32,6 +33,7 @@
  * loadTemp - функция загрузки представления для таблицы;
  * getId - функция для поиска идентификатора значения в таблице;
  */
+
 class dbWorking
 {
 public:
