@@ -29,7 +29,7 @@ Enumerr dbWorking::connection()
      db.setHostName("127.0.0.1");
      db.setDatabaseName("testing");
      db.setUserName("postgres");
-     db.setPassword("admin123");
+     db.setPassword("");
      if(db.open()) {//Выполнение подключения к базе данных с текущими реквизитами
          qInfo(loggerInfo())<<"Connection OK";
          choosingmodel=new QSqlQueryModel;   //Загрузка списка доступных таблиц из таблицы мета-данных
