@@ -39,6 +39,7 @@ class Ui_MainWindow
 public:
     QAction *RetryConnection;
     QAction *UnloadFrom;
+    QAction *HelpMessage;
     QWidget *centralwidget;
     QGridLayout *gridLayout_4;
     QTableView *tvModel;
@@ -84,6 +85,8 @@ public:
         RetryConnection->setMenuRole(QAction::ApplicationSpecificRole);
         UnloadFrom = new QAction(MainWindow);
         UnloadFrom->setObjectName(QString::fromUtf8("UnloadFrom"));
+        HelpMessage = new QAction(MainWindow);
+        HelpMessage->setObjectName(QString::fromUtf8("HelpMessage"));
         centralwidget = new QWidget(MainWindow);
         centralwidget->setObjectName(QString::fromUtf8("centralwidget"));
         gridLayout_4 = new QGridLayout(centralwidget);
@@ -259,6 +262,7 @@ public:
         menubar->addAction(menu->menuAction());
         menu->addAction(RetryConnection);
         menu->addAction(UnloadFrom);
+        menu->addAction(HelpMessage);
 
         retranslateUi(MainWindow);
 
@@ -270,6 +274,13 @@ public:
         MainWindow->setWindowTitle(QApplication::translate("MainWindow", "\320\221\320\260\320\267\320\260 \320\264\320\260\320\275\320\275\321\213\321\205", nullptr));
         RetryConnection->setText(QApplication::translate("MainWindow", "\320\237\320\276\320\262\321\202\320\276\321\200\320\275\320\276\320\265 \320\277\320\276\320\264\320\272\320\273\321\216\321\207\320\265\320\275\320\270\320\265", nullptr));
         UnloadFrom->setText(QApplication::translate("MainWindow", "\320\222\321\213\320\263\321\200\321\203\320\267\320\270\321\202\321\214 \320\264\320\260\320\275\320\275\321\213\320\265 \320\270\320\267...", nullptr));
+        HelpMessage->setText(QApplication::translate("MainWindow", "\320\237\320\276\320\274\320\276\321\211\321\214", nullptr));
+#ifndef QT_NO_TOOLTIP
+        HelpMessage->setToolTip(QApplication::translate("MainWindow", "\320\237\320\276\320\274\320\276\321\211\321\214", nullptr));
+#endif // QT_NO_TOOLTIP
+#ifndef QT_NO_SHORTCUT
+        HelpMessage->setShortcut(QApplication::translate("MainWindow", "Ctrl+H", nullptr));
+#endif // QT_NO_SHORTCUT
         label->setText(QApplication::translate("MainWindow", "\320\242\320\265\321\203\321\211\320\260\321\217 \321\202\320\260\320\261\320\273\320\270\321\206\320\260:", nullptr));
         SaveButton->setText(QApplication::translate("MainWindow", "\320\241\320\276\321\205\321\200\320\260\320\275\320\270\321\202\321\214", nullptr));
         RevertButton->setText(QApplication::translate("MainWindow", "\320\236\321\202\320\274\320\265\320\275\320\270\321\202\321\214", nullptr));

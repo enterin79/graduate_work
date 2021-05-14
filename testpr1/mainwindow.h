@@ -13,6 +13,7 @@
 #include "edit.h"
 #include "logger.h"
 #include "DAT.h"
+#include "help.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -30,7 +31,8 @@ QT_END_NAMESPACE
  * nametable - название отображаемой в данный момент таблицы;
  * doc - .json файл с загружаемыми в базу данными;
  * filePath - путь к .json файлу;
- * docError - отметка о результате обработки .json файла.
+ * docError - отметка о результате обработки .json файла;
+ * help - указатель на экземпляр окна помощи.
  *
  * Методы:
  * saveChanges - функция для сохранеия внесенных в таблицу изменений;
@@ -54,7 +56,8 @@ QT_END_NAMESPACE
  * on_dtScroll_dateTimeChanged - событие изменения времени начала отсчета для скроллера;
  * on_Retry_clicked - событие для перезапуска скроллера;
  * on_RetryConnection_triggered - событие для выполнения переподключения к базе;
- * on_UnloadFrom_triggered - событие для выполнения загрузки данных из .json файла в базу.
+ * on_UnloadFrom_triggered - событие для выполнения загрузки данных из .json файла в базу;
+ * on_HelpMessage_triggered - событие для вызова окна помощи.
 */
 class MainWindow : public QMainWindow
 {
@@ -85,6 +88,7 @@ public slots:
     void on_Retry_clicked();
     void on_RetryConnection_triggered();
     void on_UnloadFrom_triggered();
+    void on_HelpMessage_triggered();
 
 private:
     Ui::MainWindow *ui;
@@ -97,6 +101,7 @@ private:
     QJsonDocument doc;
     QJsonParseError docError;
     QString filePath;
+    Help *help;
 
 };
 #endif // MAINWINDOW_H

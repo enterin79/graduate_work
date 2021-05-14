@@ -58,8 +58,8 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
             tablemapper->addMapping(ui->leBlokSerial, model->fieldIndex(_::BLOKSERIAL));
             tablemapper->addMapping(ui->leBlokBISerial, model->fieldIndex(_::BLOKBI));
 
-            //ui->leBlokBISerial->hide();
-            //ui->leBlokBISerialCurr->hide();
+            ui->leBlokBISerial->hide();
+            ui->leBlokBISerialCurr->hide();
 
             ui->gbParm->hide();
             ui->gbLog->hide();
@@ -125,7 +125,6 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
             ui->gbFile->hide();
         }
         else if(table==_::LOG){
-
             QSqlTableModel *temptable=new QSqlTableModel(this, *db);
             temptable->setTable(_::BLOK);
             temptable->select();

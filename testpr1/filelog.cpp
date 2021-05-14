@@ -24,27 +24,14 @@ filelog::filelog(QWidget *parent) :
 */
 void filelog::setLog(int idLog, QSqlDatabase *db)
 {
-    QString id, name;
     this->idLog=idLog;
 
     filetable=new UpgradedModel(this, *db);//Загрузка таблицы
     loadTable();
 
-    filetable->setHeaderData(2, Qt::Orientation::Horizontal, "Параметр");//Настройка внешнего вида таблицы
-    filetable->setHeaderData(3, Qt::Orientation::Horizontal, "Состояние");
-    filetable->setHeaderData(4, Qt::Orientation::Horizontal, "Файл");
-    ui->tvFiles->setModel(filetable);
-    ui->tvFiles->horizontalHeader()->show();
-    ui->tvFiles->verticalHeader()->show();
-    ui->tvFiles->hideColumn(filetable->fieldIndex(_::PARMLOGID));
-    ui->tvFiles->hideColumn(filetable->fieldIndex(_::PARMLOGLOG));
-
     tablemapper=new QDataWidgetMapper(this);
     tablemapper->setModel(filetable);
 
-    id=_::PARMID;
-    name=_::PARMNAME;
-    ui->cbNameParm->setForeignKey(&id, &name, filetable->relationModel(filetable->fieldIndex(_::PARMNAME)));
     ui->cbCondParm->addItem("норма","норма");
     ui->cbCondParm->addItem("больше","больше");
     ui->cbCondParm->addItem("меньше","меньше");
@@ -84,8 +71,16 @@ int filelog::getFileID(QByteArray *path)
     }
 }
 
+
+/*Процедура загрузки и настройки отображения таблицы
+ *
+ * Локальные переменные:
+ * id - данные для записей внешнего ключа в элементе выбора;
+ * name - текст, соотвествующий данным, для каждой записи внешнего ключа в элементе выбора.
+*/
 void filelog::loadTable()
 {
+    QString id, name;
     filetable->setTable(_::PARMLOG);
     filetable->setJoinMode(QSqlRelationalTableModel::LeftJoin);
     filetable->setRelation(filetable->fieldIndex(_::PARMLOGPARM),
@@ -95,6 +90,18 @@ void filelog::loadTable()
     if(filetable->select()){
         filetable->setFilter(QString(_::PARMLOGLOG)+"="+QString("%1").arg(idLog));
         filetable->setEditStrategy(QSqlTableModel::OnManualSubmit);
+        filetable->setHeaderData(2, Qt::Orientation::Horizontal, "Параметр");//Настройка внешнего вида таблицы
+        filetable->setHeaderData(3, Qt::Orientation::Horizontal, "Состояние");
+        filetable->setHeaderData(4, Qt::Orientation::Horizontal, "Файл");
+        ui->tvFiles->setModel(filetable);
+        ui->tvFiles->horizontalHeader()->show();
+        ui->tvFiles->verticalHeader()->show();
+        ui->tvFiles->hideColumn(filetable->fieldIndex(_::PARMLOGID));
+        ui->tvFiles->hideColumn(filetable->fieldIndex(_::PARMLOGLOG));
+
+        id=_::PARMID;
+        name=_::PARMNAME;
+        ui->cbNameParm->setForeignKey(&id, &name, filetable->relationModel(filetable->fieldIndex(_::PARMNAME)));
         qInfo(loggerInfo())<<"Reading conditionofparm OK";
     }
     else{

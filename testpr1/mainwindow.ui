@@ -351,6 +351,7 @@
     </property>
     <addaction name="RetryConnection"/>
     <addaction name="UnloadFrom"/>
+    <addaction name="HelpMessage"/>
    </widget>
    <addaction name="menu"/>
   </widget>
@@ -366,6 +367,17 @@
   <action name="UnloadFrom">
    <property name="text">
     <string>Выгрузить данные из...</string>
+   </property>
+  </action>
+  <action name="HelpMessage">
+   <property name="text">
+    <string>Помощь</string>
+   </property>
+   <property name="toolTip">
+    <string>Помощь</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+H</string>
    </property>
   </action>
  </widget>

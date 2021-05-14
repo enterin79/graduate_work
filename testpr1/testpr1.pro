@@ -17,6 +17,7 @@ SOURCES += \
     edit.cpp \
     filelog.cpp \
     filetablemodel.cpp \
+    help.cpp \
     logger.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -30,6 +31,7 @@ HEADERS += \
     edit.h \
     filelog.h \
     filetablemodel.h \
+    help.h \
     logger.h \
     mainwindow.h \
     upgradedmodel.h
@@ -37,6 +39,7 @@ HEADERS += \
 FORMS += \
     edit.ui \
     filelog.ui \
+    help.ui \
     mainwindow.ui
 
 # Default rules for deployment.

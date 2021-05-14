@@ -106,12 +106,12 @@ public:
     {
         if (Edit->objectName().isEmpty())
             Edit->setObjectName(QString::fromUtf8("Edit"));
-        Edit->resize(281, 314);
-        Edit->setMinimumSize(QSize(281, 314));
-        Edit->setMaximumSize(QSize(281, 314));
+        Edit->resize(320, 380);
+        Edit->setMinimumSize(QSize(320, 380));
+        Edit->setMaximumSize(QSize(320, 380));
         gbBlok = new QGroupBox(Edit);
         gbBlok->setObjectName(QString::fromUtf8("gbBlok"));
-        gbBlok->setGeometry(QRect(10, 10, 261, 261));
+        gbBlok->setGeometry(QRect(10, 10, 301, 321));
         gridLayout_2 = new QGridLayout(gbBlok);
         gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         formLayout_2 = new QFormLayout();
@@ -175,7 +175,7 @@ public:
 
         gbParm = new QGroupBox(Edit);
         gbParm->setObjectName(QString::fromUtf8("gbParm"));
-        gbParm->setGeometry(QRect(10, 10, 261, 261));
+        gbParm->setGeometry(QRect(10, 10, 301, 321));
         gridLayout_3 = new QGridLayout(gbParm);
         gridLayout_3->setObjectName(QString::fromUtf8("gridLayout_3"));
         formLayout = new QFormLayout();
@@ -206,7 +206,7 @@ public:
 
         layoutWidget = new QWidget(Edit);
         layoutWidget->setObjectName(QString::fromUtf8("layoutWidget"));
-        layoutWidget->setGeometry(QRect(10, 280, 254, 24));
+        layoutWidget->setGeometry(QRect(30, 340, 254, 24));
         horizontalLayout = new QHBoxLayout(layoutWidget);
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         horizontalLayout->setContentsMargins(0, 0, 0, 0);
@@ -227,7 +227,7 @@ public:
 
         gbSolution = new QGroupBox(Edit);
         gbSolution->setObjectName(QString::fromUtf8("gbSolution"));
-        gbSolution->setGeometry(QRect(10, 10, 261, 261));
+        gbSolution->setGeometry(QRect(10, 10, 301, 321));
         gridLayout_4 = new QGridLayout(gbSolution);
         gridLayout_4->setObjectName(QString::fromUtf8("gridLayout_4"));
         formLayout_3 = new QFormLayout();
@@ -258,7 +258,7 @@ public:
 
         gbKA = new QGroupBox(Edit);
         gbKA->setObjectName(QString::fromUtf8("gbKA"));
-        gbKA->setGeometry(QRect(10, 10, 261, 261));
+        gbKA->setGeometry(QRect(10, 10, 301, 321));
         gridLayout = new QGridLayout(gbKA);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         formLayout_4 = new QFormLayout();
@@ -301,7 +301,7 @@ public:
 
         gbLog = new QGroupBox(Edit);
         gbLog->setObjectName(QString::fromUtf8("gbLog"));
-        gbLog->setGeometry(QRect(10, 10, 261, 261));
+        gbLog->setGeometry(QRect(10, 10, 301, 321));
         gridLayout_6 = new QGridLayout(gbLog);
         gridLayout_6->setObjectName(QString::fromUtf8("gridLayout_6"));
         gridLayout_5 = new QGridLayout();
@@ -351,13 +351,13 @@ public:
 
         CurrDTPaste = new QPushButton(gbLog);
         CurrDTPaste->setObjectName(QString::fromUtf8("CurrDTPaste"));
-        CurrDTPaste->setMaximumSize(QSize(50, 30));
+        CurrDTPaste->setMaximumSize(QSize(80, 30));
 
         gridLayout_5->addWidget(CurrDTPaste, 0, 2, 1, 1);
 
         SolDTDelete = new QPushButton(gbLog);
         SolDTDelete->setObjectName(QString::fromUtf8("SolDTDelete"));
-        SolDTDelete->setMaximumSize(QSize(50, 30));
+        SolDTDelete->setMaximumSize(QSize(80, 30));
 
         gridLayout_5->addWidget(SolDTDelete, 5, 2, 1, 1);
 
@@ -378,7 +378,7 @@ public:
 
         SolDTPaste = new QPushButton(gbLog);
         SolDTPaste->setObjectName(QString::fromUtf8("SolDTPaste"));
-        SolDTPaste->setMaximumSize(QSize(50, 30));
+        SolDTPaste->setMaximumSize(QSize(80, 30));
 
         gridLayout_5->addWidget(SolDTPaste, 4, 2, 1, 1);
 
@@ -392,7 +392,7 @@ public:
 
         gbBI = new QGroupBox(Edit);
         gbBI->setObjectName(QString::fromUtf8("gbBI"));
-        gbBI->setGeometry(QRect(10, 10, 261, 261));
+        gbBI->setGeometry(QRect(10, 10, 301, 321));
         gridLayout_7 = new QGridLayout(gbBI);
         gridLayout_7->setObjectName(QString::fromUtf8("gridLayout_7"));
         formLayout_5 = new QFormLayout();
@@ -434,7 +434,7 @@ public:
 
         gbFile = new QGroupBox(Edit);
         gbFile->setObjectName(QString::fromUtf8("gbFile"));
-        gbFile->setGeometry(QRect(10, 10, 261, 261));
+        gbFile->setGeometry(QRect(10, 10, 301, 321));
         verticalLayout = new QVBoxLayout(gbFile);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         leFilePath = new QTextEdit(gbFile);
