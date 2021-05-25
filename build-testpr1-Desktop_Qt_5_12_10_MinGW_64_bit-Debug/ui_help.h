@@ -30,6 +30,9 @@ public:
         if (Help->objectName().isEmpty())
             Help->setObjectName(QString::fromUtf8("Help"));
         Help->resize(400, 300);
+        QFont font;
+        font.setPointSize(12);
+        Help->setFont(font);
         verticalLayout = new QVBoxLayout(Help);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         leHelpText = new QTextEdit(Help);
@@ -40,8 +43,8 @@ public:
 
         btHelpOK = new QPushButton(Help);
         btHelpOK->setObjectName(QString::fromUtf8("btHelpOK"));
-        btHelpOK->setMinimumSize(QSize(80, 22));
-        btHelpOK->setMaximumSize(QSize(80, 22));
+        btHelpOK->setMinimumSize(QSize(80, 20));
+        btHelpOK->setMaximumSize(QSize(80, 20));
 
         verticalLayout->addWidget(btHelpOK);
 

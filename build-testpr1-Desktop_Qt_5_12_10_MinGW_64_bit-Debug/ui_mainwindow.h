@@ -24,6 +24,7 @@
 #include <QtWidgets/QMenu>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QRadioButton>
 #include <QtWidgets/QSlider>
 #include <QtWidgets/QSpacerItem>
 #include <QtWidgets/QStatusBar>
@@ -70,6 +71,8 @@ public:
     QTextEdit *teDecript;
     QPushButton *Search;
     QPushButton *RevertTable;
+    QRadioButton *rbNormalSelection;
+    QRadioButton *rbCascadeSelection;
     QMenuBar *menubar;
     QMenu *menu;
     QStatusBar *statusbar;
@@ -80,6 +83,9 @@ public:
             MainWindow->setObjectName(QString::fromUtf8("MainWindow"));
         MainWindow->resize(826, 484);
         MainWindow->setMinimumSize(QSize(750, 300));
+        QFont font;
+        font.setPointSize(10);
+        MainWindow->setFont(font);
         RetryConnection = new QAction(MainWindow);
         RetryConnection->setObjectName(QString::fromUtf8("RetryConnection"));
         RetryConnection->setMenuRole(QAction::ApplicationSpecificRole);
@@ -94,6 +100,9 @@ public:
         tvModel = new QTableView(centralwidget);
         tvModel->setObjectName(QString::fromUtf8("tvModel"));
         tvModel->setMinimumSize(QSize(0, 0));
+        QFont font1;
+        font1.setPointSize(12);
+        tvModel->setFont(font1);
         tvModel->setEditTriggers(QAbstractItemView::DoubleClicked);
         tvModel->setSortingEnabled(true);
         tvModel->horizontalHeader()->setStretchLastSection(false);
@@ -115,7 +124,7 @@ public:
 
         horizontalLayout->addWidget(cbChooseTable);
 
-        horizontalSpacer = new QSpacerItem(30, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        horizontalSpacer = new QSpacerItem(25, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);
 
@@ -207,7 +216,7 @@ public:
 
         gbSearch = new QGroupBox(centralwidget);
         gbSearch->setObjectName(QString::fromUtf8("gbSearch"));
-        gbSearch->setMaximumSize(QSize(200, 16777215));
+        gbSearch->setMaximumSize(QSize(230, 16777215));
         gridLayout = new QGridLayout(gbSearch);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         formLayout = new QFormLayout();
@@ -215,32 +224,43 @@ public:
         label_2 = new QLabel(gbSearch);
         label_2->setObjectName(QString::fromUtf8("label_2"));
 
-        formLayout->setWidget(0, QFormLayout::LabelRole, label_2);
+        formLayout->setWidget(1, QFormLayout::LabelRole, label_2);
 
         cbSelectColumn = new ComboBoxForDB(gbSearch);
         cbSelectColumn->setObjectName(QString::fromUtf8("cbSelectColumn"));
 
-        formLayout->setWidget(0, QFormLayout::FieldRole, cbSelectColumn);
+        formLayout->setWidget(1, QFormLayout::FieldRole, cbSelectColumn);
 
         label_3 = new QLabel(gbSearch);
         label_3->setObjectName(QString::fromUtf8("label_3"));
 
-        formLayout->setWidget(1, QFormLayout::LabelRole, label_3);
+        formLayout->setWidget(2, QFormLayout::LabelRole, label_3);
 
         teDecript = new QTextEdit(gbSearch);
         teDecript->setObjectName(QString::fromUtf8("teDecript"));
 
-        formLayout->setWidget(1, QFormLayout::FieldRole, teDecript);
+        formLayout->setWidget(2, QFormLayout::FieldRole, teDecript);
 
         Search = new QPushButton(gbSearch);
         Search->setObjectName(QString::fromUtf8("Search"));
 
-        formLayout->setWidget(2, QFormLayout::SpanningRole, Search);
+        formLayout->setWidget(3, QFormLayout::SpanningRole, Search);
 
         RevertTable = new QPushButton(gbSearch);
         RevertTable->setObjectName(QString::fromUtf8("RevertTable"));
 
-        formLayout->setWidget(3, QFormLayout::SpanningRole, RevertTable);
+        formLayout->setWidget(4, QFormLayout::SpanningRole, RevertTable);
+
+        rbNormalSelection = new QRadioButton(gbSearch);
+        rbNormalSelection->setObjectName(QString::fromUtf8("rbNormalSelection"));
+        rbNormalSelection->setChecked(true);
+
+        formLayout->setWidget(0, QFormLayout::LabelRole, rbNormalSelection);
+
+        rbCascadeSelection = new QRadioButton(gbSearch);
+        rbCascadeSelection->setObjectName(QString::fromUtf8("rbCascadeSelection"));
+
+        formLayout->setWidget(0, QFormLayout::FieldRole, rbCascadeSelection);
 
 
         gridLayout->addLayout(formLayout, 0, 0, 1, 1);
@@ -251,7 +271,7 @@ public:
         MainWindow->setCentralWidget(centralwidget);
         menubar = new QMenuBar(MainWindow);
         menubar->setObjectName(QString::fromUtf8("menubar"));
-        menubar->setGeometry(QRect(0, 0, 826, 21));
+        menubar->setGeometry(QRect(0, 0, 826, 23));
         menu = new QMenu(menubar);
         menu->setObjectName(QString::fromUtf8("menu"));
         MainWindow->setMenuBar(menubar);
@@ -296,6 +316,8 @@ public:
         label_3->setText(QApplication::translate("MainWindow", "\320\227\320\275\320\260\321\207\320\265\320\275\320\270\320\265", nullptr));
         Search->setText(QApplication::translate("MainWindow", "\320\235\320\260\320\271\321\202\320\270", nullptr));
         RevertTable->setText(QApplication::translate("MainWindow", "\320\222\320\276\321\201\321\201\321\202\320\260\320\275\320\276\320\262\320\270\321\202\321\214", nullptr));
+        rbNormalSelection->setText(QApplication::translate("MainWindow", "\320\236\320\261\321\213\321\207\320\275\320\260\321\217", nullptr));
+        rbCascadeSelection->setText(QApplication::translate("MainWindow", "\320\232\320\260\321\201\320\272\320\260\320\264\320\275\320\260\321\217", nullptr));
         menu->setTitle(QApplication::translate("MainWindow", "\320\234\320\265\320\275\321\216", nullptr));
     } // retranslateUi
 

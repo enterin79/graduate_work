@@ -11,7 +11,7 @@
 #include <QFileDialog>
 #include "dbworking.h"
 #include "edit.h"
-#include "logger.h"
+//#include "logger.h"
 #include "DAT.h"
 #include "help.h"
 
@@ -19,10 +19,10 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
-/*Класс основной формы приложения
+/* Класс основной формы приложения
  *
  * Поля:
- * ui - экемпляр формы графического интерфейса;
+ * ui - указатель экемпляр формы графического интерфейса;
  * dbworking - указатель на экземпляр класса для работы с базой данных;
  * edit - указатель на экзмемпляр формы редактирования для текущей записи;
  * timerScroll - таймер для просмотра записей по времени добавления;
@@ -32,14 +32,15 @@ QT_END_NAMESPACE
  * doc - .json файл с загружаемыми в базу данными;
  * filePath - путь к .json файлу;
  * docError - отметка о результате обработки .json файла;
- * help - указатель на экземпляр окна помощи.
+ * help - указатель на экземпляр окна помощи;
+ * selectionquery - текст выборки.
  *
  * Методы:
  * saveChanges - функция для сохранеия внесенных в таблицу изменений;
- * takeSave - слот для сохранения изменений таблицы из формы редактирования;
- * criticalError - процедура для выполнения выхода из программы при возникновении критической ошибки;
+ * takeSave - пользовательский слот для сохранения изменений таблицы из формы редактирования;
+ * criticalError - процедура для выполнения переподключения при возникновении критической ошибки;
  * tryConnect - процедура для подключения к базе данных;
- * setScroll - слот для передвижения каретки скроллера в соответствии с таймером;
+ * setScroll - пользовательский слот для передвижения каретки скроллера в соответствии с таймером;
  * createEdit - процедура для создания окна редактирования выбранной записи;
  * MainWindow - конструктор класса по умолчанию;
  * ~MainWindow - деструктор класса;
@@ -57,7 +58,8 @@ QT_END_NAMESPACE
  * on_Retry_clicked - событие для перезапуска скроллера;
  * on_RetryConnection_triggered - событие для выполнения переподключения к базе;
  * on_UnloadFrom_triggered - событие для выполнения загрузки данных из .json файла в базу;
- * on_HelpMessage_triggered - событие для вызова окна помощи.
+ * on_HelpMessage_triggered - событие для вызова окна помощи;
+ * on_rbCascadeSelection_clicked - событие для очистки текста условий выборки.
 */
 class MainWindow : public QMainWindow
 {
@@ -89,6 +91,7 @@ public slots:
     void on_RetryConnection_triggered();
     void on_UnloadFrom_triggered();
     void on_HelpMessage_triggered();
+    void on_rbCascadeSelection_clicked();
 
 private:
     Ui::MainWindow *ui;
@@ -102,6 +105,7 @@ private:
     QJsonParseError docError;
     QString filePath;
     Help *help;
+    QString selectionquery="";
 
 };
 #endif // MAINWINDOW_H

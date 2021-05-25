@@ -1,6 +1,11 @@
 #include "upgradedmodel.h"
 
-/*Конструктор класса по умолчанию*/
+/*Конструктор класса по умолчанию
+ *
+ * Формальные параметры:
+ * parent - указатель на родительский элемент;
+ * db - экземпляр соединения с БД.
+*/
 UpgradedModel::UpgradedModel(QObject *parent, QSqlDatabase db) : QSqlRelationalTableModel(parent, db)
 {
 

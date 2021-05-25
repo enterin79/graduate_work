@@ -6,21 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>320</width>
-    <height>380</height>
+    <width>350</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>320</width>
-    <height>380</height>
+    <width>350</width>
+    <height>400</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>320</width>
-    <height>380</height>
+    <width>350</width>
+    <height>400</height>
    </size>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>10</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Редактирование</string>
@@ -30,8 +35,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>301</width>
-     <height>321</height>
+     <width>330</width>
+     <height>340</height>
     </rect>
    </property>
    <property name="title">
@@ -115,8 +120,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>301</width>
-     <height>321</height>
+     <width>330</width>
+     <height>340</height>
     </rect>
    </property>
    <property name="title">
@@ -157,9 +162,9 @@
    <property name="geometry">
     <rect>
      <x>30</x>
-     <y>340</y>
-     <width>254</width>
-     <height>24</height>
+     <y>360</y>
+     <width>288</width>
+     <height>30</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
@@ -191,8 +196,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>301</width>
-     <height>321</height>
+     <width>330</width>
+     <height>340</height>
     </rect>
    </property>
    <property name="title">
@@ -234,8 +239,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>301</width>
-     <height>321</height>
+     <width>330</width>
+     <height>340</height>
     </rect>
    </property>
    <property name="title">
@@ -295,8 +300,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>301</width>
-     <height>321</height>
+     <width>330</width>
+     <height>340</height>
     </rect>
    </property>
    <property name="title">
@@ -396,10 +401,16 @@
       </item>
       <item row="0" column="2">
        <widget class="QPushButton" name="CurrDTPaste">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>40</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>80</width>
-          <height>30</height>
+          <height>40</height>
          </size>
         </property>
         <property name="text">
@@ -410,10 +421,16 @@
       </item>
       <item row="5" column="2">
        <widget class="QPushButton" name="SolDTDelete">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>40</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>80</width>
-          <height>30</height>
+          <height>40</height>
          </size>
         </property>
         <property name="text">
@@ -441,10 +458,16 @@
       </item>
       <item row="4" column="2">
        <widget class="QPushButton" name="SolDTPaste">
+        <property name="minimumSize">
+         <size>
+          <width>80</width>
+          <height>40</height>
+         </size>
+        </property>
         <property name="maximumSize">
          <size>
           <width>80</width>
-          <height>30</height>
+          <height>40</height>
          </size>
         </property>
         <property name="text">
@@ -465,8 +488,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>301</width>
-     <height>321</height>
+     <width>330</width>
+     <height>340</height>
     </rect>
    </property>
    <property name="title">
@@ -523,8 +546,8 @@
     <rect>
      <x>10</x>
      <y>10</y>
-     <width>301</width>
-     <height>321</height>
+     <width>330</width>
+     <height>340</height>
     </rect>
    </property>
    <property name="title">

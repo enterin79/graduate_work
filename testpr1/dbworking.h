@@ -5,7 +5,7 @@
 #include "logger.h"
 #include "DAT.h"
 #include "upgradedmodel.h"
-#include "comboboxfordb.h"
+//#include "comboboxfordb.h"
 
 
 /*
@@ -28,7 +28,7 @@
  * ~dbWorking - деструктор класса, выполняет закрытие соединение и запись отметок в файл логирования;
  * connection - функция создания подключения к базе данных на основании предоставленных реквизитов пользовтеля и загрузки списка доступных таблиц;
  * chooseTable - функция для загрузки данных выбранной таблицы в приложение;
- * saveСhanges - функция для сохранения внесенных в таблицу изменений;
+ * saveChangesDB - функция для сохранения внесенных в таблицу изменений;
  * setHeadersModel - процедура для установки заголовков столбцов в таблице;
  * loadTemp - функция загрузки представления для таблицы;
  * getId - функция для поиска идентификатора значения в таблице;
@@ -42,7 +42,7 @@ public:
     ~dbWorking(void);
     Enumerr connection();
     Enumerr chooseTable(QString *idTable, QList<QString> &relcol, QList<QString> &reltable, QList<QString> &relid, QList<QString> &reloutcol, int relcount=0, bool hideFKcol=true);
-    Enumerr saveChanges();
+    Enumerr saveChangesDB();
     void setHeadersModel(QSqlQueryModel *model, bool hideFKcol);
     Enumerr loadTemp(bool hideFKcol, QString where="");
     QVariant getId(QString *value, QString *nametable);

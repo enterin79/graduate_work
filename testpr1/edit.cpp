@@ -23,7 +23,7 @@ Edit::~Edit()
 }
 
 
-/*Метод для соединения данных таблицы с элементами формы редактирования
+/* Процедура для соединения данных таблицы с элементами формы
  *
  * Формальные параметры:
  * currmodel - таблица, с которой происходит соединение;
@@ -33,7 +33,8 @@ Edit::~Edit()
  *
  * Локальные переменные:
  * id - данные для записей внешнего ключа в элементе выбора;
- * text - текст, соотвествующий данным, для каждой записи внешнего ключа в элементе выбора.
+ * name - текст, соотвествующий данным, для каждой записи внешнего ключа в элементе выбора;
+ * temptable - временное отображение определенной части таблицы для загрузки данных в связанные элементы.
 */
 bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int idLog, QSqlDatabase *db )
 {
@@ -174,7 +175,8 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
         }
         return 1;
 }
-/*Событие для вставки текущей даты в виджет
+
+/* Процедура для вставки текущей даты и времени в выбранный элемент
  *
  * Формальный параметр:
  * widget - указатель на виджет, куда необходимо вставить текущую дату и время.
@@ -184,7 +186,7 @@ void Edit::pasteCurrTimeInto(QDateTimeEdit *widget)
     widget->setDateTime(QDateTime::currentDateTime());
 }
 
-/*Событие сохранения текущих изменений и закрытия формы редактирования
+/* Событие сохранения текущих изменений и закрытия формы редактирования
 */
 void Edit::on_Apply_clicked()
 {
@@ -202,21 +204,19 @@ void Edit::on_Delete_clicked()
     close();
 }
 
-/*Событие для вствки текущей даты в поле для даты получения данных в таблице Прием данных*/
+/*Событие для вствки текущей даты в поле для даты получения данных в таблице "Прием данных"*/
 void Edit::on_CurrDTPaste_clicked()
 {
     pasteCurrTimeInto(ui->dtCurrTime);
 }
-/*Событие для вствки текущей даты в поле для даты выполнения решения в таблице Прием данных*/
+/*Событие для вствки текущей даты в поле для даты выполнения решения в таблице "Прием данных"*/
 void Edit::on_SolDTPaste_clicked()
 {
     pasteCurrTimeInto(ui->dtSolutExec);
 }
 
-/*Заполнение элемента, связанного с ячейкой даты выполнения решения в таблице Прием данных
-это необходимо ввиду отсутствия прямой связи между этой ячейкой и полем для даты.
-связь через mapper не позволяет удалить данные из этого поля,
-например при случайном заполнении
+/* Событие для изменения даты в элементе, связанном с таблицей
+ *
 * Формальный параметр:
 * dateTime - текущее значение элемента.
 */
@@ -224,7 +224,9 @@ void Edit::on_dtSolutExec_dateTimeChanged(const QDateTime &dateTime)
 {
     ui->ledtSolutExec->setText(dateTime.toString("yyyy-MM-ddThh:mm:ss.zzz"));
 }
+
 /*Событие для изменения даты в элементе datetimepicker
+ *
  * Формальный параметр:
  * arg1 - текущее значение элемента.
 */
@@ -235,24 +237,30 @@ void Edit::on_ledtSolutExec_textChanged(const QString &arg1)
         ui->dtSolutExec->setDateTime(dateTime);
     }
 }
-/*событие для удаления значения даты*/
+/*Событие для удаления значения даты*/
 void Edit::on_SolDTDelete_clicked()
 {
     ui->ledtSolutExec->setText("NULL");
     ui->dtSolutExec->setDateTime(QDateTime::fromString("01.01.1900 0:00:00","dd.MM.yyyy hh:mm:ss"));
 }
-/*Событие загрузки записей из таблицы "Состояние параметров" для выбранной записи таблицы "Прием данных"*/
+/*Событие просмотра записей из таблицы "Состояние параметров" для выбранной записи таблицы "Прием данных"*/
 void Edit::on_btLogFile_clicked()
 {
-    file=new filelog;
+    file=new FileLog;
     file->setParent(this, Qt::Window);
     file->setLog(curruentLog, db);
     file->setModal(true);
     file->show();
 }
 /*Событие для загрзки списка БИ, соответствующих указанному КА
+ *
  * Формальный параметр:
  * index - индекс выбранного значения.
+ *
+ * Локальные переменные:
+ * id - идентификаторы БИ;
+ * name - названия БИ;
+ * temptable - временное отображение определенной части таблицы для загрузки данных в связанные элементы.
 */
 void Edit::on_cbBlokKA_currentIndexChanged(int index)
 {
@@ -274,17 +282,22 @@ void Edit::on_cbBlokKA_currentIndexChanged(int index)
     }
 }
 /*Событие изменения данных в элементе, свзанном со столбцом родительского устройства в таблице "Блок"
+ *
  * Формальный параметр:
  * index - индекс выбранного значения.
 */
 void Edit::on_cbBlokBI_currentIndexChanged(int index)
 {
-    QString currdata=ui->cbBlokBI->currentData().toString();
-    ui->leBlokBISerialCurr->setText(currdata);
+    ui->leBlokBISerialCurr->setText(ui->cbBlokBI->currentData().toString());
 }
 /*Событие для загрузки данных о родительских устройствах по данным выбранной записи таблицы "Блок"
+ *
  * Формальный параметр:
  * arg1 - текущее значение элемента.
+ *
+ * Локальные переменные:
+ * name - КА, к которому принадлежит выбранный БИ;
+ * temptable - временное отображение определенной части таблицы для загрузки данных в связанные элементы.
 */
 void Edit::on_leBlokBISerial_textChanged(const QString &arg1)
 {
@@ -300,7 +313,11 @@ void Edit::on_leBlokBISerial_textChanged(const QString &arg1)
     }
 }
 
-/*Событие для выбора загружаемого файла*/
+/*Событие для выбора загружаемого файла
+ *
+ * Локальная переменная:
+ * file - путь к выбранному файлу.
+*/
 void Edit::on_ChooseFile_clicked()
 {
     QString file=QFileDialog::getOpenFileName(this,

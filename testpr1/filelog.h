@@ -27,8 +27,8 @@ class filelog;
  * idFile - идентификатор пути к файлу из таблицы "Файл".
  *
  * Методы:
- * filelog - конструктор класса по умолчанию;
- * ~filelog - деструктор класса;
+ * FileLog - конструктор класса по умолчанию;
+ * ~FileLog - деструктор класса;
  * setLog - процедура формирования выборки по данным записи из таблицы "Прием данных" и связывания этого представления с элементами интерфейса;
  * getFileID - функция поиска идентификатора для пути файла;
  * loadTable - процедура загрузки и настройки отображения таблицы;
@@ -40,16 +40,16 @@ class filelog;
  * on_tvFiles_doubleClicked - событие вывода выбранной данных записи в свзанные элементы;
  * on_newRow_clicked - событие очистки свзанных с таблицей элементов.
 */
-class filelog : public QDialog
+class FileLog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit filelog(QWidget *parent = nullptr);
+    explicit FileLog(QWidget *parent = nullptr);
     void setLog(int idLog, QSqlDatabase *db);
     int getFileID(QByteArray *path);
     void loadTable();
-    ~filelog();
+    ~FileLog();
 
     UpgradedModel *filetable=nullptr;
     QDataWidgetMapper *tablemapper=nullptr;
@@ -58,17 +58,11 @@ public:
 
 public slots:
     void on_selectFile_clicked();
-
     void on_openFile_clicked();
-
     void on_deleteFile_clicked();
-
     void on_copy_clicked();
-
     void on_saveParm_clicked();
-
     void on_tvFiles_doubleClicked(const QModelIndex &index);
-
     void on_newRow_clicked();
 
 private:

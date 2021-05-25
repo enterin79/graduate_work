@@ -43,7 +43,7 @@ MainWindow::~MainWindow()
 */
 bool MainWindow::saveChanges(QString message)
 {
-    if(dbworking->saveChanges()==Enumerr::SAVINGOK){//Проверка выполнения сохранения изменений
+    if(dbworking->saveChangesDB()==Enumerr::SAVINGOK){//Проверка выполнения сохранения изменений
         if(nametable==_::LOG||nametable==_::BLOK) {//Загрузка представления для необходимых таблиц
             dbworking->loadTemp(1);
         }
@@ -51,15 +51,15 @@ bool MainWindow::saveChanges(QString message)
         return 1;
     }
     else{
+        on_RevertButton_clicked();//Отмена всех изменений и перезагрузка таблиц
         ui->statusbar->showMessage("Ошибка выполнения операции ("+message+") "+QTime::currentTime().toString("HH:mm:ss"));
         QMessageBox::critical(this, "Ошибка", "Ошибка изменения данных! Текст ошибки: "+dbworking->generalmodel->lastError().text());
-        on_RevertButton_clicked();//Отмена всех изменений и перезагрузка таблиц
         return 0;
     }
 }
 /*Процедура для подключения к базе данных
  *
- * Локальные переменные:
+ * Локальная переменная:
  * answer - индикатор ответа пользователя на вопрос о подключении к базе.
 */
 void MainWindow::tryConnect()
@@ -152,6 +152,9 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
     dbworking->tempquery.clear();
     dbworking->temporder.clear();
     on_Retry_clicked();
+    ui->teDecript->clear();
+    selectionquery.clear();
+    ui->rbNormalSelection->setChecked(true);
     ui->cbSelectColumn->clear();
 
     if(nametable==_::LOG){//Определение таблицы и настройка ее отображения
@@ -380,31 +383,41 @@ void MainWindow::on_Delete_clicked()
 
 /*Событие для создания выборки в сооствиии с указанными условиями
  *
- * Локлальная переменная:
- * selectionquery - текст выборки;
- * colcount - количество строк, найденных в соответсвтии с выборкой.
+ * Локлальные переменные:
+ * colcount - количество строк, найденных в соответсвтии с выборкой;
+ * selecting - текст условия выборки.
 */
 void MainWindow::on_Search_clicked()
 {
-    QString selectionquery;
     int colcount=0;
-    selectionquery='"'+ui->cbSelectColumn->currentData().toString()+'"'+"='"+ui->teDecript->toPlainText()+"'";
+    QString selecting='"'+ui->cbSelectColumn->currentData().toString()+'"'+"='"+ui->teDecript->toPlainText()+"'";//Определение условия выборки
+    if(ui->rbNormalSelection->isChecked()){//Изменение условия в соответствии с типом выборки
+        selectionquery.clear();
+    }
+    else if(ui->rbCascadeSelection->isChecked()){
+        if(!selectionquery.isEmpty()){
+            if(!selectionquery.contains(selecting)){
+                selecting=" and "+selecting;
+            }
+            else{
+                selecting.clear();
+            }
+        }
+    }
+
+    selectionquery+=selecting;
     if(nametable!=_::LOG&&nametable!=_::BLOK){
         dbworking->generalmodel->setFilter(selectionquery.toUtf8());    //Выполнение выборки
         colcount=dbworking->generalmodel->rowCount();
     }
     else {
-        selectionquery="where "+selectionquery;
-        dbworking->loadTemp(1, selectionquery);
+        dbworking->loadTemp(1, "where "+selectionquery);
         colcount=dbworking->tempmodel->rowCount();
     }
 
     if(colcount==0){ //Проверка наличия записей в выборке
         on_cbChooseTable_currentIndexChanged(ui->cbChooseTable->currentIndex());    //Возвращение полного отображения таблицы при отсуствии результатов поиска
         QMessageBox::critical(this, "Ошибка", "Ничего не найдено!");
-    }
-    else{
-        ui->tvModel->scrollTo(dbworking->generalmodel->index(dbworking->generalmodel->rowCount(), 0));
     }
 }
 
@@ -453,11 +466,11 @@ void MainWindow::on_dtScroll_dateTimeChanged(const QDateTime &dateTime)
 /*Событие для перезапуска скроллера*/
 void MainWindow::on_Retry_clicked()
 {
-    ui->LogSlider->setValue(0);
     if(timerScroll->isActive()){
         timerScroll->stop();
     }
-    ui->teDecript->clear();
+    ui->LogSlider->setValue(0);
+    //ui->teDecript->clear();
 }
 
 /*Событие для выполнения переподключения к базе*/
@@ -574,4 +587,9 @@ void MainWindow::on_HelpMessage_triggered()
 "таблицы 'Журнал приема данных' используйте форму редактирования этой записи.";
     help->setText(&text);
     help->show();//Отображение формы
+}
+
+void MainWindow::on_rbCascadeSelection_clicked()
+{
+    selectionquery.clear();
 }

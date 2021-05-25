@@ -17,25 +17,29 @@ class Edit;
 }
 
 /*Класс формы редактирования
- * Позволяет редактировать данные данные записи
+ * Позволяет редактировать данные записи
  *
  * Поле:
- * ui - экемпляр формы графического интерфейса;
- * tablemapper - элемент для связывания данных из таблицы с элементами формы редактирования.
+ * ui - указатель на экземпляр формы графического интерфейса;
+ * db - указатель на экземпляр подключения к БД;
+ * model - указатель на редактируемую таблицу;
+ * file - указатеель на экземпляр формы просмотра записей из таблицы "Состоние параметров" для выбранной записи "Приема данных";
+ * tablemapper - элемент для связывания данных из таблицы с элементами формы редактирования;
+ * curruentLog - идентификатор записи для таблицы "Прием данных".
  *
  * Методы:
  * saveYes - событие сохранения изменений через основную форму;
  * Edit - конструктор класса по умолчанию;
  * ~Edit - деструктор класса;
- * setModelTable - метод для соединения данных таблицы с элементами формы редактирования;
+ * setModelTable - процедура для соединения данных таблицы с элементами формы;
  * pasteCurrTimeInto - процедура для вставки текущей даты и времени в выбранный элемент;
  * on_Apply_clicked - событие сохранения текущих изменений и закрытия формы редактирования;
  * on_Delete_clicked - событие закрытия формы редактирования;
- * on_CurrDTPaste_clicked, on_SolDTPaste_clicked - события для вставки в нужное поле даты;
- * on_dtSolutExec_dateTimeChanged - событие для изменения даты в элементе, связанномм с таблицей;
+ * on_CurrDTPaste_clicked, on_SolDTPaste_clicked - события для вставки даты в элемент datetimepicker;
+ * on_dtSolutExec_dateTimeChanged - событие для изменения даты в элементе, связанном с таблицей;
  * on_ledtSolutExec_textChanged - событие для изменения даты в элементе datetimepicker;
  * on_SolDTDelete_clicked - событие для удаления значения даты;
- * on_btLogFile_clicked - событие загрузки записей из таблицы "Состояние параметров" для выбранной записи таблицы "Прием данных";
+ * on_btLogFile_clicked - событие просмотра записей из таблицы "Состояние параметров" для выбранной записи таблицы "Прием данных";
  * on_cbBlokKA_currentIndexChanged - событие для загрзки списка БИ, соответствующих указанному КА;
  * on_cbBlokBI_currentIndexChanged - событие изменения данных в элементе, свзанном со столбцом родительского устройства в таблице "Блок";
  * on_leBlokBISerial_textChanged - событие для загрузки данных о родительских устройствах по данным выбранной записи таблицы "Блок";
@@ -55,7 +59,7 @@ public:
     QSqlDatabase *db=nullptr;
     QDataWidgetMapper *tablemapper=nullptr;
     QSqlRelationalTableModel *model=nullptr;
-    filelog *file=nullptr;
+    FileLog *file=nullptr;
     int curruentLog;
 
 public slots:
@@ -70,8 +74,6 @@ public slots:
     void on_cbBlokKA_currentIndexChanged(int index);
     void on_cbBlokBI_currentIndexChanged(int index);
     void on_leBlokBISerial_textChanged(const QString &arg1);
-
-private slots:
     void on_ChooseFile_clicked();
 
 private:

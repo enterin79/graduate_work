@@ -3,10 +3,11 @@
 #include <QMessageBox>
 
 /*Конструктор класса по умолчанию
+ *
  * Формальный параметр:
  * parent - указатель на родительский элемент.
 */
-filelog::filelog(QWidget *parent) :
+FileLog::FileLog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::filelog)
 {
@@ -17,12 +18,8 @@ filelog::filelog(QWidget *parent) :
  * Формальные параметры:
  * idLog - идентификатор записи из таблицы "Прием данных";
  * db - экземпляр соединения с базой данных.
- *
- * Локальные переменные:
- * id - данные для записей внешнего ключа в элементе выбора;
- * name - текст, соотвествующий данным, для каждой записи внешнего ключа в элементе выбора.
 */
-void filelog::setLog(int idLog, QSqlDatabase *db)
+void FileLog::setLog(int idLog, QSqlDatabase *db)
 {
     this->idLog=idLog;
 
@@ -35,7 +32,6 @@ void filelog::setLog(int idLog, QSqlDatabase *db)
     ui->cbCondParm->addItem("норма","норма");
     ui->cbCondParm->addItem("больше","больше");
     ui->cbCondParm->addItem("меньше","меньше");
-    on_newRow_clicked();
 
     tablemapper->addMapping(ui->cbCondParm, filetable->fieldIndex(_::PARMLOGCOND));//Соединение элеметов интерфейса с полями таблицы
     tablemapper->addMapping(ui->cbNameParm, filetable->fieldIndex(_::PARMNAME));
@@ -53,10 +49,10 @@ void filelog::setLog(int idLog, QSqlDatabase *db)
  * Формальный параметр:
  * path - путь к файлу, для которого необходимо найти идентификатор.
  *
- * Локальные переменные:
+ * Локальная переменная:
  * tempmodel - временная таблица для поиска данных.
 */
-int filelog::getFileID(QByteArray *path)
+int FileLog::getFileID(QByteArray *path)
 {
     QSqlQueryModel *tempmodel=new QSqlQueryModel();
     tempmodel->setQuery("select "+_::FILELOGID+" "
@@ -78,7 +74,7 @@ int filelog::getFileID(QByteArray *path)
  * id - данные для записей внешнего ключа в элементе выбора;
  * name - текст, соотвествующий данным, для каждой записи внешнего ключа в элементе выбора.
 */
-void filelog::loadTable()
+void FileLog::loadTable()
 {
     QString id, name;
     filetable->setTable(_::PARMLOG);
@@ -109,18 +105,20 @@ void filelog::loadTable()
         close();
     }
 }
+
 /*Деструктор класса*/
-filelog::~filelog()
+FileLog::~FileLog()
 {
     delete ui;
 }
 
 /*Событие для выбора необходимого файла
+ *
  * Локальные переменные:
  * file - путь к файлу;
  * byarr - путь к файлу, преобразованный к массиву байтов.
 */
-void filelog::on_selectFile_clicked()
+void FileLog::on_selectFile_clicked()
 {
 
     QString file=QFileDialog::getOpenFileName(this,
@@ -144,10 +142,11 @@ void filelog::on_selectFile_clicked()
 }
 
 /*Событие для открытия файла из выбранной записи
+ *
  * Локальная переменная:
  * row - номер выбранной строки.
 */
-void filelog::on_openFile_clicked()
+void FileLog::on_openFile_clicked()
 {
     int row=ui->tvFiles->currentIndex().row();
     QString file=filetable->index(row, filetable->fieldIndex(_::FILELOGNAME)).data().toString();
@@ -157,10 +156,11 @@ void filelog::on_openFile_clicked()
 }
 
 /*Событие для удаления записи из таблицы "Состояние параметров"
+ *
  * Локальная переменная:
  * row - номер выбранной строки.
 */
-void filelog::on_deleteFile_clicked()
+void FileLog::on_deleteFile_clicked()
 {
     int row=ui->tvFiles->currentIndex().row();
     if(row>=0){ //Проверка номера удаляемой строки
@@ -178,22 +178,30 @@ void filelog::on_deleteFile_clicked()
 }
 
 /*Событие для копирования пути к файлу
- * Локальная переменная:
- * row - номер выбранной строки.
+ *
+ * Локальные переменные:
+ * row - номер выбранной строки;
+ * file - путь к файлу в выбранной записи.
 */
-void filelog::on_copy_clicked()
+void FileLog::on_copy_clicked()
 {
     int row=ui->tvFiles->currentIndex().row();
-    QString file=filetable->index(row, filetable->fieldIndex(_::FILELOGNAME)).data().toString();
-    QApplication::clipboard()->setText(file);
-    QMessageBox::information(this, "Копирование", "Путь к файлу скопирован.");
+    if(row>=0){
+        QString file=filetable->index(row, filetable->fieldIndex(_::FILELOGNAME)).data().toString();
+        QApplication::clipboard()->setText(file);
+        QMessageBox::information(this, "Копирование", "Путь к файлу скопирован.");
+    }
+    else{
+        QMessageBox::information(this, "Копирование", "Запись не выбрана.");
+    }
+
 }
 
 /*Событие для сохранения изменений в записи
  * Локальная переменная:
  * record - запись с данными обновляемой или добавляемой записи.
 */
-void filelog::on_saveParm_clicked()
+void FileLog::on_saveParm_clicked()
 {
     QSqlRecord record=filetable->record();//Получение набора названий полей таблицы
     if(ui->leFiletableID->text()=="NULL"){//Заполнение записи данными
@@ -234,7 +242,7 @@ void filelog::on_saveParm_clicked()
  * Формальный параметр:
  * index - индекс записи, на которой произошло событие.
 */
-void filelog::on_tvFiles_doubleClicked(const QModelIndex &index)
+void FileLog::on_tvFiles_doubleClicked(const QModelIndex &index)
 {
     tablemapper->setCurrentModelIndex(index);
     QByteArray byarr=ui->leFileParm->toPlainText().toUtf8();
@@ -243,7 +251,7 @@ void filelog::on_tvFiles_doubleClicked(const QModelIndex &index)
 }
 
 /*Событие очистки свзанных с таблицей элементов*/
-void filelog::on_newRow_clicked()
+void FileLog::on_newRow_clicked()
 {
     idFile=-1;
     ui->leFiletableID->setText("NULL");

@@ -29,7 +29,7 @@ Enumerr dbWorking::connection()
      db.setHostName("127.0.0.1");
      db.setDatabaseName("testing");
      db.setUserName("postgres");
-     db.setPassword("");
+     db.setPassword("admin123");
      if(db.open()) {//Выполнение подключения к базе данных с текущими реквизитами
          qInfo(loggerInfo())<<"Connection OK";
          choosingmodel=new QSqlQueryModel;   //Загрузка списка доступных таблиц из таблицы мета-данных
@@ -84,7 +84,7 @@ Enumerr dbWorking::chooseTable(QString *idTable, QList<QString> &relcol, QList<Q
 }
 /*Процедура для сохранения внесенных в таблицу изменений
 */
-Enumerr dbWorking::saveChanges()
+Enumerr dbWorking::saveChangesDB()
 {
     if(generalmodel->submitAll()){  //Сохранение изменений таблицы
         qInfo(loggerInfo())<<"Saving "<<currtable<<" OK";
