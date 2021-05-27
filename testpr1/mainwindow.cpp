@@ -180,19 +180,19 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
         "left join "+_::KA+" on "+_::KAID+"="+_::BIKA+" "
         "left join "+_::SOL+" on "+_::SOLID+"="+_::LOGSOL+" ";
         dbworking->temporder="order by "+_::LOGDATE+" asc";
-
     }
     else if(nametable==_::KA){
         dbworking->fieldsynonims.push_back("Номер");
         dbworking->fieldsynonims.push_back("Название");
         dbworking->fieldsynonims.push_back("Дата запуска");
+        dbworking->fieldsynonims.push_back("Примечание");
         primkey=_::KADATE;
         hideFKcol=false;
     }
     else if(nametable==_::BI){
         dbworking->fieldsynonims.push_back("Серийный номер");
         dbworking->fieldsynonims.push_back("Название");
-        dbworking->fieldsynonims.push_back("Входит в");
+        dbworking->fieldsynonims.push_back("КА");
         primkey=_::BIID;
         forgnkey.push_back(_::BIKA);
         forgntable.push_back(_::KA);
@@ -211,7 +211,7 @@ void MainWindow::on_cbChooseTable_currentIndexChanged(int index)
         "from "+_::BLOK+" "
         "left join "+_::BI+" on "+_::BIID+"="+_::BLOKBI+" "
         "left join "+_::KA+" on "+_::KAID+"="+_::BIKA+" ";
-        dbworking->temporder="order by "+_::BLOKID+" asc";
+        dbworking->temporder="order by "+_::KANAME+" asc, "+_::BINAME+" asc ";
     }
     else if(nametable==_::SOL){
         dbworking->fieldsynonims.push_back("Название");
@@ -484,7 +484,8 @@ void MainWindow::on_RetryConnection_triggered()
 //В РАЗРАБОТКЕ
 void MainWindow::on_UnloadFrom_triggered()
 {
-    /*QFile file;
+    QFile file;
+    int recid;
     filePath=QFileDialog::getOpenFileName(this,
                                           QString::fromUtf8("Открыть файл"),
                                           QDir::currentPath(),
@@ -494,44 +495,80 @@ void MainWindow::on_UnloadFrom_triggered()
     if(file.open(QIODevice::ReadOnly|QFile::Text)){
         doc=QJsonDocument::fromJson(QByteArray(file.readAll()),&docError);
     }
+    else{
+        QMessageBox::critical(this, "Ошибка", "Ошибка выбора файла.");
+        return;
+    }
     file.close();
-    QString table, value;
+    if (docError.error != QJsonParseError::NoError) {
+        QMessageBox::critical(this, "Ошибка", "Ошибка чтения файла.");
+        return;
+    }
+    //QString table, value;
     QJsonObject json=doc.object();
     QJsonArray data=json["logs"].toArray();
     QJsonObject row;
     QSqlRecord record;
-    QString setting=json["setting"].toString();
+    QByteArray path;
+    QSqlQuery query;
+    int insertcount=0;
     int rowcount=data.count();
     QString currdata;
-    int colcount;
-    //qDebug()<<rowcount;
+    QJsonArray parms, parm;
     for(int i=0; i<rowcount; i++){
         row=data[i].toObject();
         record=dbworking->generalmodel->record();
         record.remove(0);
-        //colcount=row.count();
-        if(setting=="foreign key"){
-            currdata=row["KA"].toString();
-
+        QSqlQueryModel *temp=new QSqlQueryModel();
+        temp->setQuery("select "+_::BLOKID+" "
+        "from "+_::BLOK+" "
+        "left join "+_::BI+" on "+_::BIID+"="+_::BLOKBI+" "
+        "left join "+_::KA+" on "+_::KAID+"="+_::BIKA+" "
+        "where "+_::KAID+"='"+ row["KA"].toString()+"' and "+_::BINAME+"='"+row["BI"].toString()+"' and "+_::BLOKNAME+"='"+row["Blok"].toString()+"'");
+        record.setValue(_::LOGBLOK, temp->index(0, 0).data());
+        record.setValue(_::LOGDATE, row["datetime"].toString());
+        if(dbworking->currtable==_::LOG){
+            if(dbworking->generalmodel->insertRecord(-1, record)){
+                if(!dbworking->generalmodel->submitAll()){
+                     QMessageBox::critical(this, "Ошибка", dbworking->generalmodel->lastError().text());
+                     return;
+                }
+                else{
+                    insertcount++;
+                    //QMessageBox::information(this, "ИНформация", "Выгрузка данных в базу прошла успешно.");
+                    parms=row["data"].toArray();
+                    query.exec("select CURRVAL(pg_get_serial_sequence('"+_::LOG+"', '"+_::LOGID+"'))");
+                    query.first();
+                    recid=query.value(0).toInt();
+                    for(int l=0; l<parms.count(); l++){
+                        currdata="insert into "+_::PARMLOG+" ("+_::PARMLOGLOG+", "+_::PARMLOGPARM+", "+_::PARMLOGCOND+", "+_::PARMLOGFILE+") values (";
+                        parm=parms[l].toArray()+", ";
+                        currdata+=QString("%1").arg(recid)+", ";
+                        query.exec("select "+_::PARMID+" from "+_::PARM+" where "+_::PARMNAME+"='"+parm[0].toString()+"'");
+                        query.first();
+                        currdata+=QString("%1").arg(query.value(0).toInt())+", ";
+                        //record.setValue(3, QVariant(parm[1].toString()));
+                        currdata+="'"+parm[1].toString()+"', ";
+                        path=parm[2].toString().replace("\\", "\\\\").toUtf8();
+                        if(FileLog::getFileID(&path)<=0){
+                            query.exec("insert into "+_::FILELOG+"("+_::FILELOGNAME+") values ('"+path+"')");
+                        }
+                        //record.setValue(4, QVariant(FileLog::getFileID(&path)));
+                        currdata+=QString("%1").arg(FileLog::getFileID(&path))+")";
+                        //QString message="rec-"+record.value(1).toString()+" parm-"+record.value(2).toString()+" cond-"+record.value(3).toString()+" file-"+record.value(4).toString();
+                        //QMessageBox::information(this, "", currdata);
+                        if(!query.exec(currdata)){
+                            QMessageBox::critical(this, "Ошибка", query.lastError().text());
+                            return;
+                        }
+                    }
+                }
+            }
         }
-        //else if(setting=="primary key"){
-            //for(int j=0; j<colcount; j++){
-                //qDebug()<<i<<" "<<j<<" "<<row[j].toString();
-                //record.setValue(j, QVariant(row[j]));
-            //}
-        //}
-
-        if(dbworking->generalmodel->insertRecord(-1, record)){
-            //if(!dbworking->generalmodel->submitAll()){
-                 //QMessageBox::critical(this, "Ошибка", dbworking->generalmodel->lastError().text());
-            //}
-
-        }
-        else{
-            QMessageBox::critical(this, "Ошибка", "Ошибка выбора файла.");
-        }
-    }*/
-
+    }
+    dbworking->loadTemp(1);
+    ui->tvModel->resizeColumnsToContents();
+    QMessageBox::information(this, "Добавление записей", "Автоматически добавлено "+QString("%1").arg(insertcount)+" из "+QString("%1").arg(rowcount)+" записей.");
     /*QString table, value;
     QSqlRecord record=dbworking->generalmodel->record();
     record.remove(0);
@@ -561,12 +598,12 @@ void MainWindow::on_HelpMessage_triggered()
     help->setModal(true);
     QString text="Данное программное обеспечение предназначено для работы с базой данных.\n\n"
 "База предусматривает некоторые ограничения.\n"
-"⚫Таблица 'Журнал приема данных': дата получения данных должна быть меньше или равной дате выполнения решения.\nНедопустимо существование записи для одного и того же блока с одинаковым временем приема.\n"
-"⚫Таблица 'Космические аппараты'(КА): каждый аппарат должен иметь уникальный номер из 3 знаков и название.\n"
-"⚫Таблица 'Бортовые изделия'(БИ): в один и тот же КА не могут входить БИ с одинаковыми названиями.\nСуществование двух БИ с одинаковыми названиями, но в разных КА, допустимо.\nКаждое БИ обладает уникальным серийным номером.\n"
-"⚫Таблица 'Блоки': в один и тот же БИ не могут входить блоки с одинаковыми названиями.\nСуществование двух блоков с одинаковыми названиями, но в разных БИ, допустимо.\nКаждый блок обладает уникальным серийным номером.\nВыбор БИ будет доступен только после выбора целевого КА.\n"
-"⚫Таблицы 'Параметры', 'Решения', 'Файлы': названия('Файлы' - путь) должны быть уникальными.\n"
-"⚫Таблица 'Прикрепленные файлы': вызывается по кнопке 'Параметры', находящейся на форме редактирования таблицы\n"
+"•Таблица 'Журнал приема данных': дата получения данных должна быть меньше или равной дате выполнения решения.\nНедопустимо существование записи для одного и того же блока с одинаковым временем приема.\n"
+"•Таблица 'Космические аппараты'(КА): каждый аппарат должен иметь уникальный номер из 3 знаков и название.\n"
+"•Таблица 'Бортовые изделия'(БИ): в один и тот же КА не могут входить БИ с одинаковыми названиями.\nСуществование двух БИ с одинаковыми названиями, но в разных КА, допустимо.\nКаждое БИ обладает уникальным серийным номером.\n"
+"•Таблица 'Блоки': в один и тот же БИ не могут входить блоки с одинаковыми названиями.\nСуществование двух блоков с одинаковыми названиями, но в разных БИ, допустимо.\nКаждый блок обладает уникальным серийным номером.\nВыбор БИ будет доступен только после выбора целевого КА.\n"
+"•Таблицы 'Параметры', 'Решения', 'Файлы': названия('Файлы' - путь) должны быть уникальными.\n"
+"•Таблица 'Прикрепленные файлы': вызывается по кнопке 'Параметры', находящейся на форме редактирования таблицы\n"
 "'Журнал приема данных'. Одна запись журнала может содержать только по одной записи для каждого параметра.\n\n"
 "Все названия, указанные для записей, не могут превышать 50 символов(исключение - 'Файлы').\n"
 "Серийные номер - не более 15 символов.\n"

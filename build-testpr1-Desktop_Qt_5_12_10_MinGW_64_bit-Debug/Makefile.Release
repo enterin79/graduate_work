@@ -19,13 +19,13 @@ CXXFLAGS      = -fno-keep-inline-dllexport -O2 -std=gnu++11 -Wall -W -Wextra -fe
 INCPATH       = -I..\testpr1 -I. -I..\..\Install\Qt\5.12.10\mingw73_64\include -I..\..\Install\Qt\5.12.10\mingw73_64\include\QtWidgets -I..\..\Install\Qt\5.12.10\mingw73_64\include\QtGui -I..\..\Install\Qt\5.12.10\mingw73_64\include\QtANGLE -I..\..\Install\Qt\5.12.10\mingw73_64\include\QtSql -I..\..\Install\Qt\5.12.10\mingw73_64\include\QtCore -Irelease -I. -I/include -I..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\win32-g++ 
 LINKER      =        g++
 LFLAGS        =        -Wl,-s -Wl,-subsystem,windows -mthreads
-LIBS        =        D:\Install\Qt\5.12.10\mingw73_64\lib\libQt5Widgets.a D:\Install\Qt\5.12.10\mingw73_64\lib\libQt5Gui.a D:\Install\Qt\5.12.10\mingw73_64\lib\libQt5Sql.a D:\Install\Qt\5.12.10\mingw73_64\lib\libQt5Core.a  -lmingw32 D:\Install\Qt\5.12.10\mingw73_64\lib\libqtmain.a -LC:\openssl\lib -LC:\Utils\my_sql\mysql-5.6.11-winx64\lib -LC:\Utils\postgresql\pgsql\lib -lshell32 
+LIBS        =        D:\Install\Qt\5.12.10\mingw73_64\lib\libQt5Widgets.a D:\Install\Qt\5.12.10\mingw73_64\lib\libQt5Gui.a D:\Install\Qt\5.12.10\mingw73_64\lib\libQt5Sql.a D:\Install\Qt\5.12.10\mingw73_64\lib\libQt5Core.a release\testpr1_resource_res.o  -lmingw32 D:\Install\Qt\5.12.10\mingw73_64\lib\libqtmain.a -LC:\openssl\lib -LC:\Utils\my_sql\mysql-5.6.11-winx64\lib -LC:\Utils\postgresql\pgsql\lib -lshell32 
 QMAKE         = D:\Install\Qt\5.12.10\mingw73_64\bin\qmake.exe
 IDC           = idc
 IDL           = midl
 ZIP           = zip -r -9
 DEF_FILE      = 
-RES_FILE      = 
+RES_FILE      = release\testpr1_resource_res.o
 COPY          = copy /y
 SED           = $(QMAKE) -install sed
 COPY_FILE     = copy /y
@@ -58,7 +58,8 @@ SOURCES       = ..\testpr1\DAT.cpp \
 		..\testpr1\logger.cpp \
 		..\testpr1\main.cpp \
 		..\testpr1\mainwindow.cpp \
-		..\testpr1\upgradedmodel.cpp release\moc_comboboxdelegate.cpp \
+		..\testpr1\upgradedmodel.cpp release\qrc_resources.cpp \
+		release\moc_comboboxdelegate.cpp \
 		release\moc_comboboxfordb.cpp \
 		release\moc_edit.cpp \
 		release\moc_filelog.cpp \
@@ -78,6 +79,7 @@ OBJECTS       = release/DAT.o \
 		release/main.o \
 		release/mainwindow.o \
 		release/upgradedmodel.o \
+		release/qrc_resources.o \
 		release/moc_comboboxdelegate.o \
 		release/moc_comboboxfordb.o \
 		release/moc_edit.o \
@@ -119,8 +121,11 @@ DESTDIR_TARGET = release\testpr1.exe
 first: all
 all: Makefile.Release  release/testpr1.exe
 
-release/testpr1.exe: D:/Install/Qt/5.12.10/mingw73_64/lib/libQt5Widgets.a D:/Install/Qt/5.12.10/mingw73_64/lib/libQt5Gui.a D:/Install/Qt/5.12.10/mingw73_64/lib/libQt5Sql.a D:/Install/Qt/5.12.10/mingw73_64/lib/libQt5Core.a D:/Install/Qt/5.12.10/mingw73_64/lib/libqtmain.a ui_edit.h ui_filelog.h ui_help.h ui_mainwindow.h $(OBJECTS) 
+release/testpr1.exe: D:/Install/Qt/5.12.10/mingw73_64/lib/libQt5Widgets.a D:/Install/Qt/5.12.10/mingw73_64/lib/libQt5Gui.a D:/Install/Qt/5.12.10/mingw73_64/lib/libQt5Sql.a D:/Install/Qt/5.12.10/mingw73_64/lib/libQt5Core.a D:/Install/Qt/5.12.10/mingw73_64/lib/libqtmain.a ui_edit.h ui_filelog.h ui_help.h ui_mainwindow.h $(OBJECTS) release/testpr1_resource_res.o
 	$(LINKER) $(LFLAGS) -o $(DESTDIR_TARGET) @object_script.testpr1.Release  $(LIBS)
+
+release/testpr1_resource_res.o: testpr1_resource.rc
+	windres -i testpr1_resource.rc -o release\testpr1_resource_res.o --include-dir=. $(DEFINES)
 
 qmake: FORCE
 	@$(QMAKE) -o Makefile.Release ..\testpr1\testpr1.pro -spec win32-g++ "CONFIG+=debug" "CONFIG+=qml_debug"
@@ -128,10 +133,11 @@ qmake: FORCE
 qmake_all: FORCE
 
 dist:
-	$(ZIP) testpr1.zip $(SOURCES) $(DIST) ..\testpr1\testpr1.pro ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\spec_pre.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\qdevice.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\device_config.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\common\sanitize.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\common\gcc-base.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\common\g++-base.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\common\angle.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\win32\windows_vulkan_sdk.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\common\windows-vulkan.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\common\g++-win32.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\qconfig.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3danimation.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3danimation_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dcore.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dcore_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dextras.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dextras_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dinput.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dinput_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dlogic.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dlogic_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquick.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquick_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickanimation.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickextras.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickextras_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickinput.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickinput_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickrender.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickrender_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickscene2d.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3drender.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3drender_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_accessibility_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_axbase.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_axbase_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_axcontainer.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_axcontainer_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_axserver.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_axserver_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_bluetooth.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_bluetooth_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_bootstrap_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_concurrent.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_concurrent_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_core.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_core_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_dbus.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_dbus_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_designer.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_designer_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_designercomponents_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_edid_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_egl_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_fb_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_gamepad.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_gamepad_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_gui.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_gui_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_help.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_help_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_location.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_location_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_multimedia.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_multimedia_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_multimediawidgets.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_network.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_network_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_nfc.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_nfc_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_opengl.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_opengl_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_openglextensions.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_openglextensions_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_packetprotocol_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_positioning.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_positioning_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_positioningquick.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_positioningquick_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_printsupport.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_printsupport_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qml.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qml_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qmldebug_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qmldevtools_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qmltest.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qmltest_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quick.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quick_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quickcontrols2.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quickparticles_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quickshapes_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quicktemplates2.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quickwidgets.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quickwidgets_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_remoteobjects.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_remoteobjects_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_repparser.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_repparser_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_scxml.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_scxml_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_sensors.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_sensors_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_serialbus.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_serialbus_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_serialport.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_serialport_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_sql.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_sql_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_svg.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_svg_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_testlib.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_testlib_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_texttospeech.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_texttospeech_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_theme_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_uiplugin.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_uitools.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_uitools_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_vulkan_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_webchannel.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_webchannel_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_websockets.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_websockets_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_widgets.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_widgets_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_windowsuiautomation_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_winextras.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_winextras_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_xml.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_xml_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_xmlpatterns.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\qt_functions.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\qt_config.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\win32-g++\qmake.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\spec_post.prf .qmake.stash ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\exclusive_builds.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\toolchain.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\default_pre.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\win32\default_pre.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\resolve_config.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\exclusive_builds_post.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\default_post.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\build_pass.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\qml_debug.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\precompile_header.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\warn_on.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\qt.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\resources.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\moc.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\win32\opengl.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\uic.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\qmake_use.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\file_copies.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\win32\windows.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\testcase_targets.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\exceptions.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\yacc.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\lex.prf ..\testpr1\testpr1.pro ..\..\Install\Qt\5.12.10\mingw73_64\lib\Qt5Widgets.prl ..\..\Install\Qt\5.12.10\mingw73_64\lib\Qt5Gui.prl ..\..\Install\Qt\5.12.10\mingw73_64\lib\Qt5Sql.prl ..\..\Install\Qt\5.12.10\mingw73_64\lib\Qt5Core.prl ..\..\Install\Qt\5.12.10\mingw73_64\lib\qtmain.prl    ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\data\dummy.cpp ..\testpr1\DAT.h ..\testpr1\comboboxdelegate.h ..\testpr1\comboboxfordb.h ..\testpr1\dbworking.h ..\testpr1\edit.h ..\testpr1\filelog.h ..\testpr1\filetablemodel.h ..\testpr1\help.h ..\testpr1\logger.h ..\testpr1\mainwindow.h ..\testpr1\upgradedmodel.h  ..\testpr1\DAT.cpp ..\testpr1\comboboxdelegate.cpp ..\testpr1\comboboxfordb.cpp ..\testpr1\dbworking.cpp ..\testpr1\edit.cpp ..\testpr1\filelog.cpp ..\testpr1\filetablemodel.cpp ..\testpr1\help.cpp ..\testpr1\logger.cpp ..\testpr1\main.cpp ..\testpr1\mainwindow.cpp ..\testpr1\upgradedmodel.cpp ..\testpr1\edit.ui ..\testpr1\filelog.ui ..\testpr1\help.ui ..\testpr1\mainwindow.ui    
+	$(ZIP) testpr1.zip $(SOURCES) $(DIST) ..\testpr1\testpr1.pro ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\spec_pre.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\qdevice.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\device_config.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\common\sanitize.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\common\gcc-base.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\common\g++-base.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\common\angle.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\win32\windows_vulkan_sdk.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\common\windows-vulkan.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\common\g++-win32.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\qconfig.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3danimation.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3danimation_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dcore.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dcore_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dextras.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dextras_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dinput.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dinput_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dlogic.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dlogic_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquick.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquick_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickanimation.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickanimation_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickextras.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickextras_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickinput.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickinput_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickrender.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickrender_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickscene2d.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3dquickscene2d_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3drender.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_3drender_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_accessibility_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_axbase.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_axbase_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_axcontainer.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_axcontainer_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_axserver.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_axserver_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_bluetooth.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_bluetooth_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_bootstrap_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_concurrent.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_concurrent_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_core.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_core_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_dbus.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_dbus_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_designer.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_designer_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_designercomponents_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_devicediscovery_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_edid_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_egl_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_eventdispatcher_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_fb_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_fontdatabase_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_gamepad.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_gamepad_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_gui.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_gui_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_help.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_help_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_location.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_location_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_multimedia.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_multimedia_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_multimediawidgets.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_multimediawidgets_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_network.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_network_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_nfc.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_nfc_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_opengl.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_opengl_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_openglextensions.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_openglextensions_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_packetprotocol_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_platformcompositor_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_positioning.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_positioning_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_positioningquick.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_positioningquick_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_printsupport.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_printsupport_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qml.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qml_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qmldebug_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qmldevtools_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qmltest.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qmltest_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_qtmultimediaquicktools_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quick.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quick_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quickcontrols2.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quickcontrols2_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quickparticles_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quickshapes_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quicktemplates2.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quicktemplates2_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quickwidgets.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_quickwidgets_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_remoteobjects.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_remoteobjects_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_repparser.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_repparser_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_scxml.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_scxml_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_sensors.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_sensors_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_serialbus.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_serialbus_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_serialport.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_serialport_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_sql.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_sql_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_svg.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_svg_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_testlib.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_testlib_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_texttospeech.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_texttospeech_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_theme_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_uiplugin.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_uitools.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_uitools_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_vulkan_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_webchannel.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_webchannel_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_websockets.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_websockets_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_widgets.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_widgets_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_windowsuiautomation_support_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_winextras.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_winextras_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_xml.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_xml_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_xmlpatterns.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\modules\qt_lib_xmlpatterns_private.pri ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\qt_functions.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\qt_config.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\win32-g++\qmake.conf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\spec_post.prf .qmake.stash ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\exclusive_builds.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\toolchain.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\default_pre.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\win32\default_pre.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\resolve_config.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\exclusive_builds_post.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\default_post.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\build_pass.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\qml_debug.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\precompile_header.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\warn_on.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\qt.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\resources.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\moc.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\win32\opengl.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\uic.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\qmake_use.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\file_copies.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\win32\windows.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\testcase_targets.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\exceptions.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\yacc.prf ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\lex.prf ..\testpr1\testpr1.pro ..\testpr1\resources.qrc ..\..\Install\Qt\5.12.10\mingw73_64\lib\Qt5Widgets.prl ..\..\Install\Qt\5.12.10\mingw73_64\lib\Qt5Gui.prl ..\..\Install\Qt\5.12.10\mingw73_64\lib\Qt5Sql.prl ..\..\Install\Qt\5.12.10\mingw73_64\lib\Qt5Core.prl ..\..\Install\Qt\5.12.10\mingw73_64\lib\qtmain.prl   ..\testpr1\resources.qrc ..\..\Install\Qt\5.12.10\mingw73_64\mkspecs\features\data\dummy.cpp ..\testpr1\DAT.h ..\testpr1\comboboxdelegate.h ..\testpr1\comboboxfordb.h ..\testpr1\dbworking.h ..\testpr1\edit.h ..\testpr1\filelog.h ..\testpr1\filetablemodel.h ..\testpr1\help.h ..\testpr1\logger.h ..\testpr1\mainwindow.h ..\testpr1\upgradedmodel.h  ..\testpr1\DAT.cpp ..\testpr1\comboboxdelegate.cpp ..\testpr1\comboboxfordb.cpp ..\testpr1\dbworking.cpp ..\testpr1\edit.cpp ..\testpr1\filelog.cpp ..\testpr1\filetablemodel.cpp ..\testpr1\help.cpp ..\testpr1\logger.cpp ..\testpr1\main.cpp ..\testpr1\mainwindow.cpp ..\testpr1\upgradedmodel.cpp ..\testpr1\edit.ui ..\testpr1\filelog.ui ..\testpr1\help.ui ..\testpr1\mainwindow.ui    
 
 clean: compiler_clean 
-	-$(DEL_FILE) release\DAT.o release\comboboxdelegate.o release\comboboxfordb.o release\dbworking.o release\edit.o release\filelog.o release\filetablemodel.o release\help.o release\logger.o release\main.o release\mainwindow.o release\upgradedmodel.o release\moc_comboboxdelegate.o release\moc_comboboxfordb.o release\moc_edit.o release\moc_filelog.o release\moc_filetablemodel.o release\moc_help.o release\moc_mainwindow.o release\moc_upgradedmodel.o
+	-$(DEL_FILE) release\DAT.o release\comboboxdelegate.o release\comboboxfordb.o release\dbworking.o release\edit.o release\filelog.o release\filetablemodel.o release\help.o release\logger.o release\main.o release\mainwindow.o release\upgradedmodel.o release\qrc_resources.o release\moc_comboboxdelegate.o release\moc_comboboxfordb.o release\moc_edit.o release\moc_filelog.o release\moc_filetablemodel.o release\moc_help.o release\moc_mainwindow.o release\moc_upgradedmodel.o
+	-$(DEL_FILE) release\testpr1_resource_res.o
 
 distclean: clean 
 	-$(DEL_FILE) .qmake.stash
@@ -148,8 +154,14 @@ benchmark: first
 
 compiler_no_pch_compiler_make_all:
 compiler_no_pch_compiler_clean:
-compiler_rcc_make_all:
+compiler_rcc_make_all: release/qrc_resources.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) release\qrc_resources.cpp
+release/qrc_resources.cpp: ../testpr1/resources.qrc \
+		../../Install/Qt/5.12.10/mingw73_64/bin/rcc.exe \
+		../testpr1/table.ico
+	D:\Install\Qt\5.12.10\mingw73_64\bin\rcc.exe -name resources ..\testpr1\resources.qrc -o release\qrc_resources.cpp
+
 compiler_moc_predefs_make_all: release/moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) release\moc_predefs.h
@@ -1476,10 +1488,6 @@ release/moc_mainwindow.cpp: ../testpr1/mainwindow.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/QDateTime \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtSql/QSqlRecord \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/QColor \
-		../testpr1/comboboxfordb.h \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QComboBox \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QItemDelegate \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/QtDebug \
 		../testpr1/edit.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QWidget \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QDateTimeEdit \
@@ -1490,6 +1498,8 @@ release/moc_mainwindow.cpp: ../testpr1/mainwindow.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qdesktopservices.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/QClipboard \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qclipboard.h \
+		../testpr1/help.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QDialog \
 		release/moc_predefs.h \
 		../../Install/Qt/5.12.10/mingw73_64/bin/moc.exe
 	D:\Install\Qt\5.12.10\mingw73_64\bin\moc.exe $(DEFINES) --include D:/projects/build-testpr1-Desktop_Qt_5_12_10_MinGW_64_bit-Debug/release/moc_predefs.h -ID:/Install/Qt/5.12.10/mingw73_64/mkspecs/win32-g++ -ID:/projects/testpr1 -ID:/Install/Qt/5.12.10/mingw73_64/include -ID:/Install/Qt/5.12.10/mingw73_64/include/QtWidgets -ID:/Install/Qt/5.12.10/mingw73_64/include/QtGui -ID:/Install/Qt/5.12.10/mingw73_64/include/QtANGLE -ID:/Install/Qt/5.12.10/mingw73_64/include/QtSql -ID:/Install/Qt/5.12.10/mingw73_64/include/QtCore -I. -ID:/Install/Qt/Tools/mingw730_64/lib/gcc/x86_64-w64-mingw32/7.3.0/include/c++ -ID:/Install/Qt/Tools/mingw730_64/lib/gcc/x86_64-w64-mingw32/7.3.0/include/c++/x86_64-w64-mingw32 -ID:/Install/Qt/Tools/mingw730_64/lib/gcc/x86_64-w64-mingw32/7.3.0/include/c++/backward -ID:/Install/Qt/Tools/mingw730_64/lib/gcc/x86_64-w64-mingw32/7.3.0/include -ID:/Install/Qt/Tools/mingw730_64/lib/gcc/x86_64-w64-mingw32/7.3.0/include-fixed -ID:/Install/Qt/Tools/mingw730_64/x86_64-w64-mingw32/include ..\testpr1\mainwindow.h -o release\moc_mainwindow.cpp
@@ -2005,7 +2015,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 
 
@@ -2586,11 +2596,7 @@ release/dbworking.o: ../testpr1/dbworking.cpp ../testpr1/dbworking.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtSql/QSqlTableModel \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/QDateTime \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtSql/QSqlRecord \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/QColor \
-		../testpr1/comboboxfordb.h \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QComboBox \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QItemDelegate \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/QtDebug
+		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/QColor
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\dbworking.o ..\testpr1\dbworking.cpp
 
 release/edit.o: ../testpr1/edit.cpp ../testpr1/edit.h \
@@ -3429,7 +3435,35 @@ release/help.o: ../testpr1/help.cpp ../testpr1/help.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/qfiledevice.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qvector2d.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qtouchdevice.h \
-		ui_help.h
+		ui_help.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/QVariant \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QApplication \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qapplication.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/qcoreapplication.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/qeventloop.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qdesktopwidget.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qguiapplication.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qinputmethod.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QPushButton \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qpushbutton.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qabstractbutton.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qicon.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QTextEdit \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qtextedit.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qabstractscrollarea.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qframe.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qtextdocument.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qtextoption.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qtextcursor.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qtextformat.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qpen.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QVBoxLayout \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qboxlayout.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qlayout.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qlayoutitem.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qgridlayout.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QMessageBox \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qmessagebox.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\help.o ..\testpr1\help.cpp
 
 release/logger.o: ../testpr1/logger.cpp ../testpr1/logger.h \
@@ -3784,10 +3818,6 @@ release/main.o: ../testpr1/main.cpp ../testpr1/mainwindow.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/QDateTime \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtSql/QSqlRecord \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/QColor \
-		../testpr1/comboboxfordb.h \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QComboBox \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QItemDelegate \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/QtDebug \
 		../testpr1/edit.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QWidget \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QDateTimeEdit \
@@ -3798,6 +3828,8 @@ release/main.o: ../testpr1/main.cpp ../testpr1/mainwindow.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qdesktopservices.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/QClipboard \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qclipboard.h \
+		../testpr1/help.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QDialog \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QApplication \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qapplication.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qdesktopwidget.h \
@@ -4300,10 +4332,6 @@ release/mainwindow.o: ../testpr1/mainwindow.cpp ../testpr1/mainwindow.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/QDateTime \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtSql/QSqlRecord \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/QColor \
-		../testpr1/comboboxfordb.h \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QComboBox \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QItemDelegate \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/QtDebug \
 		../testpr1/edit.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QWidget \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QDateTimeEdit \
@@ -4314,6 +4342,8 @@ release/mainwindow.o: ../testpr1/mainwindow.cpp ../testpr1/mainwindow.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qdesktopservices.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/QClipboard \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qclipboard.h \
+		../testpr1/help.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QDialog \
 		ui_mainwindow.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/QVariant \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QAction \
@@ -4324,6 +4354,7 @@ release/mainwindow.o: ../testpr1/mainwindow.cpp ../testpr1/mainwindow.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qdesktopwidget.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qguiapplication.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qinputmethod.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QComboBox \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QFormLayout \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qformlayout.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QLayout \
@@ -4346,6 +4377,8 @@ release/mainwindow.o: ../testpr1/mainwindow.cpp ../testpr1/mainwindow.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QPushButton \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qpushbutton.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qabstractbutton.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QRadioButton \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/qradiobutton.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QSlider \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QSpacerItem \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QStatusBar \
@@ -4358,7 +4391,10 @@ release/mainwindow.o: ../testpr1/mainwindow.cpp ../testpr1/mainwindow.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qtextoption.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qtextcursor.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qtextformat.h \
-		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qpen.h
+		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qpen.h \
+		../testpr1/comboboxfordb.h \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtWidgets/QItemDelegate \
+		../../Install/Qt/5.12.10/mingw73_64/include/QtCore/QtDebug
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\mainwindow.o ..\testpr1\mainwindow.cpp
 
 release/upgradedmodel.o: ../testpr1/upgradedmodel.cpp ../testpr1/upgradedmodel.h \
@@ -4447,6 +4483,9 @@ release/upgradedmodel.o: ../testpr1/upgradedmodel.cpp ../testpr1/upgradedmodel.h
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qrgb.h \
 		../../Install/Qt/5.12.10/mingw73_64/include/QtGui/qrgba64.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\upgradedmodel.o ..\testpr1\upgradedmodel.cpp
+
+release/qrc_resources.o: release/qrc_resources.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\qrc_resources.o release\qrc_resources.cpp
 
 release/moc_comboboxdelegate.o: release/moc_comboboxdelegate.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o release\moc_comboboxdelegate.o release\moc_comboboxdelegate.cpp

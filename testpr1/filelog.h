@@ -47,7 +47,7 @@ class FileLog : public QDialog
 public:
     explicit FileLog(QWidget *parent = nullptr);
     void setLog(int idLog, QSqlDatabase *db);
-    int getFileID(QByteArray *path);
+    static int getFileID(QByteArray *path);
     void loadTable();
     ~FileLog();
 

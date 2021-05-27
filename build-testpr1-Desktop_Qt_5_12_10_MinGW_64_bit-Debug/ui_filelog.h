@@ -54,6 +54,9 @@ public:
         filelog->resize(600, 300);
         filelog->setMinimumSize(QSize(600, 300));
         filelog->setMaximumSize(QSize(600, 300));
+        QFont font;
+        font.setPointSize(10);
+        filelog->setFont(font);
         gridLayout = new QGridLayout(filelog);
         gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         lrownum = new QLabel(filelog);
@@ -155,6 +158,9 @@ public:
         tvFiles = new QTableView(filelog);
         tvFiles->setObjectName(QString::fromUtf8("tvFiles"));
         tvFiles->setEnabled(true);
+        QFont font1;
+        font1.setPointSize(12);
+        tvFiles->setFont(font1);
         tvFiles->setAutoScroll(true);
         tvFiles->setEditTriggers(QAbstractItemView::NoEditTriggers);
         tvFiles->setSortingEnabled(true);

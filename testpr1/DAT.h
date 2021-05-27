@@ -29,6 +29,7 @@ public:
     KAID,
     KANAME,
     KADATE,
+    KADESC,
 
     BIID,
     BISERIAL,

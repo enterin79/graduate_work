@@ -46,3 +46,14 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    resources.qrc
+
+VERSION=2.3.0.0
+QMAKE_TARGET_COMPANY=Central Scientific Research Radiotechnical Institute name of the academician A.I. Berg
+QMAKE_TARGET_PRODUCT=Graduation project Zhilyaeva A.A.
+QMAKE_TARGET_DESCRIPTION=Database application
+QMAKE_TARGET_COPYRIGHT=(с) Anastasiya Zhilyaeva
+
+RC_ICONS="table.ico"

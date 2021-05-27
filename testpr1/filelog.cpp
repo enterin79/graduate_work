@@ -130,12 +130,10 @@ void FileLog::on_selectFile_clicked()
         QByteArray byarr=file.toUtf8();
         int fileid=getFileID(&byarr);
         if(fileid<=0){
-            //QMessageBox::information(this, "", QString("%1").arg(fileid));
             QSqlQuery query;
             query.exec("insert into "+_::FILELOG+"("+_::FILELOGNAME+") values ('"+byarr+"');");
             fileid=getFileID(&byarr);
         }
-        //QMessageBox::information(this, "", QString("%1").arg(fileid));
         idFile=fileid;
         ui->leFileParm->setPlainText(file);
     }

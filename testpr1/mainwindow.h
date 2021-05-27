@@ -14,6 +14,7 @@
 //#include "logger.h"
 #include "DAT.h"
 #include "help.h"
+#include "filelog.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }

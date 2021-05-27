@@ -24,6 +24,7 @@ QString _::BLOKBI="biid";
 QString _::KAID="numberka";
 QString _::KANAME="nameka";
 QString _::KADATE="launchdateka";
+QString _::KADESC="descrka";
 
 QString _::BIID="idbi";
 QString _::BISERIAL="serialnumberbi";

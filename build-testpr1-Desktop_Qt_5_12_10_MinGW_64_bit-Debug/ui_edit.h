@@ -71,6 +71,8 @@ public:
     QLineEdit *leNameKA;
     QDateTimeEdit *dtLaunchKA;
     QLabel *label_9;
+    QLabel *label_20;
+    QTextEdit *leDescriptKA;
     QGroupBox *gbLog;
     QGridLayout *gridLayout_6;
     QGridLayout *gridLayout_5;
@@ -299,6 +301,16 @@ public:
 
         formLayout_4->setWidget(2, QFormLayout::LabelRole, label_9);
 
+        label_20 = new QLabel(gbKA);
+        label_20->setObjectName(QString::fromUtf8("label_20"));
+
+        formLayout_4->setWidget(3, QFormLayout::LabelRole, label_20);
+
+        leDescriptKA = new QTextEdit(gbKA);
+        leDescriptKA->setObjectName(QString::fromUtf8("leDescriptKA"));
+
+        formLayout_4->setWidget(3, QFormLayout::FieldRole, leDescriptKA);
+
 
         gridLayout->addLayout(formLayout_4, 0, 0, 1, 1);
 
@@ -454,6 +466,14 @@ public:
 
         verticalLayout->addWidget(ChooseFile);
 
+        gbBlok->raise();
+        gbParm->raise();
+        layoutWidget->raise();
+        gbSolution->raise();
+        gbLog->raise();
+        gbBI->raise();
+        gbFile->raise();
+        gbKA->raise();
 
         retranslateUi(Edit);
 
@@ -483,6 +503,7 @@ public:
         label_10->setText(QApplication::translate("Edit", "\320\232\320\276\320\264", nullptr));
         label_8->setText(QApplication::translate("Edit", "\320\235\320\260\320\267\320\262\320\260\320\275\320\270\320\265", nullptr));
         label_9->setText(QApplication::translate("Edit", "\320\224\320\260\321\202\320\260 \320\267\320\260\320\277\321\203\321\201\320\272\320\260", nullptr));
+        label_20->setText(QApplication::translate("Edit", "\320\237\321\200\320\270\320\274\320\265\321\207\320\260\320\275\320\270\320\265", nullptr));
         gbLog->setTitle(QApplication::translate("Edit", "\320\241\320\276\321\201\321\202\320\276\321\217\320\275\320\270\320\265 \320\276\320\261\320\276\321\200\321\203\320\264\320\276\320\262\320\260\320\275\320\270\321\217", nullptr));
         ledtSolutExec->setText(QApplication::translate("Edit", "NULL", nullptr));
         dtCurrTime->setDisplayFormat(QApplication::translate("Edit", "dd.MM.yyyy HH:mm:ss", nullptr));

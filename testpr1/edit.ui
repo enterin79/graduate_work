@@ -291,6 +291,16 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="0">
+       <widget class="QLabel" name="label_20">
+        <property name="text">
+         <string>Примечание</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QTextEdit" name="leDescriptKA"/>
+      </item>
      </layout>
     </item>
    </layout>
@@ -570,6 +580,14 @@
     </item>
    </layout>
   </widget>
+  <zorder>gbBlok</zorder>
+  <zorder>gbParm</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>gbSolution</zorder>
+  <zorder>gbLog</zorder>
+  <zorder>gbBI</zorder>
+  <zorder>gbFile</zorder>
+  <zorder>gbKA</zorder>
  </widget>
  <customwidgets>
   <customwidget>

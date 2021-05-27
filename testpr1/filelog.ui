@@ -22,6 +22,11 @@
     <height>300</height>
    </size>
   </property>
+  <property name="font">
+   <font>
+    <pointsize>10</pointsize>
+   </font>
+  </property>
   <property name="windowTitle">
    <string>Прикрепленные файлы</string>
   </property>
@@ -219,6 +224,11 @@
     <widget class="QTableView" name="tvFiles">
      <property name="enabled">
       <bool>true</bool>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>12</pointsize>
+      </font>
      </property>
      <property name="autoScroll">
       <bool>true</bool>

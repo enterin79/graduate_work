@@ -116,6 +116,7 @@ bool Edit::setModelTable(QSqlRelationalTableModel *currmodel, QString table, int
             tablemapper->addMapping(ui->leNumberKA, model->fieldIndex(_::KAID));
             tablemapper->addMapping(ui->leNameKA, model->fieldIndex(_::KANAME));
             tablemapper->addMapping(ui->dtLaunchKA, model->fieldIndex(_::KADATE));
+            tablemapper->addMapping(ui->leDescriptKA, model->fieldIndex(_::KADESC), "plainText");
 
             ui->gbParm->hide();
             ui->gbLog->hide();
